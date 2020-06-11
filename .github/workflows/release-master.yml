@@ -18,6 +18,8 @@ jobs:
       run: echo "::set-env name=VERSION::$(grep -v '^#' gradle.properties | grep 'version=' | cut -d '=' -f2 | xargs)"
       
     - name: build and update version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: ./gradlew build release -Prelease.useAutomaticVersion=true
   
     - name: check out release-version
