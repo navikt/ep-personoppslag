@@ -24,6 +24,18 @@ java {
 
 repositories {
     mavenCentral()
+
+    listOf("maven-release","tjenestespesifikasjoner","ep-logging").forEach { repo ->
+        val token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+        if (token != null) throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+        maven {
+            url = uri("https://maven.pkg.github.com/navikt/$repo")
+            credentials {
+                username = "token"
+                password = token
+            }
+        }
+    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -46,10 +58,15 @@ dependencies {
     implementation("org.springframework:spring-web:$springVersion")
     implementation("org.springframework:spring-context:$springVersion")
     implementation("javax.servlet:javax.servlet-api:4.0.1")
+    implementation("no.nav.eessi.pensjon:ep-logging:0.0.12")
 
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.springframework:spring-test:$springVersion")
     testImplementation("io.mockk:mockk:1.10.0")
+
+    // Tjenestespesifikasjoner
+    implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
+    implementation("com.sun.xml.ws:jaxws-ri:2.3.2")
 }
 
 // https://github.com/researchgate/gradle-release
