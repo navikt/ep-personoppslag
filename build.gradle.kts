@@ -22,22 +22,6 @@ java {
     withSourcesJar()
 }
 
-repositories {
-    mavenCentral()
-
-    listOf("maven-release","tjenestespesifikasjoner","ep-metrics", "ep-loggign").forEach { repo ->
-        val token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-        ?: throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
-        maven {
-            url = uri("https://maven.pkg.github.com/navikt/$repo")
-            credentials {
-                username = "token"
-                password = token as String?
-            }
-        }
-    }
-}
-
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
     kotlinOptions.jvmTarget = "1.8"
@@ -49,6 +33,7 @@ tasks.withType<Test> {
 
 val springVersion by extra("5.2.5.RELEASE")
 val junitVersion by extra("5.6.2")
+val cxfVersion by extra("3.3.6")
 
 
 dependencies {
@@ -56,10 +41,14 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.3.6")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.8")
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.3.8")
 
+    // Spring
     implementation("org.springframework:spring-web:$springVersion")
     implementation("org.springframework:spring-context:$springVersion")
+    implementation("org.springframework.retry:spring-retry:1.3.0")
+
     implementation("javax.servlet:javax.servlet-api:4.0.1")
     implementation("no.nav.eessi.pensjon:ep-logging:0.0.16")
 
@@ -70,6 +59,15 @@ dependencies {
     // Tjenestespesifikasjoner
     implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
     implementation("com.sun.xml.ws:jaxws-ri:2.3.2")
+
+    // Apache CXF
+    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
+    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
+
+    //Mock
+    testImplementation("org.mockito:mockito-junit-jupiter:3.3.3")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+
 }
 
 // https://github.com/researchgate/gradle-release
@@ -96,6 +94,22 @@ publishing {
             }
         }
     }
+}
+
+repositories {
+    listOf("ep-metrics", "ep-logging", "ep-security-sts").forEachIndexed { index,  repo ->
+        val token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+        ?: throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+        maven {
+            name = "g" + index
+            url = uri("https://maven.pkg.github.com/navikt/$repo")
+            credentials {
+                username = "token"
+                password = token as String?
+            }
+        }
+    }
+    mavenCentral()
 }
 
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
