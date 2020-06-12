@@ -6,7 +6,10 @@ import no.nav.eessi.pensjon.security.sts.STSClientConfig
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse
 import org.slf4j.Logger
@@ -14,10 +17,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.retry.annotation.Retryable
-import javax.xml.ws.soap.SOAPFaultException
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
 import javax.annotation.PostConstruct
+import javax.xml.ws.soap.SOAPFaultException
 
 /**
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
@@ -88,3 +91,7 @@ class PersonV3Service(
 
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
 class PersonV3SikkerhetsbegrensningException(message: String?): Exception(message)
+
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+class PersonV3IkkeFunnetException(message: String) : RuntimeException(message)
