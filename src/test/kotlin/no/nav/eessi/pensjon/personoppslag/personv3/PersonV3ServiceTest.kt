@@ -1,11 +1,9 @@
-package no.nav.eessi.pensjon.personv3
+package no.nav.eessi.pensjon.personoppslag.personv3
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.mockk.*
 import no.nav.eessi.pensjon.security.sts.STSClientConfig
-import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3Service
-import no.nav.eessi.pensjon.personoppslag.personv3.PersonV3SikkerhetsbegrensningException
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
 import org.junit.jupiter.api.Assertions.*
