@@ -25,14 +25,14 @@ java {
 repositories {
     mavenCentral()
 
-    listOf("maven-release","tjenestespesifikasjoner","ep-logging").forEach { repo ->
+    listOf("maven-release","tjenestespesifikasjoner","ep-metrics", "ep-loggign").forEach { repo ->
         val token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-        if (token != null) throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
+        ?: throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
         maven {
             url = uri("https://maven.pkg.github.com/navikt/$repo")
             credentials {
                 username = "token"
-                password = token
+                password = token as String?
             }
         }
     }
@@ -54,11 +54,14 @@ val junitVersion by extra("5.6.2")
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.3.6")
+
     implementation("org.springframework:spring-web:$springVersion")
     implementation("org.springframework:spring-context:$springVersion")
     implementation("javax.servlet:javax.servlet-api:4.0.1")
-    implementation("no.nav.eessi.pensjon:ep-logging:0.0.12")
+    implementation("no.nav.eessi.pensjon:ep-logging:0.0.16")
 
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.springframework:spring-test:$springVersion")
