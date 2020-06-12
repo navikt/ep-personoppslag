@@ -16,7 +16,13 @@ jobs:
       
     - name: capture version number for release
       run: echo "::set-env name=VERSION::$(grep -v '^#' gradle.properties | grep 'version=' | cut -d '=' -f2 | xargs)"
-      
+
+     # JAVA 11
+    - name: 'Java 11'
+      uses: actions/setup-java@v1.3.0
+      with:
+        java-version: 11
+
     - name: build and update version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
