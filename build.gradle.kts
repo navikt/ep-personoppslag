@@ -38,7 +38,7 @@ val cxfVersion by extra("3.3.6")
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(kotlin("stdlib", "1.3.72"))
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
     implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.8")
@@ -46,7 +46,7 @@ dependencies {
 
     // Spring
     implementation("org.springframework:spring-web:$springVersion")
-    implementation("org.springframework:spring-context:$springVersion")
+//    implementation("org.springframework:spring-context:$springVersion")
     implementation("org.springframework.retry:spring-retry:1.3.0")
 
     implementation("javax.servlet:javax.servlet-api:4.0.1")

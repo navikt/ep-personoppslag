@@ -41,8 +41,42 @@ class PersonV3Service(
         hentPerson = metricsHelper.init("hentperson")
     }
 
+    @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class)
+    fun hentPerson(fnr: String): HentPersonResponse {
+        logger.info("Henter person fra PersonV3Service")
+        stsClientConfig.configureRequestSamlToken(service)
+
+        val request = HentPersonRequest().apply {
+            withAktoer(PersonIdent().withIdent(
+                    NorskIdent().withIdent(fnr)))
+
+            withInformasjonsbehov(listOf(
+                    Informasjonsbehov.ADRESSE,
+                    Informasjonsbehov.FAMILIERELASJONER
+            ))
+        }
+
+        return hentPerson.measure {
+            return@measure try {
+                logger.info("Kaller PersonV3.hentPerson service")
+                val resp = service.hentPerson(request)
+                resp
+            } catch (personIkkefunnet: HentPersonPersonIkkeFunnet) {
+                logger.error("Kaller PersonV3.hentPerson service Feilet: $personIkkefunnet")
+                throw PersonV3IkkeFunnetException(personIkkefunnet.message!!)
+            } catch (personSikkerhetsbegrensning: HentPersonSikkerhetsbegrensning) {
+                logger.error("Kaller PersonV3.hentPerson service Feilet $personSikkerhetsbegrensning")
+                throw PersonV3SikkerhetsbegrensningException(personSikkerhetsbegrensning.message!!)
+            } catch (ex: Exception) {
+                logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${ex.message}", ex)
+                throw PersonV3IkkeFunnetException("Ukent feil ved PersonV3")
+            }
+        }
+    }
+
+
     @Retryable(include = [SOAPFaultException::class])
-    fun hentPerson(fnr: String): Person? {
+    fun hentPersonTPS(fnr: String): Person? {
         return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
 
@@ -72,7 +106,6 @@ class PersonV3Service(
     }
 
     private fun kallPersonV3(fnr: String?) : HentPersonResponse{
-
         val request = HentPersonRequest().apply {
             withAktoer(PersonIdent().withIdent(
                     NorskIdent().withIdent(fnr)))
