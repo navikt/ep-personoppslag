@@ -36,18 +36,18 @@ class PersonV3ServiceTest {
 
         every { personV3Service.konfigurerSamlToken() } just Runs
 
-        every { personV3Service.hentPersonTPS(subject) } returns PersonMock.createWith(subject)
+        every { personV3Service.hentPerson(subject) } returns PersonMock.createWith(subject)
 
-        every { personV3Service.hentPersonTPS(ikkeFunnetSubject) } returns null
+        every { personV3Service.hentPerson(ikkeFunnetSubject) } returns null
 
-        every { personV3Service.hentPersonTPS(sikkerhetsbegrensingSubject) } throws
+        every { personV3Service.hentPerson(sikkerhetsbegrensingSubject) } throws
                 PersonV3SikkerhetsbegrensningException("$sikkerhetsbegrensingSubject har sikkerhetsbegrensning")
     }
 
     @Test
     fun `Kaller hentPerson med gyldig subject`(){
         try {
-            val person = personV3Service.hentPersonTPS(subject)
+            val person = personV3Service.hentPerson(subject)
             assertEquals("23037329381", (person!!.aktoer as PersonIdent).ident.ident)
         }catch(ex: Exception){
             assert(false)
@@ -56,13 +56,13 @@ class PersonV3ServiceTest {
 
     @Test
     fun `Kaller hentPerson med subject som ikke finnes`(){
-        assertNull(personV3Service.hentPersonTPS(ikkeFunnetSubject))
+        assertNull(personV3Service.hentPerson(ikkeFunnetSubject))
     }
 
     @Test
     fun `Kaller hentPerson med subject med sikkerhetsbegrensing`(){
         try {
-            personV3Service.hentPersonTPS(sikkerhetsbegrensingSubject)
+            personV3Service.hentPerson(sikkerhetsbegrensingSubject)
             assert(false)
         }catch(ex: Exception){
             assert(ex is PersonV3SikkerhetsbegrensningException)
@@ -78,7 +78,7 @@ class PersonV3ServiceTest {
         every { personV3.hentPerson(any()) } throws
                 SOAPFaultException(soapFaultF002001F)
 
-        assertNull(personV3Service.hentPersonTPS(ugyldigIdSubject))
+        assertNull(personV3Service.hentPerson(ugyldigIdSubject))
     }
 
     @Test
@@ -90,7 +90,7 @@ class PersonV3ServiceTest {
                 SOAPFaultException(soapFaultOther)
 
         assertThrows(SOAPFaultException::class.java) {
-            personV3Service.hentPersonTPS(annenSoapIssueSubject)
+            personV3Service.hentPerson(annenSoapIssueSubject)
         }
     }
 }
