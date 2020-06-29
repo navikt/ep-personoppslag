@@ -6,10 +6,7 @@ import no.nav.eessi.pensjon.security.sts.STSClientConfig
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse
 import org.slf4j.Logger
@@ -42,7 +39,8 @@ class PersonV3Service(
     }
 
     @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class)
-    fun hentPerson(fnr: String): HentPersonResponse {
+    @Retryable(include = [SOAPFaultException::class])
+    fun hentPersonResponse(fnr: String): HentPersonResponse {
         logger.info("Henter person fra PersonV3Service")
         stsClientConfig.configureRequestSamlToken(service)
 
@@ -74,9 +72,21 @@ class PersonV3Service(
         }
     }
 
+    fun hentBruker(fnr: String): Bruker? {
+
+        try {
+            val response = hentPersonResponse(fnr)
+            return response.person as Bruker
+        } catch (ex: Exception) {
+            logger.error("Feil ved henting av Bruker fra TPS, sjekk ident?")
+            return null
+        }
+
+    }
+
 
     @Retryable(include = [SOAPFaultException::class])
-    fun hentPersonTPS(fnr: String): Person? {
+    fun hentPerson(fnr: String): Person? {
         return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
 
