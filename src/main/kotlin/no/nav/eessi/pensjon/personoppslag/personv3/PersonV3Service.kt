@@ -35,7 +35,7 @@ class PersonV3Service(
 
     @PostConstruct
     fun initMetrics() {
-        hentPerson = metricsHelper.init("hentperson")
+        hentPerson = metricsHelper.init("hentperson", alert = MetricsHelper.Toggle.OFF)
     }
 
     @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class)
