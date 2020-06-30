@@ -57,17 +57,24 @@ class PersonV3Service(
         return hentPerson.measure {
             return@measure try {
                 logger.info("Kaller PersonV3.hentPerson service")
-                val resp = service.hentPerson(request)
-                resp
+                service.hentPerson(request)
             } catch (personIkkefunnet: HentPersonPersonIkkeFunnet) {
                 logger.error("Kaller PersonV3.hentPerson service Feilet: $personIkkefunnet")
                 throw PersonV3IkkeFunnetException(personIkkefunnet.message!!)
             } catch (personSikkerhetsbegrensning: HentPersonSikkerhetsbegrensning) {
                 logger.error("Kaller PersonV3.hentPerson service Feilet $personSikkerhetsbegrensning")
                 throw PersonV3SikkerhetsbegrensningException(personSikkerhetsbegrensning.message!!)
+            } catch (soapFaultException: SOAPFaultException) {
+                if (soapFaultException.message != null && soapFaultException.message!!.contains("S610006F")) { //https://confluence.adeo.no/x/rYJ4Bw
+                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '$fnr' - $soapFaultException")
+                    throw UgyldigIdentException("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller", soapFaultException)
+                } else {
+                    logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${soapFaultException.message}", soapFaultException)
+                    throw PersonV3IkkeFunnetException("Ukjent feil ved PersonV3")
+                }
             } catch (ex: Exception) {
                 logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${ex.message}", ex)
-                throw PersonV3IkkeFunnetException("Ukent feil ved PersonV3")
+                throw PersonV3IkkeFunnetException("Ukjent feil ved PersonV3")
             }
         }
     }
@@ -138,3 +145,6 @@ class PersonV3SikkerhetsbegrensningException(message: String?): Exception(messag
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 class PersonV3IkkeFunnetException(message: String) : RuntimeException(message)
+
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+class UgyldigIdentException(message: String, cause: Throwable? = null) : Exception(message, cause)

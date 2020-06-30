@@ -27,7 +27,7 @@ class PersonV3ServiceTest {
 
     @BeforeEach
     fun setup() {
-        stsClientConfig = mockk()
+        stsClientConfig = mockk(relaxed = true)
         personV3 = mockk()
 
         val pv3s = PersonV3Service(personV3, stsClientConfig)
@@ -92,5 +92,32 @@ class PersonV3ServiceTest {
         assertThrows(SOAPFaultException::class.java) {
             personV3Service.hentPerson(annenSoapIssueSubject)
         }
+    }
+
+    @Test
+    fun `Kaller hentPersonResponse med fodselsdato postfixa med 00000`() {
+        val fakeNorskIdent = "230383" + "00000"
+        val soapFaultOther = mock<SOAPFault>()
+        whenever(soapFaultOther.faultString).thenReturn("TPS svarte med FEIL, folgende status: S610006F og folgende melding: FNR/DNR IKKE ENTYDIG")
+
+        every { personV3.hentPerson(any()) } throws
+                SOAPFaultException(soapFaultOther)
+
+        assertThrows(UgyldigIdentException::class.java) {
+            personV3Service.hentPersonResponse(fakeNorskIdent)
+        }
+
+    }
+
+    @Test
+    fun `Kaller hentBruker med fodselsdato postfixa med 00000`() {
+        val fakeNorskIdent = "230383" + "00000"
+        val soapFaultOther = mock<SOAPFault>()
+        whenever(soapFaultOther.faultString).thenReturn("TPS svarte med FEIL, folgende status: S610006F og folgende melding: FNR/DNR IKKE ENTYDIG")
+
+        every { personV3.hentPerson(any()) } throws
+                SOAPFaultException(soapFaultOther)
+
+        assertNull(personV3Service.hentBruker(fakeNorskIdent))
     }
 }
