@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.IOException
 import javax.xml.soap.SOAPFault
 import javax.xml.ws.soap.SOAPFaultException
 
@@ -95,7 +96,7 @@ class PersonV3ServiceTest {
     }
 
     @Test
-    fun `Kaller hentPersonResponse med fodselsdato postfixa med 00000`() {
+    fun `hentPersonResponse med fodselsdato postfixa med 00000 gir UgyldigIdentException`() {
         val fakeNorskIdent = "230383" + "00000"
         val soapFaultOther = mock<SOAPFault>()
         whenever(soapFaultOther.faultString).thenReturn("TPS svarte med FEIL, folgende status: S610006F og folgende melding: FNR/DNR IKKE ENTYDIG")
@@ -106,7 +107,29 @@ class PersonV3ServiceTest {
         assertThrows(UgyldigIdentException::class.java) {
             personV3Service.hentPersonResponse(fakeNorskIdent)
         }
+    }
 
+    @Test
+    fun `hentPersonResponse ved SoapFaultException fra PersonV3 gir SoapFaultException`() {
+        val soapFaultOther = mock<SOAPFault>()
+        whenever(soapFaultOther.faultString).thenReturn("En eller annen fault")
+
+        every { personV3.hentPerson(any()) } throws
+                SOAPFaultException(soapFaultOther)
+
+        assertThrows(SOAPFaultException::class.java) {
+            personV3Service.hentPersonResponse("someident")
+        }
+    }
+
+    @Test
+    fun `hentPersonResponse ved annen Exception fra PersonV3 gir annen Exception`() {
+
+        every { personV3.hentPerson(any()) } throws IOException()
+
+        assertThrows(IOException::class.java) {
+            personV3Service.hentPersonResponse("someident")
+        }
     }
 
     @Test

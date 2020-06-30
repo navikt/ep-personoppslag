@@ -38,7 +38,7 @@ class PersonV3Service(
         hentPerson = metricsHelper.init("hentperson", alert = MetricsHelper.Toggle.OFF)
     }
 
-    @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class)
+    @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class, UgyldigIdentException::class)
     @Retryable(include = [SOAPFaultException::class])
     fun hentPersonResponse(fnr: String): HentPersonResponse {
         logger.info("Henter person fra PersonV3Service")
@@ -70,11 +70,11 @@ class PersonV3Service(
                     throw UgyldigIdentException("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller", soapFaultException)
                 } else {
                     logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${soapFaultException.message}", soapFaultException)
-                    throw PersonV3IkkeFunnetException("Ukjent feil ved PersonV3")
+                    throw soapFaultException
                 }
             } catch (ex: Exception) {
                 logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${ex.message}", ex)
-                throw PersonV3IkkeFunnetException("Ukjent feil ved PersonV3")
+                throw ex
             }
         }
     }
