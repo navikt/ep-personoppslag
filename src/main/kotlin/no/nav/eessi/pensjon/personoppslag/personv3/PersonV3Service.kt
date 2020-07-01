@@ -85,7 +85,7 @@ class PersonV3Service(
             val response = hentPersonResponse(fnr)
             return response.person as Bruker
         } catch (ex: Exception) {
-            logger.warn("Feil ved henting av Bruker fra TPS, sjekk ident? ($fnr)")
+            logger.warn("Feil ved henting av Bruker fra TPS, sjekk ident? ($fnr)", ex)
             return null
         }
 
