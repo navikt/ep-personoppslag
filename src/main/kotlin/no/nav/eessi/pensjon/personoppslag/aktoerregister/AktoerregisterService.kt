@@ -29,7 +29,7 @@ data class IdentinfoForAktoer(
 )
 
 @Service
-class AktoerregisterService(private val aktoerregisterOidcRestTemplate: RestTemplate,
+class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate,
                             @Value("\${NAIS_APP_NAME}") private val appName: String,
                             @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
 
@@ -115,7 +115,7 @@ class AktoerregisterService(private val aktoerregisterOidcRestTemplate: RestTemp
 
             val responseEntity: ResponseEntity<String>?
             return@measure try {
-                responseEntity = aktoerregisterOidcRestTemplate.exchange(uriBuilder.toUriString(),
+                responseEntity = aktoerregisterRestTemplate.exchange(uriBuilder.toUriString(),
                         HttpMethod.GET,
                         requestEntity,
                         String::class.java)
