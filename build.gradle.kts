@@ -102,7 +102,7 @@ publishing {
 repositories {
     mavenCentral()
 
-    listOf("ep-metrics", "ep-logging", "ep-security-sts").forEach{ repo ->
+    listOf("ep-metrics", "ep-logging", "ep-security-sts").forEach { repo ->
         val token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
         ?: throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
         maven {
@@ -113,7 +113,7 @@ repositories {
             }
         }
     }
-
+}
 
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
 jacoco {
