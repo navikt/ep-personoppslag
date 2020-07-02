@@ -100,11 +100,12 @@ publishing {
 }
 
 repositories {
-    listOf("ep-metrics", "ep-logging", "ep-security-sts").forEachIndexed { index,  repo ->
+    mavenCentral()
+
+    listOf("ep-metrics", "ep-logging", "ep-security-sts").forEach{ repo ->
         val token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
         ?: throw NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
         maven {
-            name = "g" + index
             url = uri("https://maven.pkg.github.com/navikt/$repo")
             credentials {
                 username = "token"
@@ -112,8 +113,7 @@ repositories {
             }
         }
     }
-    mavenCentral()
-}
+
 
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
 jacoco {
