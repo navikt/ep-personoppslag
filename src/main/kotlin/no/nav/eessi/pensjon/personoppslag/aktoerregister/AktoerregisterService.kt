@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.metrics.MetricsHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -28,6 +29,7 @@ data class IdentinfoForAktoer(
         val feilmelding: String?
 )
 
+@ConditionalOnBean(name=["aktoerregisterRestTemplate"])
 @Service
 class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate,
                             @Value("\${NAIS_APP_NAME}") private val appName: String,
