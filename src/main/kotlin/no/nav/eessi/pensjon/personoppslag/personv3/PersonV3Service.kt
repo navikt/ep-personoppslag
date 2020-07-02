@@ -93,14 +93,14 @@ class PersonV3Service(
 
 
     @Retryable(include = [SOAPFaultException::class])
-    fun hentPerson(fnr: String): Person? {
+    fun hentPerson(fnr: String): Bruker? {
         return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
 
             try {
                 logger.info("Kaller PersonV3.hentPerson service")
                 val resp = kallPersonV3(fnr)
-                resp.person as Person
+                resp.person as Bruker
             } catch (pif: HentPersonPersonIkkeFunnet) {
                 logger.warn("PersonV3: Kunne ikke hente person, ikke funnet", pif)
                 null
