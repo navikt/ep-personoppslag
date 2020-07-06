@@ -49,13 +49,6 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
     }
 
 
-    @Throws(AktoerregisterException::class, ManglerAktoerIdException::class)
-    fun hentPinForAktoer(aktorid: String?) = hentGjeldendeNorskIdentForAktorId(aktorid)
-
-    @Throws(AktoerregisterException::class, ManglerAktoerIdException::class)
-    fun hentAktoerForPin(fnr: String?) = hentGjeldendeAktorIdForNorskIdent(fnr)
-
-
     fun hentGjeldendeNorskIdentForAktorId(aktorid: String?): String {
         return AktoerNorskIdentForAktorId.measure {
             if (aktorid.isNullOrBlank()) throw ManglerAktoerIdException("Mangler AktoerId")
