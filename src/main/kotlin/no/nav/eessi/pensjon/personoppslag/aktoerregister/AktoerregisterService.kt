@@ -49,9 +49,9 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
     }
 
 
-    fun hentGjeldendeNorskIdentForAktorId(aktorid: String?): String {
+    fun hentGjeldendeNorskIdentForAktorId(aktorid: String): String {
         return AktoerNorskIdentForAktorId.measure {
-            if (aktorid.isNullOrBlank()) throw ManglerAktoerIdException("Mangler AktoerId")
+            if (aktorid.isBlank()) throw ManglerAktoerIdException("Mangler AktoerId")
 
             val response = doRequest(aktorid, "NorskIdent")
             validateResponse(aktorid, response)
@@ -60,9 +60,9 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         }
     }
 
-    fun hentGjeldendeAktorIdForNorskIdent(norskIdent: String?): String {
+    fun hentGjeldendeAktorIdForNorskIdent(norskIdent: String): String {
         return AktoerforNorskIdent.measure {
-            if (norskIdent.isNullOrBlank()) throw ManglerAktoerIdException("Mangler fnr/ident")
+            if (norskIdent.isBlank()) throw ManglerAktoerIdException("Mangler fnr/ident")
 
             val response = doRequest(norskIdent, "AktoerId")
             validateResponse(norskIdent, response)
