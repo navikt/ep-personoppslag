@@ -17,6 +17,7 @@ import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
 import javax.annotation.PostConstruct
+import javax.xml.ws.WebServiceException
 import javax.xml.ws.soap.SOAPFaultException
 
 /**
@@ -92,7 +93,7 @@ class PersonV3Service(
     }
 
 
-    @Retryable(include = [SOAPFaultException::class])
+    @Retryable(include = [SOAPFaultException::class, WebServiceException::class])
     fun hentPerson(fnr: String): Bruker? {
         return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
