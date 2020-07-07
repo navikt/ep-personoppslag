@@ -52,7 +52,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         AktoerregisterRequest = metricsHelper.init("AktoerregisterRequest", alert = MetricsHelper.Toggle.OFF)
     }
 
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.NorskIdent, AktoerId(aktorid))"))
+    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdentFraGruppe(IdentGruppe.NorskIdent, AktoerId(aktorid))"))
     fun hentGjeldendeNorskIdentForAktorId(aktorid: String): String {
         if (aktorid.isBlank()) {
             throw ManglerAktoerIdException("Tom input-verdi")
@@ -68,7 +68,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         }
     }
 
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(norskIdent))"))
+    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdentFraGruppe(IdentGruppe.AktoerId, NorskIdent(norskIdent))"))
     fun hentGjeldendeAktorIdForNorskIdent(norskIdent: String): String {
         if (norskIdent.isBlank()) {
             throw ManglerAktoerIdException("Tom input-verdi")
