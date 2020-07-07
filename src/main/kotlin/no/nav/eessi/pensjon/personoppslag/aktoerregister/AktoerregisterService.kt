@@ -148,11 +148,13 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
     }
 }
 
+@Deprecated("This should not be used by clients")
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 class AktoerregisterIkkeFunnetException(message: String?) : Exception(message)
 
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 class AktoerregisterException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
+@Deprecated("This should not be used by clients")
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 class ManglerAktoerIdException(message: String) : Exception(message)
