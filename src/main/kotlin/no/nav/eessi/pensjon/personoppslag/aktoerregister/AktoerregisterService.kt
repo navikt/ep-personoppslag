@@ -52,7 +52,37 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         AktoerregisterRequest = metricsHelper.init("AktoerregisterRequest", alert = MetricsHelper.Toggle.OFF)
     }
 
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdentFraGruppe(IdentGruppe.NorskIdent, AktoerId(aktorid))"))
+    @Throws(AktoerregisterException::class)
+    fun <T: IdentGruppe, R: IdentGruppe> hentGjeldendeIdent(identGruppeWanted: R, ident: Ident<T>): Ident<R>? =
+            this.AktoerregisterOppslag.measure {
+                val response = try {
+                    doRequest(ident.id, identGruppeWanted.text)
+                } catch (ex: Exception) {
+                    throw AktoerregisterException("Problem looking up ${identGruppeWanted} for $ident: ${ex.message}", ex)
+                }
+                val identInfo = response[ident.id]
+                if (identInfo == null) {
+                    logger.info("Ingen IdentInfo fra Aktoerregisteret funnet for $ident")
+                    return@measure null
+                }
+                if (identInfo.feilmelding != null) {
+                    throw AktoerregisterException(identInfo.feilmelding)
+                }
+                if (identInfo.identer.isNullOrEmpty()) {
+                    logger.info("Tom liste over Identer fra Aktoerregisteret for $ident")
+                    return@measure null
+                }
+                if (identInfo.identer.size > 1) {
+                    throw AktoerregisterException("Forventet 1 gjeldende ${identGruppeWanted}, fant ${identInfo.identer.size}")
+                }
+                val result = when (identGruppeWanted as IdentGruppe) {
+                    is IdentGruppe.NorskIdent -> NorskIdent(response[ident.id]?.identer!![0].ident) as Ident<R>
+                    is IdentGruppe.AktoerId -> AktoerId(response[ident.id]?.identer!![0].ident) as Ident<R>
+                }
+                result
+            }
+
+    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.NorskIdent, AktoerId(aktorid))"))
     fun hentGjeldendeNorskIdentForAktorId(aktorid: String): String {
         if (aktorid.isBlank()) {
             throw ManglerAktoerIdException("Tom input-verdi")
@@ -68,7 +98,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         }
     }
 
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdentFraGruppe(IdentGruppe.AktoerId, NorskIdent(norskIdent))"))
+    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(norskIdent))"))
     fun hentGjeldendeAktorIdForNorskIdent(norskIdent: String): String {
         if (norskIdent.isBlank()) {
             throw ManglerAktoerIdException("Tom input-verdi")
@@ -84,6 +114,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         }
     }
 
+    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(norskIdent))"))
     fun <T: IdentGruppe, R: IdentGruppe> hentGjeldendeIdentFraGruppe(identGruppeWanted: R, ident: Ident<T>): Result<Ident<R>, AktoerregisterException> =
             this.AktoerregisterOppslag.measure {
                 val response = try {
@@ -110,6 +141,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
                 }
                 Result.Found(result)
             }
+
 
     private data class Identinfo(
             val ident: String,
