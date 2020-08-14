@@ -84,7 +84,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         return runCatching {
                 hentGjeldendeIdent(IdentGruppe.NorskIdent, AktoerId(aktorid))
         }.fold({ ident ->
-            ident?.id ?: throw AktoerregisterIkkeFunnetException("AktoerId $aktorid ikke funnet.")
+            ident?.id ?: throw AktoerregisterIkkeFunnetException("NorskIdent for aktoerId $aktorid ikke funnet.")
         }, { exception ->
             logger.error("Aktørregister feiler med ${exception} cause: ${exception.cause}", exception)
             throw exception
@@ -99,7 +99,7 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
         return runCatching {
             hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(norskIdent))
         }.fold({ ident ->
-            ident?.id ?: throw AktoerregisterIkkeFunnetException("NorskIdent ikke funnet.")
+            ident?.id ?: throw AktoerregisterIkkeFunnetException("AktoerId for NorskIdent ikke funnet.")
         }, { exception ->
             logger.error("Aktørregister feiler med ${exception} cause: ${exception.cause}", exception)
             throw exception
