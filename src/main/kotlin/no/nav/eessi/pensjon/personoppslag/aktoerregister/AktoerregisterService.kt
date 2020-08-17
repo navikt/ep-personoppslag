@@ -76,36 +76,6 @@ class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate
                 result
             }
 
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.NorskIdent, AktoerId(aktorid))"))
-    fun hentGjeldendeNorskIdentForAktorId(aktorid: String): String {
-        if (aktorid.isBlank()) {
-            throw ManglerAktoerIdException("Tom input-verdi")
-        }
-        return runCatching {
-                hentGjeldendeIdent(IdentGruppe.NorskIdent, AktoerId(aktorid))
-        }.fold({ ident ->
-            ident?.id ?: throw AktoerregisterIkkeFunnetException("NorskIdent for aktoerId $aktorid ikke funnet.")
-        }, { exception ->
-            logger.error("Aktørregister feiler med ${exception} cause: ${exception.cause}", exception)
-            throw exception
-        })
-    }
-
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(norskIdent))"))
-    fun hentGjeldendeAktorIdForNorskIdent(norskIdent: String): String {
-        if (norskIdent.isBlank()) {
-            throw ManglerAktoerIdException("Tom input-verdi")
-        }
-        return runCatching {
-            hentGjeldendeIdent(IdentGruppe.AktoerId, NorskIdent(norskIdent))
-        }.fold({ ident ->
-            ident?.id ?: throw AktoerregisterIkkeFunnetException("AktoerId for NorskIdent ikke funnet.")
-        }, { exception ->
-            logger.error("Aktørregister feiler med ${exception} cause: ${exception.cause}", exception)
-            throw exception
-        })
-    }
-
     private data class Identinfo(
             val ident: String,
             val identgruppe: String,
