@@ -6,7 +6,10 @@ import no.nav.eessi.pensjon.security.sts.STSClientConfig
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse
 import org.slf4j.Logger
@@ -108,6 +111,9 @@ class PersonV3Service(
             } catch (sfe: SOAPFaultException) {
                 if (sfe.fault.faultString.contains("F002001F")) {
                     logger.warn("PersonV3: Kunne ikke hente person, ugyldig input", sfe)
+                    null
+                } else if (sfe.message != null && sfe.message!!.contains("S610006F")) { //https://confluence.adeo.no/x/rYJ4Bw
+                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '$fnr' - $sfe")
                     null
                 } else {
                     logger.error("PersonV3: Ukjent SoapFaultException", sfe)
