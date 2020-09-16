@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.personv3
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.security.sts.STSClientConfig
@@ -87,7 +88,11 @@ class PersonV3Service(
 
         return try {
             val response = hentPersonResponse(fnr)
-            logger.debug(response.toString())
+
+            logger.debug(jacksonObjectMapper()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(response.person))
+
             response.person as Bruker
         } catch (ex: Exception) {
             logger.warn("Feil ved henting av Bruker fra TPS, sjekk ident? ($fnr)", ex)
