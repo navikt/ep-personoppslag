@@ -85,12 +85,13 @@ class PersonV3Service(
 
     fun hentBruker(fnr: String): Bruker? {
 
-        try {
+        return try {
             val response = hentPersonResponse(fnr)
-            return response.person as Bruker
+            logger.debug(response.toString())
+            response.person as Bruker
         } catch (ex: Exception) {
             logger.warn("Feil ved henting av Bruker fra TPS, sjekk ident? ($fnr)", ex)
-            return null
+            null
         }
 
     }
