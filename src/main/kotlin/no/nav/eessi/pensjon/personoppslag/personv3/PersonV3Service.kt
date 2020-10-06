@@ -71,17 +71,24 @@ class PersonV3Service(
                 throw PersonV3SikkerhetsbegrensningException(personSikkerhetsbegrensning.message!!)
             } catch (soapFaultException: SOAPFaultException) {
                 if (soapFaultException.message != null && soapFaultException.message!!.contains("S610006F")) { //https://confluence.adeo.no/x/rYJ4Bw
-                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '$fnr' - $soapFaultException")
+                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '${maskerFnr(fnr)}' - $soapFaultException")
                     throw UgyldigIdentException("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller", soapFaultException)
                 } else {
-                    logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${soapFaultException.message}", soapFaultException)
+                    logger.error("Ukjent feil i PersonV3: fnr: ${maskerFnr(fnr)}, ${soapFaultException.message}", soapFaultException)
                     throw soapFaultException
                 }
             } catch (ex: Exception) {
-                logger.error("Ukjent feil i PersonV3: fnr: $fnr, ${ex.message}", ex)
+                logger.error("Ukjent feil i PersonV3: fnr: ${maskerFnr(fnr)}, ${ex.message}", ex)
                 throw ex
             }
         }
+    }
+
+    fun maskerFnr(fnr: String): String{
+        if(fnr.length == 11){
+            return fnr.replaceRange(6, 10, "*")
+        }
+        return fnr
     }
 
     fun hentBruker(fnr: String): Bruker? {
@@ -119,7 +126,7 @@ class PersonV3Service(
                     logger.warn("PersonV3: Kunne ikke hente person, ugyldig input", sfe)
                     null
                 } else if (sfe.message != null && sfe.message!!.contains("S610006F")) { //https://confluence.adeo.no/x/rYJ4Bw
-                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '$fnr' - $sfe")
+                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '${maskerFnr(fnr)}' - $sfe")
                     null
                 } else {
                     logger.error("PersonV3: Ukjent SoapFaultException", sfe)
