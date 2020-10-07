@@ -143,4 +143,10 @@ class PersonV3ServiceTest {
 
         assertNull(personV3Service.hentBruker(fakeNorskIdent))
     }
+
+    @Test
+    fun `Maskerer fnr med * når fnr er 11 siffer og uten 00000, eller ignorerer denne om den har en avsluttende 00000`(){
+        assert(personV3Service.maskerFnr("12345678912") == "123456*****")
+        assert(personV3Service.maskerFnr("12345600000") == "12345600000")
+    }
 }

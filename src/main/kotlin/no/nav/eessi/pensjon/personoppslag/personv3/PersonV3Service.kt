@@ -85,8 +85,8 @@ class PersonV3Service(
     }
 
     fun maskerFnr(fnr: String): String{
-        if(fnr.length == 11){
-            return fnr.replaceRange(6, 10, "*")
+        if(fnr.length == 11 && !fnr.contains("00000") ){
+            return fnr.replaceRange(6, 11, "*****")
         }
         return fnr
     }
