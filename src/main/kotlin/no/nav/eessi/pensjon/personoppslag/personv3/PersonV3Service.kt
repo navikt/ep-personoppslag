@@ -44,7 +44,7 @@ class PersonV3Service(
     }
 
     @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class, UgyldigIdentException::class)
-    @Retryable(include = [SOAPFaultException::class])
+    @Retryable(include = [SOAPFaultException::class, WebServiceException::class])
     fun hentPersonResponse(fnr: String): HentPersonResponse {
         logger.info("Henter person fra PersonV3Service")
         stsClientConfig.configureRequestSamlToken(service)
@@ -102,7 +102,7 @@ class PersonV3Service(
 
             response.person as Bruker
         } catch (ex: Exception) {
-            logger.warn("Feil ved henting av Bruker fra TPS, sjekk ident? ($fnr)", ex)
+            logger.warn("Feil ved henting av Bruker fra TPS, sjekk ident? (${maskerFnr(fnr)})", ex)
             null
         }
 
@@ -126,7 +126,7 @@ class PersonV3Service(
                     logger.warn("PersonV3: Kunne ikke hente person, ugyldig input", sfe)
                     null
                 } else if (sfe.message != null && sfe.message!!.contains("S610006F")) { //https://confluence.adeo.no/x/rYJ4Bw
-                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '${maskerFnr(fnr)}' - $sfe")
+                    logger.warn("TPS rapporterer S610006F, trolig fodelsdato postfixet med nuller: '${maskerFnr(fnr)}'", sfe)
                     null
                 } else {
                     logger.error("PersonV3: Ukjent SoapFaultException", sfe)
