@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.io.IOException
 import javax.annotation.PostConstruct
 import javax.xml.ws.WebServiceException
 import javax.xml.ws.soap.SOAPFaultException
@@ -44,7 +45,7 @@ class PersonV3Service(
     }
 
     @Throws(PersonV3IkkeFunnetException::class, PersonV3SikkerhetsbegrensningException::class, UgyldigIdentException::class)
-    @Retryable(include = [SOAPFaultException::class, WebServiceException::class])
+    @Retryable(include = [SOAPFaultException::class, WebServiceException::class, IOException::class])
     fun hentPersonResponse(fnr: String): HentPersonResponse {
         logger.info("Henter person fra PersonV3Service")
         stsClientConfig.configureRequestSamlToken(service)
@@ -109,7 +110,7 @@ class PersonV3Service(
     }
 
 
-    @Retryable(include = [SOAPFaultException::class, WebServiceException::class])
+    @Retryable(include = [SOAPFaultException::class, WebServiceException::class, IOException::class])
     fun hentPerson(fnr: String): Bruker? {
         return hentPerson.measure {
             logger.info("Henter person fra PersonV3Service")
