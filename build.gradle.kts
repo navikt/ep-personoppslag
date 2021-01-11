@@ -46,7 +46,6 @@ dependencies {
 
     // Spring
     implementation("org.springframework:spring-web:$springVersion")
-//    implementation("org.springframework:spring-context:$springVersion")
     implementation("org.springframework.retry:spring-retry:1.3.0")
 
     implementation("javax.servlet:javax.servlet-api:4.0.1")
@@ -70,7 +69,6 @@ dependencies {
     //Mock
     testImplementation("org.mockito:mockito-junit-jupiter:3.3.3")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-
 }
 
 // https://github.com/researchgate/gradle-release
