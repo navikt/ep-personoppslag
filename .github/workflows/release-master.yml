@@ -15,11 +15,11 @@ jobs:
       run: git config user.email "${{ github.actor }}@users.noreply.github.com" && git config user.name "Github Actions"
       
     - name: capture version number for release
-      run: echo "::set-env name=VERSION::$(grep -v '^#' gradle.properties | grep 'version=' | cut -d '=' -f2 | xargs)"
+      run: echo "VERSION=$(grep -v '^#' gradle.properties | grep 'version=' | cut -d '=' -f2 | xargs)" >> $GITHUB_ENV
 
      # JAVA 11
     - name: 'Java 11'
-      uses: actions/setup-java@v1.3.0
+      uses: actions/setup-java@v1.4.3
       with:
         java-version: 11
 
