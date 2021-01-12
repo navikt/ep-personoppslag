@@ -6,7 +6,7 @@ import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.web.client.RestTemplate
+import org.springframework.boot.web.client.RestTemplateBuilder
 
 @Disabled
 internal class PersonServiceIntegrationTest {
@@ -20,16 +20,16 @@ internal class PersonServiceIntegrationTest {
         } returns ""
     }
 
+    private val mockClient = PdlConfiguration(mockStsService)
+            .pdlRestTemplate(RestTemplateBuilder())
+
     /**
      * Use local port forwarding using kubectl and nais
      *
      * Example: kubectl port-forward svc/pdl-api 8089:80
      */
     private val service = PersonService(
-            PersonClient(
-                    RestTemplate(),
-                    "http://localhost:8089/graphql"
-            ),
+            PersonClient(mockClient, "http://localhost:8089/graphql"),
             mockStsService
     )
 

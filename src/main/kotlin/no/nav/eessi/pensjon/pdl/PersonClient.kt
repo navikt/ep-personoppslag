@@ -2,16 +2,13 @@ package no.nav.eessi.pensjon.pdl
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.postForObject
 
 @Component
-class PersonClient(
-        private val restTemplate: RestTemplate,
-        @Value("\${PDL_URL}") private val pdlUrl: String
-) {
+class PersonClient(private val pdlRestTemplate: RestTemplate,
+                   @Value("\${PDL_URL}") private val url: String) {
 
     /**
      * Oppretter GraphQL Query for uthentig av person
@@ -23,9 +20,9 @@ class PersonClient(
     fun hentPerson(ident: String, token: String): PersonResponse {
         val query = getGraphqlResource("/graphql/hentPerson.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = createRequestEntity(request, token)
+        val entity = HttpEntity(request)
 
-        return restTemplate.postForObject(pdlUrl, entity, PersonResponse::class)
+        return pdlRestTemplate.postForObject(url, entity, PersonResponse::class)
     }
 
     /**
@@ -39,9 +36,9 @@ class PersonClient(
     fun hentIdenter(ident: String, token: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentIdenter.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = createRequestEntity(request, token)
+        val entity = HttpEntity(request)
 
-        return restTemplate.postForObject(pdlUrl, entity, IdenterResponse::class)
+        return pdlRestTemplate.postForObject(url, entity, IdenterResponse::class)
     }
 
     /**
@@ -54,19 +51,9 @@ class PersonClient(
     fun hentGeografiskTilknytning(ident: String, token: String): GeografiskTilknytningResponse {
         val query = getGraphqlResource("/graphql/hentGeografiskTilknytning.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = createRequestEntity(request, token)
+        val entity = HttpEntity(request)
 
-        return restTemplate.postForObject(pdlUrl, entity, GeografiskTilknytningResponse::class)
-    }
-
-    private fun createRequestEntity(request: GraphqlRequest, token: String): HttpEntity<Any> {
-        val headers = HttpHeaders()
-        headers[HttpHeaders.CONTENT_TYPE] = "application/json"
-        headers[HttpHeaders.AUTHORIZATION] = "Bearer $token"
-        headers["Nav-Consumer-Token"] = "Bearer $token"
-        headers["Tema"] = "PEN"
-
-        return HttpEntity(request, headers)
+        return pdlRestTemplate.postForObject(url, entity, GeografiskTilknytningResponse::class)
     }
 
     private fun getGraphqlResource(file: String): String =
