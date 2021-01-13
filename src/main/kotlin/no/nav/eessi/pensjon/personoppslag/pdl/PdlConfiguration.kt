@@ -32,7 +32,7 @@ class PdlConfiguration(private val securityTokenExchangeService: STSService) {
 }
 
 // TODO: Støtte bruker- OG system-token
-class PdlTokenInterceptor(private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
+internal class PdlTokenInterceptor(private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
 
     override fun intercept(request: HttpRequest,
                            body: ByteArray,

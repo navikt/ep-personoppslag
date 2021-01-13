@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
@@ -77,12 +78,12 @@ class PersonService(private val client: PersonClient) {
     /**
      * Funksjon for å hente ut alle identer til en person.
      *
-     * @param fnr: Fødselsnummeret til personen man vil hente ut identer for.
+     * @param ident: Identen (fnr, dnr, eller aktorid) til personen man vil hente ut identer for.
      *
      * @return Liste med [IdentInformasjon]
      */
-    fun hentIdenter(fnr: String): List<IdentInformasjon> {
-        val response = client.hentIdenter(fnr)
+    fun hentIdenter(ident: String): List<IdentInformasjon> {
+        val response = client.hentIdenter(ident)
 
         if (!response.errors.isNullOrEmpty()) {
             val errorMsg = response.errors.joinToString { it.message ?: "" }

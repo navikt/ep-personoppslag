@@ -1,13 +1,11 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
-import no.nav.eessi.pensjon.personoppslag.pdl.ResponseError
-
-data class IdenterResponse(
+internal data class IdenterResponse(
         val data: IdenterDataResponse?,
         val errors: List<ResponseError>? = null
 )
 
-data class IdenterDataResponse(
+internal data class IdenterDataResponse(
         val hentIdenter: HentIdenter
 )
 

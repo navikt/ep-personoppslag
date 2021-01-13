@@ -1,7 +1,19 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
+internal data class PersonResponse(
+        val data: HentPerson?,
+        val errors: List<ResponseError>? = null
+)
+
+internal data class HentPerson(
+        @JsonProperty("hentPerson")
+        val pdlPerson: PdlPerson?
+)
+
 /**
- * Make internal and create externally used object
+ * TODO: Make internal and create externally used object
  */
 data class PdlPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>?,
