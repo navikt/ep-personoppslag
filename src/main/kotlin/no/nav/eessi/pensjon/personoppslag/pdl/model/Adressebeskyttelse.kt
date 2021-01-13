@@ -1,13 +1,11 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
-import no.nav.eessi.pensjon.personoppslag.pdl.ResponseError
-
-data class AdressebeskyttelseResponse(
+internal data class AdressebeskyttelseResponse(
         val data: HentAdressebeskyttelse?,
         val errors: List<ResponseError>? = null
 )
 
-data class HentAdressebeskyttelse(
+internal data class HentAdressebeskyttelse(
         val hentPersonBolk: List<AdressebeskyttelseBolkPerson>?
 )
 

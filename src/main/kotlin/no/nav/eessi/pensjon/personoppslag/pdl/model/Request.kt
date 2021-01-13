@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.personoppslag.pdl
+package no.nav.eessi.pensjon.personoppslag.pdl.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude

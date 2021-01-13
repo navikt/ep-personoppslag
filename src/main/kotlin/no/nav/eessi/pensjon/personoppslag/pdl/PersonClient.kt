@@ -1,7 +1,11 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GraphqlRequest
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Variables
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.stereotype.Component
@@ -19,7 +23,7 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
      *
      * @return GraphQL-objekt [PersonResponse] som inneholder data eller error.
      */
-    fun hentPerson(ident: String): PersonResponse {
+    internal fun hentPerson(ident: String): PersonResponse {
         val query = getGraphqlResource("/graphql/hentPerson.graphql")
         val request = GraphqlRequest(query, Variables(ident))
         val entity = HttpEntity(request)
@@ -34,7 +38,7 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
      *
      * @return GraphQL-objekt [PersonResponse] som inneholder data eller error.
      */
-    fun hentAdressebeskyttelse(identer: List<String>): AdressebeskyttelseResponse {
+    internal fun hentAdressebeskyttelse(identer: List<String>): AdressebeskyttelseResponse {
         val query = getGraphqlResource("/graphql/hentAdressebeskyttelse.graphql")
         val request = GraphqlRequest(query, Variables(identer = identer))
         val entity = HttpEntity(request)
@@ -49,7 +53,7 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
      *
      * @return GraphQL-objekt [IdenterResponse] som inneholder data eller error.
      */
-    fun hentAktorId(ident: String): IdenterResponse {
+    internal fun hentAktorId(ident: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentAktorId.graphql")
         val request = GraphqlRequest(query, Variables(ident))
         val entity = HttpEntity(request)
@@ -65,7 +69,7 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
      *
      * @return GraphQL-objekt [IdenterResponse] som inneholder data eller error.
      */
-    fun hentIdenter(ident: String): IdenterResponse {
+    internal fun hentIdenter(ident: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentIdenter.graphql")
         val request = GraphqlRequest(query, Variables(ident))
         val entity = HttpEntity(request)
@@ -80,7 +84,7 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
      *
      * @return GraphQL-objekt [GeografiskTilknytningResponse] som inneholder data eller error.
      */
-    fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningResponse {
+    internal fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningResponse {
         val query = getGraphqlResource("/graphql/hentGeografiskTilknytning.graphql")
         val request = GraphqlRequest(query, Variables(ident))
         val entity = HttpEntity(request)
