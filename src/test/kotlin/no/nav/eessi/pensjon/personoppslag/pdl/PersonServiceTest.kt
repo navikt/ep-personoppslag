@@ -10,14 +10,18 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppen
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
+import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -77,7 +81,7 @@ internal class PersonServiceTest {
 
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
 
-        val resultat = service.hentIdenter("12345")
+        val resultat = service.hentIdenter(NorskIdent("12345"))
 
         assertEquals(3, resultat.size)
     }
@@ -98,29 +102,45 @@ internal class PersonServiceTest {
     }
 
     @Test
-    fun hentNorskIdent() {
+    fun hentIdent() {
         val identer = listOf(
-            IdentInformasjon("1", IdentGruppe.AKTORID, false),
-            IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT, false),
-            IdentInformasjon("3", IdentGruppe.NPID, false)
+                IdentInformasjon("1", IdentGruppe.AKTORID, false),
+                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT, false),
+                IdentInformasjon("3", IdentGruppe.NPID, false)
         )
 
-        every { client.hentAktorId(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
 
-        val fnr = service.hentGjeldendeIdent (IdentGruppen.NorskIdent, AktoerId("1"))?.id
-        assertEquals("2", fnr)
+        // Hente ut NorskIdent med AktørID
+        val norskIdentFraAktorId = service.hentIdent(IdentType.NorskIdent, AktoerId("1"))?.id
+        assertEquals("2", norskIdentFraAktorId)
 
-        val aktoer = service.hentGjeldendeIdent (IdentGruppen.AktoerId, NorskIdent("2"))?.id
-        assertEquals("1", aktoer)
+        // Hente ut NPID med AktørID
+        val npidFraAktorId = service.hentIdent(IdentType.Npid, AktoerId("1"))?.id
+        assertEquals("3", npidFraAktorId)
 
+        // Hente ut AktørID med NorskIdent
+        val aktoeridFraNorskIdent = service.hentIdent(IdentType.AktoerId, NorskIdent("2"))?.id
+        assertEquals("1", aktoeridFraNorskIdent)
+
+        // Hente ut NPID med NorskIdent
+        val npidFraNorskIdent = service.hentIdent(IdentType.Npid, NorskIdent("2"))?.id
+        assertEquals("3", npidFraNorskIdent)
+
+        // Hente ut AktørID med Npid
+        val aktoeridFraNpid = service.hentIdent(IdentType.AktoerId, Npid("2"))?.id
+        assertEquals("1", aktoeridFraNpid)
+
+        // Hente ut NorskIdent med Npid
+        val norskIdentFraNpid = service.hentIdent(IdentType.NorskIdent, Npid("2"))?.id
+        assertEquals("2", norskIdentFraNpid)
     }
-
 
     @Test
     fun hentAktorId_graphqlErrorThrowsException() {
         val errors = listOf(ResponseError(message = "unauthorized"))
 
-        every { client.hentIdenter(any()) } returns IdenterResponse(data = null, errors = errors)
+        every { client.hentAktorId(any()) } returns IdenterResponse(data = null, errors = errors)
 
         assertThrows<Exception> {
             service.hentAktorId("12345")
