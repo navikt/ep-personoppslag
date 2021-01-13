@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.pdl
+package no.nav.eessi.pensjon.personoppslag.pdl
 
 data class GeografiskTilknytning(
         val gtType: String,

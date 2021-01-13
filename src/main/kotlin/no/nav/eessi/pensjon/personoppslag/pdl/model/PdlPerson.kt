@@ -1,24 +1,14 @@
-package no.nav.eessi.pensjon.pdl
+package no.nav.eessi.pensjon.personoppslag.pdl.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
+/**
+ * Make internal and create externally used object
+ */
 data class PdlPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>?,
         val navn: List<Navn>?,
         val statsborgerskap: List<Statsborgerskap>?,
         val foedsel: List<Foedsel>?
 )
-
-data class Adressebeskyttelse(
-        val gradering: AdressebeskyttelseGradering
-)
-
-enum class AdressebeskyttelseGradering {
-    STRENGT_FORTROLIG_UTLAND,
-    STRENGT_FORTROLIG,
-    FORTROLIG,
-    UGRADERT
-}
 
 data class Navn(
         val fornavn: String,

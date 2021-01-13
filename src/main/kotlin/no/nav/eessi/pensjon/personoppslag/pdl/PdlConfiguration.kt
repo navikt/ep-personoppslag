@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.pdl
+package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
@@ -41,9 +41,13 @@ class PdlTokenInterceptor(private val securityTokenExchangeService: STSService) 
         val token = securityTokenExchangeService.getSystemOidcToken()
 
         request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
-        request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $token"
-        request.headers["Nav-Consumer-Token"] = "Bearer $token"
         request.headers["Tema"] = "PEN"
+
+        // [Borger, Saksbehandler eller System]
+        request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $token"
+
+        // [System]
+        request.headers["Nav-Consumer-Token"] = "Bearer $token"
 
         return execution.execute(request, body)
     }

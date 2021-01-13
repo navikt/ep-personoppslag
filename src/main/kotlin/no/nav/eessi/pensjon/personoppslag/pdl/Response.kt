@@ -1,6 +1,7 @@
-package no.nav.eessi.pensjon.pdl
+package no.nav.eessi.pensjon.personoppslag.pdl
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
 
 data class PersonResponse(
         val data: HentPerson?,
@@ -20,16 +21,6 @@ data class GeografiskTilknytningResponse(
 data class HentGeografiskTilknytning(
         @JsonProperty("hentGeografiskTilknytning")
         val geografiskTilknytning: GeografiskTilknytning?
-)
-
-data class IdenterResponse(
-        val data: HentIdenter?,
-        val errors: List<ResponseError>? = null
-)
-
-data class HentIdenter(
-        @JsonProperty("hentIdenter")
-        val identer: List<IdentInformasjon>
 )
 
 
