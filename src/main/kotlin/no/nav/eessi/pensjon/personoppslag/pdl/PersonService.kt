@@ -1,9 +1,14 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -76,14 +81,35 @@ class PersonService(private val client: PersonClient) {
     }
 
     /**
+     * Funksjon for å hente ut gjeldende [Ident]
+     *
+     * @param identTypeWanted: Hvilken [IdentType] man vil hente ut.
+     * @param ident: Identen til personen man vil hente ut annen ident for.
+     *
+     * @return [Ident] av valgt [IdentType]
+     */
+    fun <T : IdentType, R : IdentType> hentIdent(identTypeWanted: R, ident: Ident<T>): Ident<R>? {
+        val result = hentIdenter(ident)
+                .firstOrNull { it.gruppe == identTypeWanted.gruppe }
+                ?.ident ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
+
+        @Suppress("USELESS_CAST", "UNCHECKED_CAST")
+        return when (identTypeWanted as IdentType) {
+            is IdentType.NorskIdent -> NorskIdent(result) as Ident<R>
+            is IdentType.AktoerId -> AktoerId(result) as Ident<R>
+            is IdentType.Npid -> Npid(result) as Ident<R>
+        }
+    }
+
+    /**
      * Funksjon for å hente ut alle identer til en person.
      *
-     * @param ident: Identen (fnr, dnr, eller aktorid) til personen man vil hente ut identer for.
+     * @param ident: Identen til personen man vil hente ut identer for. Bruk [NorskIdent], [AktoerId], eller [Npid]
      *
      * @return Liste med [IdentInformasjon]
      */
-    fun hentIdenter(ident: String): List<IdentInformasjon> {
-        val response = client.hentIdenter(ident)
+    fun <T : IdentType> hentIdenter(ident: Ident<T>): List<IdentInformasjon> {
+        val response = client.hentIdenter(ident.id)
 
         if (!response.errors.isNullOrEmpty()) {
             val errorMsg = response.errors.joinToString { it.message ?: "" }
