@@ -1,8 +1,12 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppen
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
+import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -72,6 +76,29 @@ class PersonService(private val client: PersonClient) {
                 ?.firstOrNull { it.gruppe == IdentGruppe.AKTORID }
                 ?.ident
                 ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
+    }
+
+    fun <T: IdentGruppen, R: IdentGruppen> hentGjeldendeIdent(identGruppeWanted: R, ident: Ident<T>): Ident<R>? {
+        val response = client.hentAktorId(ident.id)
+
+        if (!response.errors.isNullOrEmpty()) {
+            val errorMsg = response.errors.joinToString { it.message ?: "" }
+            throw Exception(errorMsg)
+        }
+
+        val result = when (identGruppeWanted as IdentGruppen) {
+            is IdentGruppen.NorskIdent -> {
+                val norskident = response.data?.hentIdenter?.identer
+                    ?.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }
+                    ?.ident ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
+                NorskIdent( norskident ) as Ident<R> }
+            is IdentGruppen.AktoerId -> {
+                val aktoer = response.data?.hentIdenter?.identer
+                    ?.firstOrNull { it.gruppe == IdentGruppe.AKTORID }
+                    ?.ident ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
+                AktoerId( aktoer ) as Ident<R> }
+        }
+        return result
     }
 
     /**

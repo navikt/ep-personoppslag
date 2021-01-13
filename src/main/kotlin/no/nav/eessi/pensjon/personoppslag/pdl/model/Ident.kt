@@ -26,3 +26,15 @@ enum class IdentGruppe {
     FOLKEREGISTERIDENT,
     NPID
 }
+
+sealed class IdentGruppen(val text: String) {
+    override fun toString() = text
+    object AktoerId : IdentGruppen("AKTORID")
+    object NorskIdent : IdentGruppen("FOLKEREGISTERIDENT")
+}
+
+sealed class Ident<T: IdentGruppen> {
+    abstract val id: String
+}
+data class AktoerId(override val id: String) : Ident<IdentGruppen.AktoerId>()
+data class NorskIdent(override val id: String) : Ident<IdentGruppen.NorskIdent>()

@@ -7,13 +7,16 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseBolkPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelsePerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppen
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
+import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -93,6 +96,25 @@ internal class PersonServiceTest {
 
         assertEquals("1", aktorId)
     }
+
+    @Test
+    fun hentNorskIdent() {
+        val identer = listOf(
+            IdentInformasjon("1", IdentGruppe.AKTORID, false),
+            IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT, false),
+            IdentInformasjon("3", IdentGruppe.NPID, false)
+        )
+
+        every { client.hentAktorId(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
+
+        val fnr = service.hentGjeldendeIdent (IdentGruppen.NorskIdent, AktoerId("1"))?.id
+        assertEquals("2", fnr)
+
+        val aktoer = service.hentGjeldendeIdent (IdentGruppen.AktoerId, NorskIdent("2"))?.id
+        assertEquals("1", aktoer)
+
+    }
+
 
     @Test
     fun hentAktorId_graphqlErrorThrowsException() {
