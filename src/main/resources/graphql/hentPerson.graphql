@@ -25,9 +25,6 @@ query($ident: ID!) {
                 landkode
             }
         }
-        folkeregisteridentifikator(historikk: false) {
-            identifikasjonsnummer
-        }
         navn(historikk: false) {
             fornavn
             mellomnavn
@@ -43,9 +40,6 @@ query($ident: ID!) {
             folkeregistermetadata {
                 gyldighetstidspunkt
             }
-        }
-        doedsfall {
-            doedsdato
         }
     }
 }

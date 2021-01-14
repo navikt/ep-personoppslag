@@ -18,7 +18,6 @@ internal data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
         val bostedsadresse: List<Bostedsadresse>,
         val oppholdsadresse: List<Oppholdsadresse>,
-        val folkeregisteridentifikator: List<Folkeregisteridentifikator>,
         val navn: List<Navn>,
         val statsborgerskap: List<Statsborgerskap>,
         val foedsel: List<Foedsel>
@@ -31,7 +30,8 @@ data class Person(
         val bostedsadresse: Bostedsadresse?,
         val oppholdsadresse: Oppholdsadresse?,
         val statsborgerskap: List<Statsborgerskap>?,
-        val foedsel: Foedsel?
+        val foedsel: Foedsel?,
+        val geografiskTilknytning: GeografiskTilknytning?
 )
 
 data class Folkeregisteridentifikator(

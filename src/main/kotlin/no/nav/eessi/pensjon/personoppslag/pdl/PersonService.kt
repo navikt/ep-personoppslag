@@ -42,6 +42,7 @@ class PersonService(private val client: PersonClient) {
 
     private fun <T : IdentType> konverterTilPerson(ident: Ident<T>, pdlPerson: HentPerson): Person {
         val identer = hentIdenter(ident)
+        val geografiskTilknytning = hentGeografiskTilknytning(ident)
 
         val navn = pdlPerson.navn.singleOrNull()
 
@@ -57,8 +58,13 @@ class PersonService(private val client: PersonClient) {
                 .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
                 .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
-        val bostedsadresse = pdlPerson.bostedsadresse.maxBy { it.gyldigFraOgMed }
-        val oppholdsadresse = pdlPerson.oppholdsadresse.maxBy { it.gyldigFraOgMed }
+        val bostedsadresse = pdlPerson.bostedsadresse
+                .filterNot { it.gyldigFraOgMed == null }
+                .maxBy { it.gyldigFraOgMed!! }
+
+        val oppholdsadresse = pdlPerson.oppholdsadresse
+                .filterNot { it.gyldigFraOgMed == null }
+                .maxBy { it.gyldigFraOgMed!! }
 
         return Person(
                 identer,
@@ -67,7 +73,8 @@ class PersonService(private val client: PersonClient) {
                 bostedsadresse,
                 oppholdsadresse,
                 statsborgerskap,
-                foedsel
+                foedsel,
+                geografiskTilknytning
         )
     }
 

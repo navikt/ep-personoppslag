@@ -8,7 +8,12 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelsePerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregisteridentifikator
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponseData
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GtType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
@@ -36,17 +41,24 @@ internal class PersonServiceTest {
     @Test
     fun hentPerson() {
         val pdlPerson = HentPerson(
-                adressebeskyttelse = emptyList(),
+                adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
                 bostedsadresse = emptyList(),
                 oppholdsadresse = emptyList(),
-                folkeregisteridentifikator = emptyList(),
                 navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
                 statsborgerskap = emptyList(),
                 foedsel = emptyList()
         )
 
+        val identer = listOf(
+                IdentInformasjon("25078521492", IdentGruppe.FOLKEREGISTERIDENT),
+                IdentInformasjon("100000000000053", IdentGruppe.AKTORID)
+        )
+
+        val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
+
         every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(pdlPerson))
-        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
 
         val resultat = service.hentPerson(NorskIdent("12345"))
 
@@ -54,6 +66,11 @@ internal class PersonServiceTest {
         assertEquals("Fornavn", navn.fornavn)
         assertEquals("Mellomnavn", navn.mellomnavn)
         assertEquals("Etternavn", navn.etternavn)
+
+        assertEquals(gt, resultat.geografiskTilknytning)
+
+        assertEquals(1, resultat.adressebeskyttelse!!.size)
+        assertEquals(2, resultat.identer.size)
     }
 
     @Test
@@ -116,28 +133,28 @@ internal class PersonServiceTest {
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
 
         // Hente ut NorskIdent med AktørID
-        val norskIdentFraAktorId = service.hentIdent(IdentType.NorskIdent, AktoerId("1"))?.id
-        assertEquals("2", norskIdentFraAktorId)
+        val norskIdentFraAktorId = service.hentIdent(IdentType.NorskIdent, AktoerId("1"))
+        assertEquals("2", norskIdentFraAktorId.id)
 
         // Hente ut NPID med AktørID
-        val npidFraAktorId = service.hentIdent(IdentType.Npid, AktoerId("1"))?.id
-        assertEquals("3", npidFraAktorId)
+        val npidFraAktorId = service.hentIdent(IdentType.Npid, AktoerId("1"))
+        assertEquals("3", npidFraAktorId.id)
 
         // Hente ut AktørID med NorskIdent
-        val aktoeridFraNorskIdent = service.hentIdent(IdentType.AktoerId, NorskIdent("2"))?.id
-        assertEquals("1", aktoeridFraNorskIdent)
+        val aktoeridFraNorskIdent = service.hentIdent(IdentType.AktoerId, NorskIdent("2"))
+        assertEquals("1", aktoeridFraNorskIdent.id)
 
         // Hente ut NPID med NorskIdent
-        val npidFraNorskIdent = service.hentIdent(IdentType.Npid, NorskIdent("2"))?.id
-        assertEquals("3", npidFraNorskIdent)
+        val npidFraNorskIdent = service.hentIdent(IdentType.Npid, NorskIdent("2"))
+        assertEquals("3", npidFraNorskIdent.id)
 
         // Hente ut AktørID med Npid
-        val aktoeridFraNpid = service.hentIdent(IdentType.AktoerId, Npid("2"))?.id
-        assertEquals("1", aktoeridFraNpid)
+        val aktoeridFraNpid = service.hentIdent(IdentType.AktoerId, Npid("2"))
+        assertEquals("1", aktoeridFraNpid.id)
 
         // Hente ut NorskIdent med Npid
-        val norskIdentFraNpid = service.hentIdent(IdentType.NorskIdent, Npid("2"))?.id
-        assertEquals("2", norskIdentFraNpid)
+        val norskIdentFraNpid = service.hentIdent(IdentType.NorskIdent, Npid("2"))
+        assertEquals("2", norskIdentFraNpid.id)
     }
 
     @Test

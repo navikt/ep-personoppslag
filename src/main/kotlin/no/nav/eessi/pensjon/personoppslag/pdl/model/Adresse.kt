@@ -3,8 +3,8 @@ package no.nav.eessi.pensjon.personoppslag.pdl.model
 import java.time.LocalDateTime
 
 data class Bostedsadresse(
-        val gyldigFraOgMed: LocalDateTime,
-        val gyldigTilOgMed: LocalDateTime,
+        val gyldigFraOgMed: LocalDateTime?,
+        val gyldigTilOgMed: LocalDateTime?,
         val vegadresse: Vegadresse?,
         val utenlandskAdresse: UtenlandskAdresse?
 )
