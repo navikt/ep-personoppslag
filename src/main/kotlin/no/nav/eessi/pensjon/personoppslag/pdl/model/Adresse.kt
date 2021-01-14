@@ -10,12 +10,6 @@ data class Bostedsadresse(
 )
 
 typealias Oppholdsadresse = Bostedsadresse
-//data class Oppholdsadresse(
-//        val gyldigFraOgMed: LocalDateTime,
-//        val gyldigTilOgMed: LocalDateTime,
-//        val vegadresse: Vegadresse?,
-//        val utenlandskAdresse: UtenlandskAdresse?
-//)
 
 data class Vegadresse(
         val adressenavn: String?,

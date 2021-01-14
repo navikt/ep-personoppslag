@@ -13,7 +13,6 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Oppholdsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -158,12 +157,12 @@ class PersonService(private val client: PersonClient) {
     /**
      * Funksjon for å hente ut en person sin geografiske tilknytning.
      *
-     * @param fnr: Fødselsnummeret til personen man vil hente ut [GeografiskTilknytning] for.
+     * @param ident: Identen til personen man vil hente ut identer for. Bruk [NorskIdent], [AktoerId], eller [Npid]
      *
      * @return [GeografiskTilknytning]
      */
-    fun hentGeografiskTilknytning(fnr: String): GeografiskTilknytning? {
-        val response = client.hentGeografiskTilknytning(fnr)
+    fun <T : IdentType> hentGeografiskTilknytning(ident: Ident<T>): GeografiskTilknytning? {
+        val response = client.hentGeografiskTilknytning(ident.id)
 
         if (!response.errors.isNullOrEmpty()) {
             val errorMsg = response.errors.joinToString { it.message ?: "" }
