@@ -14,7 +14,7 @@ data class AdressebeskyttelseBolkPerson(
 )
 
 data class AdressebeskyttelsePerson(
-        val adressebeskyttelse: List<Adressebeskyttelse>?
+        val adressebeskyttelse: List<Adressebeskyttelse>
 )
 
 data class Adressebeskyttelse(

@@ -1,21 +1,49 @@
-query($ident: ID!){
+query($ident: ID!) {
     hentPerson(ident: $ident) {
         adressebeskyttelse {
             gradering
-        },
+        }
+        bostedsadresse(historikk: false) {
+            vegadresse {
+                adressenavn
+                husnummer
+                husbokstav
+                postnummer
+            }
+            utenlandskAdresse {
+                landkode
+            }
+        }
+        oppholdsadresse(historikk: false) {
+            vegadresse {
+                adressenavn
+                husnummer
+                husbokstav
+                postnummer
+            }
+            utenlandskAdresse {
+                landkode
+            }
+        }
+        folkeregisteridentifikator(historikk: false) {
+            identifikasjonsnummer
+        }
         navn(historikk: false) {
-            fornavn,
-            mellomnavn,
+            fornavn
+            mellomnavn
             etternavn
-        },
-        statsborgerskap {
-            land,
-            gyldigFraOgMed,
+        }
+        statsborgerskap(historikk: false) {
+            land
+            gyldigFraOgMed
             gyldigTilOgMed
-        },
+        }
         foedsel {
             foedselsdato
-        },
+            folkeregistermetadata {
+                gyldighetstidspunkt
+            }
+        }
         doedsfall {
             doedsdato
         }

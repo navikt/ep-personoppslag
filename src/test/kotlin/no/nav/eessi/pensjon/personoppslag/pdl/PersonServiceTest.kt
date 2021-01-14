@@ -12,15 +12,15 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -35,18 +35,22 @@ internal class PersonServiceTest {
 
     @Test
     fun hentPerson() {
-        val pdlPerson = PdlPerson(
+        val pdlPerson = HentPerson(
                 adressebeskyttelse = emptyList(),
+                bostedsadresse = emptyList(),
+                oppholdsadresse = emptyList(),
+                folkeregisteridentifikator = emptyList(),
                 navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
                 statsborgerskap = emptyList(),
                 foedsel = emptyList()
         )
 
-        every { client.hentPerson(any()) } returns PersonResponse(HentPerson(pdlPerson))
+        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(pdlPerson))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
 
-        val resultat = service.hentPerson("12345")!!
+        val resultat = service.hentPerson(NorskIdent("12345"))
 
-        val navn = resultat.navn!!.first()
+        val navn = resultat!!.navn!!
         assertEquals("Fornavn", navn.fornavn)
         assertEquals("Mellomnavn", navn.mellomnavn)
         assertEquals("Etternavn", navn.etternavn)
@@ -74,9 +78,9 @@ internal class PersonServiceTest {
     @Test
     fun hentIdenter() {
         val identer = listOf(
-                IdentInformasjon("1", IdentGruppe.AKTORID, false),
-                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT, false),
-                IdentInformasjon("3", IdentGruppe.NPID, false)
+                IdentInformasjon("1", IdentGruppe.AKTORID),
+                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT),
+                IdentInformasjon("3", IdentGruppe.NPID)
         )
 
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
@@ -89,9 +93,9 @@ internal class PersonServiceTest {
     @Test
     fun hentAktorId() {
         val identer = listOf(
-                IdentInformasjon("1", IdentGruppe.AKTORID, false),
-                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT, false),
-                IdentInformasjon("3", IdentGruppe.NPID, false)
+                IdentInformasjon("1", IdentGruppe.AKTORID),
+                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT),
+                IdentInformasjon("3", IdentGruppe.NPID)
         )
 
         every { client.hentAktorId(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
@@ -104,9 +108,9 @@ internal class PersonServiceTest {
     @Test
     fun hentIdent() {
         val identer = listOf(
-                IdentInformasjon("1", IdentGruppe.AKTORID, false),
-                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT, false),
-                IdentInformasjon("3", IdentGruppe.NPID, false)
+                IdentInformasjon("1", IdentGruppe.AKTORID),
+                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT),
+                IdentInformasjon("3", IdentGruppe.NPID)
         )
 
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))

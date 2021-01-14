@@ -2,14 +2,19 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Oppholdsadresse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -20,19 +25,51 @@ class PersonService(private val client: PersonClient) {
     /**
      * Funksjon for å hente ut person basert på fnr.
      *
-     * @param fnr: Fødselsnummeret til personen man vil hente ut [GeografiskTilknytning] for.
+     * @param ident: Identen til personen man vil hente ut identer for. Bruk [NorskIdent], [AktoerId], eller [Npid]
      *
-     * @return [PdlPerson]
+     * @return [Person]
      */
-    fun hentPerson(fnr: String): PdlPerson? {
-        val response = client.hentPerson(fnr)
+    fun <T : IdentType> hentPerson(ident: Ident<T>): Person? {
+        val response = client.hentPerson(ident.id)
 
         if (!response.errors.isNullOrEmpty()) {
             val errorMsg = response.errors.joinToString { it.message ?: "" }
             throw Exception(errorMsg)
         }
 
-        return response.data?.pdlPerson
+        return response.data?.hentPerson
+                ?.let { konverterTilPerson(ident, it) }
+    }
+
+    private fun <T : IdentType> konverterTilPerson(ident: Ident<T>, pdlPerson: HentPerson): Person {
+        val identer = hentIdenter(ident)
+
+        val navn = pdlPerson.navn.singleOrNull()
+
+        val graderingListe = pdlPerson.adressebeskyttelse
+                .map { it.gradering }
+                .distinct()
+
+        val statsborgerskap = pdlPerson.statsborgerskap
+                .distinctBy { it.land }
+
+        val foedsel = pdlPerson.foedsel
+                .filterNot { it.folkeregistermetadata == null }
+                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
+                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+
+        val bostedsadresse = pdlPerson.bostedsadresse.maxBy { it.gyldigFraOgMed }
+        val oppholdsadresse = pdlPerson.oppholdsadresse.maxBy { it.gyldigFraOgMed }
+
+        return Person(
+                identer,
+                navn,
+                graderingListe,
+                bostedsadresse,
+                oppholdsadresse,
+                statsborgerskap,
+                foedsel
+        )
     }
 
     /**
@@ -54,8 +91,7 @@ class PersonService(private val client: PersonClient) {
         val personer = response.data?.hentPersonBolk ?: return false
 
         return personer
-                .mapNotNull { it.person.adressebeskyttelse }
-                .flatten()
+                .flatMap { it.person.adressebeskyttelse }
                 .any { it.gradering in gradering }
     }
 
@@ -88,7 +124,7 @@ class PersonService(private val client: PersonClient) {
      *
      * @return [Ident] av valgt [IdentType]
      */
-    fun <T : IdentType, R : IdentType> hentIdent(identTypeWanted: R, ident: Ident<T>): Ident<R>? {
+    fun <T : IdentType, R : IdentType> hentIdent(identTypeWanted: R, ident: Ident<T>): Ident<R> {
         val result = hentIdenter(ident)
                 .firstOrNull { it.gruppe == identTypeWanted.gruppe }
                 ?.ident ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)

@@ -9,14 +9,13 @@ internal data class IdenterDataResponse(
         val hentIdenter: HentIdenter
 )
 
-data class HentIdenter(
+internal data class HentIdenter(
         val identer: List<IdentInformasjon>
 )
 
 data class IdentInformasjon(
         val ident: String,
-        val gruppe: IdentGruppe,
-        val historisk: Boolean
+        val gruppe: IdentGruppe
 )
 
 enum class IdentGruppe {
