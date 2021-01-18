@@ -1,9 +1,7 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstatus
@@ -20,10 +18,7 @@ class PersonTest {
     @Test
     fun hentPersonFraGraphql() {
 
-        val mapper = ObjectMapper()
-            .registerModule(KotlinModule())
-            .registerModule(ParameterNamesModule())
-//            .registerModule(Jdk8Module())
+        val mapper = jacksonObjectMapper()
             .registerModule(JavaTimeModule())
 
         val response = mapper.readValue(mockGraphQlresponse(), PersonResponse::class.java)
