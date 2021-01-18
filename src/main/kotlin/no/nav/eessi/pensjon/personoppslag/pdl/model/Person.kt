@@ -23,32 +23,26 @@ internal data class HentPerson(
         val foedsel: List<Foedsel>,
         val kjoenn: List<Kjoenn>,
         val doedsfall: List<Doedsfall>,
-        val familierlasjon: List<Familierlasjon>,
+        val familierelasjoner: List<Familierlasjon>,
         val sivilstand: List<Sivilstand>
 )
 
 data class Person(
         val identer: List<IdentInformasjon>,
         val navn: Navn?,
-        val adressebeskyttelse: List<AdressebeskyttelseGradering>?,
+        val adressebeskyttelse: List<AdressebeskyttelseGradering>,
         val bostedsadresse: Bostedsadresse?,
         val oppholdsadresse: Oppholdsadresse?,
-        val statsborgerskap: List<Statsborgerskap>?,
+        val statsborgerskap: List<Statsborgerskap>,
         val foedsel: Foedsel?,
         val geografiskTilknytning: GeografiskTilknytning?,
         val kjoenn: Kjoenn?,
         val doedsfall: Doedsfall?,
-        val familierlasjon: List<Familierlasjon>?,
-        val sivilstand: List<Sivilstand>?
+        val familierelasjon: List<Familierlasjon>,
+        val sivilstand: List<Sivilstand>
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
 }
-
-data class Folkeregisteridentifikator(
-        val identifikasjonsnummer: String,
-        val status: String,
-        val type: String
-)
 
 data class Navn(
         val fornavn: String,
@@ -103,18 +97,18 @@ enum class KjoennType {
 }
 
 data class Kjoenn(
-        val kjoenn: KjoennType,
-        val folkeregistermetadata: Folkeregistermetadata
+        val kjoenn: KjoennType?,
+        val folkeregistermetadata: Folkeregistermetadata?
 )
 
 data class Familierlasjon (
         val relatertPersonsIdent: String,
         val relatertPersonsRolle: Relasjon,
-        val minRolleForPerson: Relasjon
+        val minRolleForPerson: Relasjon?
 )
 
 data class Sivilstand(
         val type: Sivilstatus,
-        val gyldigFraOgMed: LocalDate,
-        val relatertVedSivilstand: String
+        val gyldigFraOgMed: LocalDate?,
+        val relatertVedSivilstand: String?
 )

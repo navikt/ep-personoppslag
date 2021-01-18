@@ -3,7 +3,7 @@ query($ident: ID!) {
         adressebeskyttelse {
             gradering
         }
-        bostedsadresse(historikk: false) {
+        bostedsadresse {
             vegadresse {
                 adressenavn
                 husnummer
@@ -14,7 +14,7 @@ query($ident: ID!) {
                 landkode
             }
         }
-        oppholdsadresse(historikk: false) {
+        oppholdsadresse {
             vegadresse {
                 adressenavn
                 husnummer
@@ -25,12 +25,12 @@ query($ident: ID!) {
                 landkode
             }
         }
-        navn(historikk: false) {
+        navn {
             fornavn
             mellomnavn
             etternavn
         }
-        statsborgerskap(historikk: false) {
+        statsborgerskap {
             land
             gyldigFraOgMed
             gyldigTilOgMed

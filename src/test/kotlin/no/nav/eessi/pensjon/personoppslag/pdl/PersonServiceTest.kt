@@ -62,7 +62,7 @@ internal class PersonServiceTest {
                 foedsel = emptyList(),
                 kjoenn = emptyList(),
                 doedsfall = emptyList(),
-                familierlasjon = emptyList(),
+                familierelasjoner = emptyList(),
                 sivilstand = emptyList()
         )
 
@@ -108,7 +108,7 @@ internal class PersonServiceTest {
             foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2))) ),
-            familierlasjon = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Relasjon.BARN, minRolleForPerson = Relasjon.MOR)),
+            familierelasjoner = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Relasjon.BARN, minRolleForPerson = Relasjon.MOR)),
             sivilstand = listOf(Sivilstand(Sivilstatus.GIFT, LocalDate.of(2010, 10,10), "1020203010"))
         )
 
@@ -136,7 +136,7 @@ internal class PersonServiceTest {
         assertEquals("A", vegadresse?.husbokstav)
         assertEquals("0234", vegadresse?.postnummer)
 
-        assertEquals("NOR", resultat.statsborgerskap?.lastOrNull()?.land)
+        assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
 
         assertEquals(LocalDate.of(2000,10,3), resultat.foedsel?.foedselsdato)
 
@@ -144,9 +144,9 @@ internal class PersonServiceTest {
 
         assertEquals(LocalDate.of(2020, 10,10), resultat.doedsfall?.doedsdato)
 
-        assertEquals("101010", resultat.familierlasjon?.lastOrNull()?.relatertPersonsIdent)
-        assertEquals(Relasjon.BARN, resultat.familierlasjon?.lastOrNull()?.relatertPersonsRolle)
-        assertEquals(Relasjon.MOR, resultat.familierlasjon?.lastOrNull()?.minRolleForPerson)
+        assertEquals("101010", resultat.familierelasjon.lastOrNull()?.relatertPersonsIdent)
+        assertEquals(Relasjon.BARN, resultat.familierelasjon.lastOrNull()?.relatertPersonsRolle)
+        assertEquals(Relasjon.MOR, resultat.familierelasjon.lastOrNull()?.minRolleForPerson)
 
         assertEquals(Sivilstatus.GIFT, resultat.sivilstand?.lastOrNull()?.type)
         assertEquals("1020203010", resultat.sivilstand?.lastOrNull()?.relatertVedSivilstand)

@@ -41,7 +41,8 @@ class PersonService(private val client: PersonClient) {
         val identer = hentIdenter(ident)
         val geografiskTilknytning = hentGeografiskTilknytning(ident)
 
-        val navn = pdlPerson.navn.singleOrNull()
+        val navn = pdlPerson.navn
+                .singleOrNull()
 
         val graderingListe = pdlPerson.adressebeskyttelse
                 .map { it.gradering }
@@ -51,7 +52,6 @@ class PersonService(private val client: PersonClient) {
                 .distinctBy { it.land }
 
         val foedsel = pdlPerson.foedsel
-                .filterNot { it.folkeregistermetadata == null }
                 .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
                 .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
@@ -64,16 +64,14 @@ class PersonService(private val client: PersonClient) {
                 .maxBy { it.gyldigFraOgMed!! }
 
         val kjoenn = pdlPerson.kjoenn
-            .filterNot { it.folkeregistermetadata == null }
-            .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-            .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
+                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
         val doedsfall = pdlPerson.doedsfall
-            .filterNot { it?.folkeregistermetadata == null }
-            .filterNot { it?.folkeregistermetadata?.gyldighetstidspunkt == null }
-            .maxBy { it?.folkeregistermetadata!!.gyldighetstidspunkt!! }
+                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
+                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
-        val familierlasjon = pdlPerson.familierlasjon
+        val familierlasjon = pdlPerson.familierelasjoner
         val sivilstand = pdlPerson.sivilstand
 
         return Person(
