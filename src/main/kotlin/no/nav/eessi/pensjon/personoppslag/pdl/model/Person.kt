@@ -20,7 +20,11 @@ internal data class HentPerson(
         val oppholdsadresse: List<Oppholdsadresse>,
         val navn: List<Navn>,
         val statsborgerskap: List<Statsborgerskap>,
-        val foedsel: List<Foedsel>
+        val foedsel: List<Foedsel>,
+        val kjoenn: List<Kjoenn>,
+        val doedsfall: List<Doedsfall>,
+        val familierlasjon: List<Familierlasjon>,
+        val sivilstand: List<Sivilstand>
 )
 
 data class Person(
@@ -31,8 +35,14 @@ data class Person(
         val oppholdsadresse: Oppholdsadresse?,
         val statsborgerskap: List<Statsborgerskap>?,
         val foedsel: Foedsel?,
-        val geografiskTilknytning: GeografiskTilknytning?
-)
+        val geografiskTilknytning: GeografiskTilknytning?,
+        val kjoenn: Kjoenn?,
+        val doedsfall: Doedsfall?,
+        val familierlasjon: List<Familierlasjon>?,
+        val sivilstand: List<Sivilstand>?
+) {
+        fun erDoed() = doedsfall?.doedsdato != null
+}
 
 data class Folkeregisteridentifikator(
         val identifikasjonsnummer: String,
@@ -59,4 +69,52 @@ data class Foedsel(
 
 data class Folkeregistermetadata(
         val gyldighetstidspunkt: LocalDateTime?
+)
+
+data class Doedsfall(
+        val doedsdato: LocalDate?,
+        val folkeregistermetadata: Folkeregistermetadata?
+)
+
+enum class Sivilstatus {
+        UOPPGITT,
+        UGIFT,
+        GIFT,
+        ENKE_ELLER_ENKEMANN,
+        SKILT,
+        SEPARERT,
+        PARTNER,
+        SEPARERT_PARTNER,
+        SKILT_PARTNER,
+        GJENLEVENDE_PARTNER;
+}
+
+enum class Relasjon {
+        FAR,
+        MOR,
+        MEDMOR,
+        BARN;
+}
+
+enum class KjoennType {
+        MANN,
+        KVINNE,
+        UKJENT;
+}
+
+data class Kjoenn(
+        val kjoenn: KjoennType,
+        val folkeregistermetadata: Folkeregistermetadata
+)
+
+data class Familierlasjon (
+        val relatertPersonsIdent: String,
+        val relatertPersonsRolle: Relasjon,
+        val minRolleForPerson: Relasjon
+)
+
+data class Sivilstand(
+        val type: Sivilstatus,
+        val gyldigFraOgMed: LocalDate,
+        val relatertVedSivilstand: String
 )

@@ -2,9 +2,6 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
@@ -66,6 +63,19 @@ class PersonService(private val client: PersonClient) {
                 .filterNot { it.gyldigFraOgMed == null }
                 .maxBy { it.gyldigFraOgMed!! }
 
+        val kjoenn = pdlPerson.kjoenn
+            .filterNot { it.folkeregistermetadata == null }
+            .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
+            .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+
+        val doedsfall = pdlPerson.doedsfall
+            .filterNot { it?.folkeregistermetadata == null }
+            .filterNot { it?.folkeregistermetadata?.gyldighetstidspunkt == null }
+            .maxBy { it?.folkeregistermetadata!!.gyldighetstidspunkt!! }
+
+        val familierlasjon = pdlPerson.familierlasjon
+        val sivilstand = pdlPerson.sivilstand
+
         return Person(
                 identer,
                 navn,
@@ -74,7 +84,11 @@ class PersonService(private val client: PersonClient) {
                 oppholdsadresse,
                 statsborgerskap,
                 foedsel,
-                geografiskTilknytning
+                geografiskTilknytning,
+                kjoenn,
+                doedsfall,
+                familierlasjon,
+                sivilstand
         )
     }
 

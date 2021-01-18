@@ -8,12 +8,16 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelsePerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregisteridentifikator
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierlasjon
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GtType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
@@ -21,16 +25,25 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Kjoenn
+import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponseData
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Relasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstand
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstatus
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Statsborgerskap
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 internal class PersonServiceTest {
 
@@ -46,10 +59,14 @@ internal class PersonServiceTest {
                 oppholdsadresse = emptyList(),
                 navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
                 statsborgerskap = emptyList(),
-                foedsel = emptyList()
+                foedsel = emptyList(),
+                kjoenn = emptyList(),
+                doedsfall = emptyList(),
+                familierlasjon = emptyList(),
+                sivilstand = emptyList()
         )
 
-        val identer = listOf(
+         val identer = listOf(
                 IdentInformasjon("25078521492", IdentGruppe.FOLKEREGISTERIDENT),
                 IdentInformasjon("100000000000053", IdentGruppe.AKTORID)
         )
@@ -66,6 +83,74 @@ internal class PersonServiceTest {
         assertEquals("Fornavn", navn.fornavn)
         assertEquals("Mellomnavn", navn.mellomnavn)
         assertEquals("Etternavn", navn.etternavn)
+
+        assertEquals(gt, resultat.geografiskTilknytning)
+
+        assertEquals(1, resultat.adressebeskyttelse!!.size)
+        assertEquals(2, resultat.identer.size)
+    }
+
+    @Test
+    fun hentAltPerson() {
+        val pdlPerson = HentPerson(
+            adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
+            bostedsadresse = listOf(
+                Bostedsadresse(
+                    LocalDateTime.of(2020, 10, 5, 10,5,2),
+                    LocalDateTime.of(2030, 10, 5, 10, 5, 2),
+                    Vegadresse("TESTVEIEN","1020","A","0234"),
+                    null
+                )
+            ),
+            oppholdsadresse = emptyList(),
+            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
+            statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10))),
+            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
+            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
+            doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2))) ),
+            familierlasjon = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Relasjon.BARN, minRolleForPerson = Relasjon.MOR)),
+            sivilstand = listOf(Sivilstand(Sivilstatus.GIFT, LocalDate.of(2010, 10,10), "1020203010"))
+        )
+
+        val identer = listOf(
+            IdentInformasjon("25078521492", IdentGruppe.FOLKEREGISTERIDENT),
+            IdentInformasjon("100000000000053", IdentGruppe.AKTORID)
+        )
+
+        val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
+
+        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(pdlPerson))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
+
+        val resultat = service.hentPerson(NorskIdent("12345"))
+
+        val navn = resultat!!.navn!!
+        assertEquals("Fornavn", navn.fornavn)
+        assertEquals("Mellomnavn", navn.mellomnavn)
+        assertEquals("Etternavn", navn.etternavn)
+
+        val vegadresse = resultat.bostedsadresse!!.vegadresse
+        assertEquals("TESTVEIEN", vegadresse?.adressenavn)
+        assertEquals("1020", vegadresse?.husnummer)
+        assertEquals("A", vegadresse?.husbokstav)
+        assertEquals("0234", vegadresse?.postnummer)
+
+        assertEquals("NOR", resultat.statsborgerskap?.lastOrNull()?.land)
+
+        assertEquals(LocalDate.of(2000,10,3), resultat.foedsel?.foedselsdato)
+
+        assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
+
+        assertEquals(LocalDate.of(2020, 10,10), resultat.doedsfall?.doedsdato)
+
+        assertEquals("101010", resultat.familierlasjon?.lastOrNull()?.relatertPersonsIdent)
+        assertEquals(Relasjon.BARN, resultat.familierlasjon?.lastOrNull()?.relatertPersonsRolle)
+        assertEquals(Relasjon.MOR, resultat.familierlasjon?.lastOrNull()?.minRolleForPerson)
+
+        assertEquals(Sivilstatus.GIFT, resultat.sivilstand?.lastOrNull()?.type)
+        assertEquals("1020203010", resultat.sivilstand?.lastOrNull()?.relatertVedSivilstand)
+        assertEquals(LocalDate.of(2010, 10,10), resultat.sivilstand?.lastOrNull()?.gyldigFraOgMed)
 
         assertEquals(gt, resultat.geografiskTilknytning)
 

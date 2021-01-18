@@ -41,5 +41,28 @@ query($ident: ID!) {
                 gyldighetstidspunkt
             }
         }
+        doedsfall {
+            doedsdato
+            folkeregistermetadata {
+                gyldighetstidspunkt
+            }
+        }
+        kjoenn {
+            kjoenn
+            folkeregistermetadata {
+                gyldighetstidspunkt
+            }
+        }
+        familierelasjoner {
+            relatertPersonsIdent
+            relatertPersonsRolle
+            minRolleForPerson
+        }
+        sivilstand {
+            type
+            gyldigFraOgMed
+            relatertVedSivilstand
+        }
+
     }
 }
