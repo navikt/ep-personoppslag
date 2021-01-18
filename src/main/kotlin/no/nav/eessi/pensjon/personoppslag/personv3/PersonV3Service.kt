@@ -29,6 +29,7 @@ import javax.xml.ws.soap.SOAPFaultException
  * @param metricsHelper Usually injected by Spring Boot, can be set manually in tests - no way to read metrics if not set.
  */
 @Service
+@Deprecated("TPS skal fases ut til fordel for PDL. Bruk derfor PDL PersonService i stedet.")
 class PersonV3Service(
         private val service: PersonV3,
         private val stsClientConfig: STSClientConfig,

@@ -31,6 +31,7 @@ data class NorskIdent(override val id: String) : Ident<IdentGruppe.NorskIdent>()
 
 @ConditionalOnBean(name=["aktoerregisterRestTemplate"])
 @Service
+@Deprecated("TPS skal fases ut til fordel for PDL. Bruk derfor PDL PersonService i stedet.")
 class AktoerregisterService(private val aktoerregisterRestTemplate: RestTemplate,
                             @Value("\${NAIS_APP_NAME}") private val appName: String,
                             @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())) {
