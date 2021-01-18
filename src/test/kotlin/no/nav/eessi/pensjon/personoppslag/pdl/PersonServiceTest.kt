@@ -62,7 +62,7 @@ internal class PersonServiceTest {
                 foedsel = emptyList(),
                 kjoenn = emptyList(),
                 doedsfall = emptyList(),
-                familierelasjoner = emptyList(),
+                familierelasjoner  = emptyList(),
                 sivilstand = emptyList()
         )
 
@@ -143,10 +143,11 @@ internal class PersonServiceTest {
         assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
 
         assertEquals(LocalDate.of(2020, 10,10), resultat.doedsfall?.doedsdato)
+        assertEquals(true, resultat.erDoed())
 
-        assertEquals("101010", resultat.familierelasjon.lastOrNull()?.relatertPersonsIdent)
-        assertEquals(Relasjon.BARN, resultat.familierelasjon.lastOrNull()?.relatertPersonsRolle)
-        assertEquals(Relasjon.MOR, resultat.familierelasjon.lastOrNull()?.minRolleForPerson)
+        assertEquals("101010", resultat.familierelasjoner.lastOrNull()?.relatertPersonsIdent)
+        assertEquals(Relasjon.BARN, resultat.familierelasjoner.lastOrNull()?.relatertPersonsRolle)
+        assertEquals(Relasjon.MOR, resultat.familierelasjoner.lastOrNull()?.minRolleForPerson)
 
         assertEquals(Sivilstatus.GIFT, resultat.sivilstand?.lastOrNull()?.type)
         assertEquals("1020203010", resultat.sivilstand?.lastOrNull()?.relatertVedSivilstand)

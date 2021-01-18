@@ -71,7 +71,7 @@ class PersonService(private val client: PersonClient) {
                 .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
                 .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
-        val familierlasjon = pdlPerson.familierelasjoner
+        val familierelasjoner = pdlPerson.familierelasjoner
         val sivilstand = pdlPerson.sivilstand
 
         return Person(
@@ -85,7 +85,7 @@ class PersonService(private val client: PersonClient) {
                 geografiskTilknytning,
                 kjoenn,
                 doedsfall,
-                familierlasjon,
+                familierelasjoner,
                 sivilstand
         )
     }

@@ -1,0 +1,74 @@
+{
+  "data": {
+    "hentPerson": {
+      "adressebeskyttelse": [],
+      "bostedsadresse": [
+        {
+          "vegadresse": {
+            "adressenavn": "SANNERGATA",
+            "husnummer": "6",
+            "husbokstav": null,
+            "postnummer": "0557"
+          },
+          "utenlandskAdresse": null
+        }
+      ],
+      "oppholdsadresse": [
+        {
+          "vegadresse": {
+            "adressenavn": "SANNERGATA",
+            "husnummer": "6",
+            "husbokstav": null,
+            "postnummer": "0557"
+          },
+          "utenlandskAdresse": null
+        }
+      ],
+      "navn": [
+        {
+          "fornavn": "BLÅ",
+          "mellomnavn": null,
+          "etternavn": "STAUDE"
+        }
+      ],
+      "statsborgerskap": [
+        {
+          "land": "NOR",
+          "gyldigFraOgMed": "1985-06-11",
+          "gyldigTilOgMed": null
+        }
+      ],
+      "foedsel": [
+        {
+          "foedselsdato": "1985-06-11",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-01-14T15:42:45"
+          }
+        }
+      ],
+      "doedsfall": [],
+      "kjoenn": [
+        {
+          "kjoenn": "KVINNE",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-01-14T15:42:45"
+          }
+        }
+      ],
+      "familierelasjoner": [
+        {
+          "relatertPersonsIdent": "20081779660",
+          "relatertPersonsRolle": "BARN",
+          "minRolleForPerson": "MOR"
+        }
+      ],
+      "sivilstand": [
+        {
+          "type": "GIFT",
+          "gyldigFraOgMed": "2010-01-25",
+          "relatertVedSivilstand": "03128222382"
+        }
+      ]
+    }
+  }
+}

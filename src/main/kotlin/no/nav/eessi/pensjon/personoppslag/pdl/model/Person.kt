@@ -38,7 +38,7 @@ data class Person(
         val geografiskTilknytning: GeografiskTilknytning?,
         val kjoenn: Kjoenn?,
         val doedsfall: Doedsfall?,
-        val familierelasjon: List<Familierlasjon>,
+        val familierelasjoner: List<Familierlasjon>,
         val sivilstand: List<Sivilstand>
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
@@ -97,7 +97,7 @@ enum class KjoennType {
 }
 
 data class Kjoenn(
-        val kjoenn: KjoennType?,
+        val kjoenn: KjoennType,
         val folkeregistermetadata: Folkeregistermetadata?
 )
 
