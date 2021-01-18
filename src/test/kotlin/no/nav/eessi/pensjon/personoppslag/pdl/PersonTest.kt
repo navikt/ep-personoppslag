@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
@@ -24,8 +23,8 @@ class PersonTest {
         val mapper = ObjectMapper()
             .registerModule(KotlinModule())
             .registerModule(ParameterNamesModule())
-            .registerModule(Jdk8Module())
-            .registerModule(JavaTimeModule()) // new module, NOT JSR310Module
+//            .registerModule(Jdk8Module())
+            .registerModule(JavaTimeModule())
 
         val response = mapper.readValue(mockGraphQlresponse(), PersonResponse::class.java)
 
