@@ -30,6 +30,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Oppholdsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Relasjon
@@ -53,17 +54,9 @@ internal class PersonServiceTest {
 
     @Test
     fun hentPerson() {
-        val pdlPerson = HentPerson(
+        val pdlPerson = createHentPerson(
                 adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
-                bostedsadresse = emptyList(),
-                oppholdsadresse = emptyList(),
-                navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
-                statsborgerskap = emptyList(),
-                foedsel = emptyList(),
-                kjoenn = emptyList(),
-                doedsfall = emptyList(),
-                familierelasjoner  = emptyList(),
-                sivilstand = emptyList()
+                navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn"))
         )
 
          val identer = listOf(
@@ -160,6 +153,49 @@ internal class PersonServiceTest {
     }
 
     @Test
+    fun kjoenn_sistGyldigeVerdiBlirValgt() {
+        val kjoennListe = listOf(
+                Kjoenn(KjoennType.MANN, Folkeregistermetadata(LocalDateTime.now().minusDays(10))),
+                Kjoenn(KjoennType.UKJENT, null),
+                Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.now()))
+        )
+
+        val person = createHentPerson(kjoenn = kjoennListe)
+
+        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(person))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(null, null)
+
+        val resultat = service.hentPerson(NorskIdent("12345"))
+
+        assertEquals(KjoennType.KVINNE, resultat!!.kjoenn!!.kjoenn)
+    }
+
+    @Test
+    fun doedsfall_sistGyldigeVerdiBlirValgt() {
+        val now = LocalDate.now()
+
+        val doedsfallListe = listOf(
+                Doedsfall(LocalDate.now(), Folkeregistermetadata(null)), // Mangler gyldig-dato
+                Doedsfall(LocalDate.of(2020, 10, 1), null), // Mangler folkereg.-metadata
+                Doedsfall(null, Folkeregistermetadata(LocalDateTime.now())), // Mangler doedsfall-dato
+                Doedsfall(LocalDate.of(2019, 8, 5), Folkeregistermetadata(LocalDateTime.now().minusDays(50))), // 50 dager gammel gyldighet
+                Doedsfall(now, Folkeregistermetadata(LocalDateTime.now())) // Markert som gyldig fra nå (FORVENTET RESULTAT)
+        )
+
+        val person = createHentPerson(doedsfall = doedsfallListe)
+
+        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(person))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(null, null)
+
+        val resultat = service.hentPerson(NorskIdent("12345"))!!
+
+        assertEquals(now, resultat.doedsfall?.doedsdato)
+    }
+
+
+    @Test
     fun harAdressebeskyttelse() {
         val personer = listOf(
                 mockGradertPerson(AdressebeskyttelseGradering.UGRADERT),
@@ -253,6 +289,22 @@ internal class PersonServiceTest {
             service.hentAktorId("12345")
         }
     }
+
+
+    private fun createHentPerson(
+            adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),
+            bostedsadresse: List<Bostedsadresse> = emptyList(),
+            oppholdsadresse: List<Oppholdsadresse> = emptyList(),
+            navn: List<Navn> = emptyList(),
+            statsborgerskap: List<Statsborgerskap> = emptyList(),
+            foedsel: List<Foedsel> = emptyList(),
+            kjoenn: List<Kjoenn> = emptyList(),
+            doedsfall: List<Doedsfall> = emptyList(),
+            familierelasjoner: List<Familierlasjon> = emptyList(),
+            sivilstand: List<Sivilstand> = emptyList()
+    ) = HentPerson(
+            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand
+    )
 
     private fun mockGradertPerson(gradering: AdressebeskyttelseGradering) =
             AdressebeskyttelseBolkPerson(

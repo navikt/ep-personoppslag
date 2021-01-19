@@ -40,6 +40,12 @@
       ],
       "foedsel": [
         {
+          "foedselsdato": "1985-01-01",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2020-01-05T15:42:45"
+          }
+        },
+        {
           "foedselsdato": "1985-06-11",
           "folkeregistermetadata": {
             "gyldighetstidspunkt": "2021-01-14T15:42:45"
@@ -48,6 +54,12 @@
       ],
       "doedsfall": [],
       "kjoenn": [
+        {
+          "kjoenn": "MANN",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-01-01T15:42:45"
+          }
+        },
         {
           "kjoenn": "KVINNE",
           "folkeregistermetadata": {
@@ -63,6 +75,26 @@
         }
       ],
       "sivilstand": [
+        {
+          "type": "UGIFT",
+          "gyldigFraOgMed": "1985-06-11",
+          "relatertVedSivilstand": null
+        },
+        {
+          "type": "GIFT",
+          "gyldigFraOgMed": "2005-03-14",
+          "relatertVedSivilstand": "03128222382"
+        },
+        {
+          "type": "SKILT",
+          "gyldigFraOgMed": "2006-01-30",
+          "relatertVedSivilstand": null
+        },
+        {
+          "type": "PARTNER",
+          "gyldigFraOgMed": "2009-01-30",
+          "relatertVedSivilstand": "03128222382"
+        },
         {
           "type": "GIFT",
           "gyldigFraOgMed": "2010-01-25",

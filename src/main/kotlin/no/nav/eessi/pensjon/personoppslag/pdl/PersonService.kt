@@ -68,6 +68,7 @@ class PersonService(private val client: PersonClient) {
                 .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
         val doedsfall = pdlPerson.doedsfall
+                .filterNot { it.doedsdato == null }
                 .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
                 .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
