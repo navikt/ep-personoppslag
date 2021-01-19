@@ -3,8 +3,6 @@ package no.nav.eessi.pensjon.personoppslag.pdl.model
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.stream.Collectors.joining
-import java.util.stream.Stream
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class PersonResponse(
@@ -51,9 +49,9 @@ data class Navn(
         val mellomnavn: String?,
         val etternavn: String
 ) {
-        fun sammensattNavn() = Stream.of(fornavn, mellomnavn, etternavn)
-                .filter { str -> str != null && !str.isEmpty() }
-                .collect(joining(" "))
+        fun sammensattNavn() = sequenceOf(fornavn, mellomnavn, etternavn)
+                .filterNot { it == null }
+                .joinToString(" ")
 }
 
 
