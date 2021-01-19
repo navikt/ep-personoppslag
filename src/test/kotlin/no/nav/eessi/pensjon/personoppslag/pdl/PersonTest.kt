@@ -4,7 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstatus
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -35,7 +35,7 @@ internal class PersonTest {
         assertNotNull(kjoenn.folkeregistermetadata)
 
         val sivilstand = hentPerson.sivilstand.maxBy { it.gyldigFraOgMed!! }!!
-        assertEquals(Sivilstatus.GIFT, sivilstand.type)
+        assertEquals(Sivilstandstype.GIFT, sivilstand.type)
         assertEquals(LocalDate.of(2010, 1, 25), sivilstand.gyldigFraOgMed)
         assertEquals("03128222382", sivilstand.relatertVedSivilstand)
     }

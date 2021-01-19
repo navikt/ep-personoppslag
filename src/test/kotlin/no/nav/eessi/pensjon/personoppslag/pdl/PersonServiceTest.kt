@@ -10,6 +10,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierlasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
@@ -33,10 +34,9 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Oppholdsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponseData
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Relasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstand
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstatus
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Statsborgerskap
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -101,8 +101,8 @@ internal class PersonServiceTest {
             foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2))) ),
-            familierelasjoner = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Relasjon.BARN, minRolleForPerson = Relasjon.MOR)),
-            sivilstand = listOf(Sivilstand(Sivilstatus.GIFT, LocalDate.of(2010, 10,10), "1020203010"))
+            familierelasjoner = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Familierelasjonsrolle.BARN, minRolleForPerson = Familierelasjonsrolle.MOR)),
+            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010"))
         )
 
         val identer = listOf(
@@ -139,10 +139,10 @@ internal class PersonServiceTest {
         assertEquals(true, resultat.erDoed())
 
         assertEquals("101010", resultat.familierelasjoner.lastOrNull()?.relatertPersonsIdent)
-        assertEquals(Relasjon.BARN, resultat.familierelasjoner.lastOrNull()?.relatertPersonsRolle)
-        assertEquals(Relasjon.MOR, resultat.familierelasjoner.lastOrNull()?.minRolleForPerson)
+        assertEquals(Familierelasjonsrolle.BARN, resultat.familierelasjoner.lastOrNull()?.relatertPersonsRolle)
+        assertEquals(Familierelasjonsrolle.MOR, resultat.familierelasjoner.lastOrNull()?.minRolleForPerson)
 
-        assertEquals(Sivilstatus.GIFT, resultat.sivilstand?.lastOrNull()?.type)
+        assertEquals(Sivilstandstype.GIFT, resultat.sivilstand?.lastOrNull()?.type)
         assertEquals("1020203010", resultat.sivilstand?.lastOrNull()?.relatertVedSivilstand)
         assertEquals(LocalDate.of(2010, 10,10), resultat.sivilstand?.lastOrNull()?.gyldigFraOgMed)
 
@@ -288,6 +288,15 @@ internal class PersonServiceTest {
         assertThrows<Exception> {
             service.hentAktorId("12345")
         }
+    }
+
+    @Test
+    fun sammenstattNavn() {
+        val navn = Navn("Fornavn", null, "Etternavn")
+        val fultNavn = Navn("Fornavn", "Mellom", "Etternavn")
+
+        assertEquals("Fornavn Etternavn", navn.sammensattNavn())
+        assertEquals("Fornavn Mellom Etternavn", fultNavn.sammensattNavn())
     }
 
 

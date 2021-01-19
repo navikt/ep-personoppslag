@@ -3,6 +3,8 @@ package no.nav.eessi.pensjon.personoppslag.pdl.model
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.stream.Collectors.joining
+import java.util.stream.Stream
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class PersonResponse(
@@ -48,7 +50,12 @@ data class Navn(
         val fornavn: String,
         val mellomnavn: String?,
         val etternavn: String
-)
+) {
+        fun sammensattNavn() = Stream.of(fornavn, mellomnavn, etternavn)
+                .filter { str -> str != null && !str.isEmpty() }
+                .collect(joining(" "))
+}
+
 
 data class Statsborgerskap(
         val land: String,
@@ -70,7 +77,7 @@ data class Doedsfall(
         val folkeregistermetadata: Folkeregistermetadata?
 )
 
-enum class Sivilstatus {
+enum class Sivilstandstype {
         UOPPGITT,
         UGIFT,
         GIFT,
@@ -83,7 +90,7 @@ enum class Sivilstatus {
         GJENLEVENDE_PARTNER;
 }
 
-enum class Relasjon {
+enum class Familierelasjonsrolle {
         FAR,
         MOR,
         MEDMOR,
@@ -103,12 +110,12 @@ data class Kjoenn(
 
 data class Familierlasjon (
         val relatertPersonsIdent: String,
-        val relatertPersonsRolle: Relasjon,
-        val minRolleForPerson: Relasjon?
+        val relatertPersonsRolle: Familierelasjonsrolle,
+        val minRolleForPerson: Familierelasjonsrolle?
 )
 
 data class Sivilstand(
-        val type: Sivilstatus,
+        val type: Sivilstandstype,
         val gyldigFraOgMed: LocalDate?,
         val relatertVedSivilstand: String?
 )
