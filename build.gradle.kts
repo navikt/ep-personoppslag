@@ -59,10 +59,6 @@ dependencies {
     //Jackson json
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
 
-    // Tjenestespesifikasjoner
-    implementation("no.nav.tjenestespesifikasjoner:person-v3-tjenestespesifikasjon:1.2020.01.30-14.36-cdf257baea96")
-    implementation("com.sun.xml.ws:jaxws-ri:2.3.2")
-
     // Apache CXF
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
     implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
