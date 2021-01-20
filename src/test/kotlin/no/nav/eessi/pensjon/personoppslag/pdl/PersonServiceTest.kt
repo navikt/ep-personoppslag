@@ -295,8 +295,8 @@ internal class PersonServiceTest {
         val navn = Navn("Fornavn", null, "Etternavn")
         val fultNavn = Navn("Fornavn", "Mellom", "Etternavn")
 
-        assertEquals("Fornavn Etternavn", navn.sammensattNavn())
-        assertEquals("Fornavn Mellom Etternavn", fultNavn.sammensattNavn())
+        assertEquals("Fornavn Etternavn", navn.sammensattNavn)
+        assertEquals("Fornavn Mellom Etternavn", fultNavn.sammensattNavn)
     }
 
 

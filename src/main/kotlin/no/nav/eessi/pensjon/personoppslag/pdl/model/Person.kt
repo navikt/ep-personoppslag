@@ -49,9 +49,8 @@ data class Navn(
         val mellomnavn: String?,
         val etternavn: String
 ) {
-        fun sammensattNavn() = sequenceOf(fornavn, mellomnavn, etternavn)
-                .filterNot { it == null }
-                .joinToString(" ")
+    val sammensattNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn)
+            .joinToString(separator = " ")
 }
 
 
