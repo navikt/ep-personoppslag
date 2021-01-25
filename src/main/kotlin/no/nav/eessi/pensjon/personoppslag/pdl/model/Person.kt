@@ -62,6 +62,8 @@ data class Statsborgerskap(
 
 data class Foedsel(
         val foedselsdato: LocalDate?,
+        val foedeland: String?,
+        val foedested: String?,
         val folkeregistermetadata: Folkeregistermetadata?
 )
 

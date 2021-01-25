@@ -98,7 +98,7 @@ internal class PersonServiceTest {
             oppholdsadresse = emptyList(),
             navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10))),
-            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
+            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2))) ),
             familierelasjoner = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Familierelasjonsrolle.BARN, minRolleForPerson = Familierelasjonsrolle.MOR)),
@@ -132,6 +132,8 @@ internal class PersonServiceTest {
         assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
 
         assertEquals(LocalDate.of(2000,10,3), resultat.foedsel?.foedselsdato)
+        assertEquals("NOR", resultat?.foedsel?.foedeland)
+        assertEquals("OSLO", resultat?.foedsel?.foedested)
 
         assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
 
