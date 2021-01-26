@@ -10,6 +10,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
+import no.nav.eessi.pensjon.personoppslag.pdl.model.ErrorExtension
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierlasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
@@ -41,6 +42,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Statsborgerskap
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
@@ -198,7 +200,7 @@ internal class PersonServiceTest {
 
 
     @Test
-    fun harAdressebeskyttelse() {
+    fun harAdressebeskyttelse_ingenTreff() {
         val personer = listOf(
                 mockGradertPerson(AdressebeskyttelseGradering.UGRADERT),
                 mockGradertPerson(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND),
@@ -214,6 +216,26 @@ internal class PersonServiceTest {
         )
 
         assertFalse(resultat)
+    }
+
+    @Test
+    fun harAdressebeskyttelse_harGradering() {
+        val personer = listOf(
+                mockGradertPerson(AdressebeskyttelseGradering.UGRADERT),
+                mockGradertPerson(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND),
+                mockGradertPerson(AdressebeskyttelseGradering.STRENGT_FORTROLIG),
+                mockGradertPerson(AdressebeskyttelseGradering.FORTROLIG),
+                mockGradertPerson(AdressebeskyttelseGradering.UGRADERT)
+        )
+
+        every { client.hentAdressebeskyttelse(any()) } returns AdressebeskyttelseResponse(HentAdressebeskyttelse(personer))
+
+        val resultat = service.harAdressebeskyttelse(
+                listOf("12345", "5555", "8585"),
+                listOf(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+        )
+
+        assertTrue(resultat)
     }
 
     @Test
@@ -243,7 +265,7 @@ internal class PersonServiceTest {
 
         val aktorId = service.hentAktorId("12345")
 
-        assertEquals("1", aktorId)
+        assertEquals(AktoerId("1"), aktorId)
     }
 
     @Test
@@ -282,25 +304,84 @@ internal class PersonServiceTest {
     }
 
     @Test
-    fun hentAktorId_graphqlErrorThrowsException() {
-        val errors = listOf(ResponseError(message = "unauthorized"))
+    fun hentPerson_handleError() {
+        val msg = "test message"
+        val code = "test_code"
 
-        every { client.hentAktorId(any()) } returns IdenterResponse(data = null, errors = errors)
+        val errors = listOf(ResponseError(msg, extensions = ErrorExtension(code, null, null)))
 
-        assertThrows<Exception> {
-            service.hentAktorId("12345")
+        every { client.hentPerson(any()) } returns PersonResponse(null, errors)
+
+        val exception = assertThrows<PersonoppslagException> {
+            service.hentPerson(NorskIdent("test"))
         }
+
+        assertEquals("$code: $msg", exception.message)
     }
 
     @Test
-    fun sammenstattNavn() {
-        val navn = Navn("Fornavn", null, "Etternavn")
-        val fultNavn = Navn("Fornavn", "Mellom", "Etternavn")
+    fun harAdressebeskyttelse_handleError() {
+        val msg = "test message"
+        val code = "test_code"
 
-        assertEquals("Fornavn Etternavn", navn.sammensattNavn)
-        assertEquals("Fornavn Mellom Etternavn", fultNavn.sammensattNavn)
+        val errors = listOf(ResponseError(msg, extensions = ErrorExtension(code, null, null)))
+
+        every { client.hentAdressebeskyttelse(any()) } returns AdressebeskyttelseResponse(null, errors)
+
+        val exception = assertThrows<PersonoppslagException> {
+            service.harAdressebeskyttelse(emptyList(), emptyList())
+        }
+
+        assertEquals("$code: $msg", exception.message)
     }
 
+    @Test
+    fun hentAktorId_handleError() {
+        val msg = "test message"
+        val code = "test_code"
+
+        val errors = listOf(ResponseError(msg, extensions = ErrorExtension(code, null, null)))
+
+        every { client.hentAktorId(any()) } returns IdenterResponse(data = null, errors = errors)
+
+        val exception = assertThrows<PersonoppslagException> {
+            service.hentAktorId("12345")
+        }
+
+        assertEquals("$code: $msg", exception.message)
+    }
+
+    @Test
+    fun hentIdenter_handleError() {
+        val msg = "test message"
+        val code = "test_code"
+
+        val errors = listOf(ResponseError(msg, extensions = ErrorExtension(code, null, null)))
+
+        every { client.hentIdenter(any()) } returns IdenterResponse(data = null, errors = errors)
+
+        val exception = assertThrows<PersonoppslagException> {
+            service.hentIdenter(NorskIdent("12345"))
+        }
+
+        assertEquals("$code: $msg", exception.message)
+    }
+
+    @Test
+    fun hentGeografiskTilknytning_handleError() {
+        val msg = "test message"
+        val code = "test_code"
+
+        val errors = listOf(ResponseError(msg, extensions = ErrorExtension(code, null, null)))
+
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(data = null, errors = errors)
+
+        val exception = assertThrows<PersonoppslagException> {
+            service.hentGeografiskTilknytning(NorskIdent("12345"))
+        }
+
+        assertEquals("$code: $msg", exception.message)
+    }
 
     private fun createHentPerson(
             adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),

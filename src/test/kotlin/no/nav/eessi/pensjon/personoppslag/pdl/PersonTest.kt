@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -38,6 +39,15 @@ internal class PersonTest {
         assertEquals(Sivilstandstype.GIFT, sivilstand.type)
         assertEquals(LocalDate.of(2010, 1, 25), sivilstand.gyldigFraOgMed)
         assertEquals("03128222382", sivilstand.relatertVedSivilstand)
+    }
+
+    @Test
+    fun sammenstattNavn() {
+        val navn = Navn("Fornavn", null, "Etternavn")
+        val fultNavn = Navn("Fornavn", "Mellom", "Etternavn")
+
+        assertEquals("Fornavn Etternavn", navn.sammensattNavn)
+        assertEquals("Fornavn Mellom Etternavn", fultNavn.sammensattNavn)
     }
 
 }

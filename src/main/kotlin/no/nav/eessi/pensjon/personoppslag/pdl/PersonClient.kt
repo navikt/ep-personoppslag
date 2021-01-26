@@ -13,8 +13,10 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.postForObject
 
 @Component
-class PersonClient(private val pdlRestTemplate: RestTemplate,
-                   @Value("\${PDL_URL}") private val url: String) {
+class PersonClient(
+    private val pdlRestTemplate: RestTemplate,
+    @Value("\${PDL_URL}") private val url: String
+) {
 
     /**
      * Oppretter GraphQL Query for uthentig av person
@@ -26,13 +28,12 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
     internal fun hentPerson(ident: String): PersonResponse {
         val query = getGraphqlResource("/graphql/hentPerson.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = HttpEntity(request)
 
-        return pdlRestTemplate.postForObject(url, entity, PersonResponse::class)
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), PersonResponse::class)
     }
 
     /**
-     * Oppretter GraphQL Query for uthentig av [Adressebeskyttelse]
+     * Oppretter GraphQL Query for uthentig av adressebeskyttelse
      *
      * @param identer: Liste med person-identer (fnr). Legges til som variabel på spørringen.
      *
@@ -41,9 +42,8 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
     internal fun hentAdressebeskyttelse(identer: List<String>): AdressebeskyttelseResponse {
         val query = getGraphqlResource("/graphql/hentAdressebeskyttelse.graphql")
         val request = GraphqlRequest(query, Variables(identer = identer))
-        val entity = HttpEntity(request)
 
-        return pdlRestTemplate.postForObject(url, entity, AdressebeskyttelseResponse::class)
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), AdressebeskyttelseResponse::class)
     }
 
     /**
@@ -56,9 +56,8 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
     internal fun hentAktorId(ident: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentAktorId.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = HttpEntity(request)
 
-        return pdlRestTemplate.postForObject(url, entity, IdenterResponse::class)
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), IdenterResponse::class)
     }
 
     /**
@@ -72,9 +71,8 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
     internal fun hentIdenter(ident: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentIdenter.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = HttpEntity(request)
 
-        return pdlRestTemplate.postForObject(url, entity, IdenterResponse::class)
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), IdenterResponse::class)
     }
 
     /**
@@ -87,11 +85,10 @@ class PersonClient(private val pdlRestTemplate: RestTemplate,
     internal fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningResponse {
         val query = getGraphqlResource("/graphql/hentGeografiskTilknytning.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        val entity = HttpEntity(request)
 
-        return pdlRestTemplate.postForObject(url, entity, GeografiskTilknytningResponse::class)
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), GeografiskTilknytningResponse::class)
     }
 
     private fun getGraphqlResource(file: String): String =
-            javaClass.getResource(file).readText().replace(Regex("[\n\t]"), "")
+        javaClass.getResource(file).readText().replace(Regex("[\n\t]"), "")
 }

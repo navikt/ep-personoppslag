@@ -1,5 +1,9 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import no.nav.eessi.pensjon.metrics.MetricsHelper
+import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
+import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
@@ -11,12 +15,36 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
+import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
+import java.lang.RuntimeException
+import javax.annotation.PostConstruct
 
 @Service
-class PersonService(private val client: PersonClient) {
+class PersonService(
+    private val client: PersonClient,
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+) {
+
+    private lateinit var hentPersonMetric: Metric
+    private lateinit var harAdressebeskyttelseMetric: Metric
+    private lateinit var hentAktoerIdMetric: Metric
+    private lateinit var hentIdentMetric: Metric
+    private lateinit var hentIdenterMetric: Metric
+    private lateinit var hentGeografiskTilknytningMetric: Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentPersonMetric = metricsHelper.init("hentPerson", alert = OFF)
+        harAdressebeskyttelseMetric = metricsHelper.init("harAdressebeskyttelse", alert = OFF)
+        hentAktoerIdMetric = metricsHelper.init("hentAktoerId", alert = OFF)
+        hentIdentMetric = metricsHelper.init("hentIdent", alert = OFF)
+        hentIdenterMetric = metricsHelper.init("hentIdenter", alert = OFF)
+        hentGeografiskTilknytningMetric = metricsHelper.init("hentGeografiskTilknytning", alert = OFF)
+    }
 
     /**
      * Funksjon for å hente ut person basert på fnr.
@@ -26,15 +54,15 @@ class PersonService(private val client: PersonClient) {
      * @return [Person]
      */
     fun <T : IdentType> hentPerson(ident: Ident<T>): Person? {
-        val response = client.hentPerson(ident.id)
+        return hentPersonMetric.measure {
+            val response = client.hentPerson(ident.id)
 
-        if (!response.errors.isNullOrEmpty()) {
-            val errorMsg = response.errors.joinToString { it.message ?: "" }
-            throw Exception(errorMsg)
-        }
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
 
-        return response.data?.hentPerson
+            return@measure response.data?.hentPerson
                 ?.let { konverterTilPerson(ident, it) }
+        }
     }
 
     private fun <T : IdentType> konverterTilPerson(ident: Ident<T>, pdlPerson: HentPerson): Person {
@@ -100,18 +128,21 @@ class PersonService(private val client: PersonClient) {
      * @return [Boolean] "true" dersom en av personene har valgt gradering.
      */
     fun harAdressebeskyttelse(fnr: List<String>, gradering: List<AdressebeskyttelseGradering>): Boolean {
-        val response = client.hentAdressebeskyttelse(fnr)
+        if (fnr.isEmpty() || gradering.isEmpty()) return false
 
-        if (!response.errors.isNullOrEmpty()) {
-            val errorMsg = response.errors.joinToString { it.message ?: "" }
-            throw Exception(errorMsg)
-        }
+        return harAdressebeskyttelseMetric.measure {
+            val response = client.hentAdressebeskyttelse(fnr)
 
-        val personer = response.data?.hentPersonBolk ?: return false
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
 
-        return personer
+            val personer = response.data?.hentPersonBolk
+                ?: return@measure false
+
+            return@measure personer
                 .flatMap { it.person.adressebeskyttelse }
                 .any { it.gradering in gradering }
+        }
     }
 
     /**
@@ -121,18 +152,18 @@ class PersonService(private val client: PersonClient) {
      *
      * @return [IdentInformasjon] med Aktør ID, hvis funnet
      */
-    fun hentAktorId(fnr: String): String {
-        val response = client.hentAktorId(fnr)
+    fun hentAktorId(fnr: String): AktoerId {
+        return hentAktoerIdMetric.measure {
+            val response = client.hentAktorId(fnr)
 
-        if (!response.errors.isNullOrEmpty()) {
-            val errorMsg = response.errors.joinToString { it.message ?: "" }
-            throw Exception(errorMsg)
-        }
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
 
-        return response.data?.hentIdenter?.identer
+            return@measure response.data?.hentIdenter?.identer
                 ?.firstOrNull { it.gruppe == IdentGruppe.AKTORID }
-                ?.ident
+                ?.let { AktoerId(it.ident) }
                 ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
+        }
     }
 
     /**
@@ -144,15 +175,17 @@ class PersonService(private val client: PersonClient) {
      * @return [Ident] av valgt [IdentType]
      */
     fun <T : IdentType, R : IdentType> hentIdent(identTypeWanted: R, ident: Ident<T>): Ident<R> {
-        val result = hentIdenter(ident)
+        return hentIdentMetric.measure {
+            val result = hentIdenter(ident)
                 .firstOrNull { it.gruppe == identTypeWanted.gruppe }
                 ?.ident ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
 
-        @Suppress("USELESS_CAST", "UNCHECKED_CAST")
-        return when (identTypeWanted as IdentType) {
-            is IdentType.NorskIdent -> NorskIdent(result) as Ident<R>
-            is IdentType.AktoerId -> AktoerId(result) as Ident<R>
-            is IdentType.Npid -> Npid(result) as Ident<R>
+            @Suppress("USELESS_CAST", "UNCHECKED_CAST")
+            return@measure when (identTypeWanted as IdentType) {
+                is IdentType.NorskIdent -> NorskIdent(result) as Ident<R>
+                is IdentType.AktoerId -> AktoerId(result) as Ident<R>
+                is IdentType.Npid -> Npid(result) as Ident<R>
+            }
         }
     }
 
@@ -164,14 +197,14 @@ class PersonService(private val client: PersonClient) {
      * @return Liste med [IdentInformasjon]
      */
     fun <T : IdentType> hentIdenter(ident: Ident<T>): List<IdentInformasjon> {
-        val response = client.hentIdenter(ident.id)
+        return hentIdenterMetric.measure {
+            val response = client.hentIdenter(ident.id)
 
-        if (!response.errors.isNullOrEmpty()) {
-            val errorMsg = response.errors.joinToString { it.message ?: "" }
-            throw Exception(errorMsg)
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
+
+            return@measure response.data?.hentIdenter?.identer ?: emptyList()
         }
-
-        return response.data?.hentIdenter?.identer ?: emptyList()
     }
 
     /**
@@ -182,13 +215,25 @@ class PersonService(private val client: PersonClient) {
      * @return [GeografiskTilknytning]
      */
     fun <T : IdentType> hentGeografiskTilknytning(ident: Ident<T>): GeografiskTilknytning? {
-        val response = client.hentGeografiskTilknytning(ident.id)
+        return hentGeografiskTilknytningMetric.measure {
+            val response = client.hentGeografiskTilknytning(ident.id)
 
-        if (!response.errors.isNullOrEmpty()) {
-            val errorMsg = response.errors.joinToString { it.message ?: "" }
-            throw Exception(errorMsg)
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
+
+            return@measure response.data?.geografiskTilknytning
         }
-
-        return response.data?.geografiskTilknytning
     }
+
+    private fun handleError(errors: List<ResponseError>) {
+        val error = errors.first()
+
+        val code = error.extensions?.code ?: "unknown_error"
+        val message = error.message ?: "Error message from PDL is missing"
+
+        throw PersonoppslagException("$code: $message")
+    }
+
 }
+
+class PersonoppslagException(message: String) : RuntimeException(message)
