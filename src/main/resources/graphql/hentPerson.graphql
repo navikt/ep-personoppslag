@@ -37,6 +37,8 @@ query($ident: ID!) {
         }
         foedsel {
             foedselsdato
+            foedeland
+            foedested
             folkeregistermetadata {
                 gyldighetstidspunkt
             }
