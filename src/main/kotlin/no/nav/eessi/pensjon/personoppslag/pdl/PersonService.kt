@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import java.lang.RuntimeException
+import javax.annotation.PostConstruct
 
 @Service
 class PersonService(
@@ -28,12 +29,22 @@ class PersonService(
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
 ) {
 
-    private val hentPersonMetric: Metric = metricsHelper.init("hentPerson", alert = OFF)
-    private val harAdressebeskyttelseMetric: Metric = metricsHelper.init("harAdressebeskyttelse", alert = OFF)
-    private val hentAktoerIdMetric: Metric = metricsHelper.init("hentAktoerId", alert = OFF)
-    private val hentIdentMetric: Metric = metricsHelper.init("hentIdent", alert = OFF)
-    private val hentIdenterMetric: Metric = metricsHelper.init("hentIdenter", alert = OFF)
-    private val hentGeografiskTilknytningMetric: Metric = metricsHelper.init("hentGeografiskTilknytning", alert = OFF)
+    private lateinit var hentPersonMetric: Metric
+    private lateinit var harAdressebeskyttelseMetric: Metric
+    private lateinit var hentAktoerIdMetric: Metric
+    private lateinit var hentIdentMetric: Metric
+    private lateinit var hentIdenterMetric: Metric
+    private lateinit var hentGeografiskTilknytningMetric: Metric
+
+    @PostConstruct
+    fun initMetrics() {
+        hentPersonMetric = metricsHelper.init("hentPerson", alert = OFF)
+        harAdressebeskyttelseMetric = metricsHelper.init("harAdressebeskyttelse", alert = OFF)
+        hentAktoerIdMetric = metricsHelper.init("hentAktoerId", alert = OFF)
+        hentIdentMetric = metricsHelper.init("hentIdent", alert = OFF)
+        hentIdenterMetric = metricsHelper.init("hentIdenter", alert = OFF)
+        hentGeografiskTilknytningMetric = metricsHelper.init("hentGeografiskTilknytning", alert = OFF)
+    }
 
     /**
      * Funksjon for å hente ut person basert på fnr.
