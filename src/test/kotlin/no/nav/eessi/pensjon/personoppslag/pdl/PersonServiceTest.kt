@@ -43,16 +43,25 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@TestInstance(Lifecycle.PER_CLASS)
 internal class PersonServiceTest {
 
     private val client = mockk<PersonClient>()
 
     private val service: PersonService = PersonService(client)
+
+    @BeforeAll
+    fun beforeAll() {
+        service.initMetrics()
+    }
 
     @Test
     fun hentPerson() {
@@ -329,7 +338,7 @@ internal class PersonServiceTest {
         every { client.hentAdressebeskyttelse(any()) } returns AdressebeskyttelseResponse(null, errors)
 
         val exception = assertThrows<PersonoppslagException> {
-            service.harAdressebeskyttelse(emptyList(), emptyList())
+            service.harAdressebeskyttelse(listOf("1234"), listOf(AdressebeskyttelseGradering.FORTROLIG))
         }
 
         assertEquals("$code: $msg", exception.message)
