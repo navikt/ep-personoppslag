@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
+import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
@@ -24,6 +25,7 @@ class PdlConfiguration(private val securityTokenExchangeService: STSService) {
                 .errorHandler(DefaultResponseErrorHandler())
                 .additionalInterceptors(
                         RequestIdHeaderInterceptor(),
+                        RequestResponseLoggerInterceptor(),
                         PdlTokenInterceptor(securityTokenExchangeService))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
