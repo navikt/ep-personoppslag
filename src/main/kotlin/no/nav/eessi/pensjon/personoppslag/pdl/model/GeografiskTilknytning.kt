@@ -1,7 +1,9 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 internal data class GeografiskTilknytningResponse(
         val data: GeografiskTilknytningResponseData?,
         val errors: List<ResponseError>? = null

@@ -1,5 +1,8 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 internal data class AdressebeskyttelseResponse(
         val data: HentAdressebeskyttelse?,
         val errors: List<ResponseError>? = null

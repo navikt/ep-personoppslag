@@ -1,5 +1,8 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 internal data class IdenterResponse(
         val data: IdenterDataResponse?,
         val errors: List<ResponseError>? = null
