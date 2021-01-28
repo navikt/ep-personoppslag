@@ -13,7 +13,7 @@ internal data class HentAdressebeskyttelse(
 )
 
 data class AdressebeskyttelseBolkPerson(
-        val person: AdressebeskyttelsePerson
+        val person: AdressebeskyttelsePerson?
 )
 
 data class AdressebeskyttelsePerson(

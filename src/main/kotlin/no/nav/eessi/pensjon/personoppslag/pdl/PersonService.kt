@@ -137,11 +137,12 @@ class PersonService(
                 handleError(response.errors)
 
             val personer = response.data?.hentPersonBolk
-                ?: return@measure false
+                    ?: return@measure false
 
             return@measure personer
-                .flatMap { it.person.adressebeskyttelse }
-                .any { it.gradering in gradering }
+                    .filterNot { it.person == null }
+                    .flatMap { it.person!!.adressebeskyttelse }
+                    .any { it.gradering in gradering }
         }
     }
 
