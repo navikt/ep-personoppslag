@@ -12,7 +12,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ErrorExtension
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierlasjon
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
@@ -112,7 +112,7 @@ internal class PersonServiceTest {
             foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2))) ),
-            familierelasjoner = listOf(Familierlasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Familierelasjonsrolle.BARN, minRolleForPerson = Familierelasjonsrolle.MOR)),
+            familierelasjoner = listOf(Familierelasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Familierelasjonsrolle.BARN, minRolleForPerson = Familierelasjonsrolle.MOR)),
             sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010"))
         )
 
@@ -393,16 +393,16 @@ internal class PersonServiceTest {
     }
 
     private fun createHentPerson(
-            adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),
-            bostedsadresse: List<Bostedsadresse> = emptyList(),
-            oppholdsadresse: List<Oppholdsadresse> = emptyList(),
-            navn: List<Navn> = emptyList(),
-            statsborgerskap: List<Statsborgerskap> = emptyList(),
-            foedsel: List<Foedsel> = emptyList(),
-            kjoenn: List<Kjoenn> = emptyList(),
-            doedsfall: List<Doedsfall> = emptyList(),
-            familierelasjoner: List<Familierlasjon> = emptyList(),
-            sivilstand: List<Sivilstand> = emptyList()
+        adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),
+        bostedsadresse: List<Bostedsadresse> = emptyList(),
+        oppholdsadresse: List<Oppholdsadresse> = emptyList(),
+        navn: List<Navn> = emptyList(),
+        statsborgerskap: List<Statsborgerskap> = emptyList(),
+        foedsel: List<Foedsel> = emptyList(),
+        kjoenn: List<Kjoenn> = emptyList(),
+        doedsfall: List<Doedsfall> = emptyList(),
+        familierelasjoner: List<Familierelasjon> = emptyList(),
+        sivilstand: List<Sivilstand> = emptyList()
     ) = HentPerson(
             adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand
     )

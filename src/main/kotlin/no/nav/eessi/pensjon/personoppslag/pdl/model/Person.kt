@@ -23,7 +23,7 @@ internal data class HentPerson(
         val foedsel: List<Foedsel>,
         val kjoenn: List<Kjoenn>,
         val doedsfall: List<Doedsfall>,
-        val familierelasjoner: List<Familierlasjon>,
+        val familierelasjoner: List<Familierelasjon>,
         val sivilstand: List<Sivilstand>
 )
 
@@ -38,7 +38,7 @@ data class Person(
         val geografiskTilknytning: GeografiskTilknytning?,
         val kjoenn: Kjoenn?,
         val doedsfall: Doedsfall?,
-        val familierelasjoner: List<Familierlasjon>,
+        val familierelasjoner: List<Familierelasjon>,
         val sivilstand: List<Sivilstand>
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
@@ -107,7 +107,7 @@ data class Kjoenn(
         val folkeregistermetadata: Folkeregistermetadata?
 )
 
-data class Familierlasjon (
+data class Familierelasjon (
         val relatertPersonsIdent: String,
         val relatertPersonsRolle: Familierelasjonsrolle,
         val minRolleForPerson: Familierelasjonsrolle?
