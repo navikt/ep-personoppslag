@@ -51,7 +51,12 @@ data class Navn(
 ) {
     val sammensattNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn)
             .joinToString(separator = " ")
+
+    val sammensattEtterNavn: String = listOfNotNull(etternavn, fornavn, mellomnavn)
+            .joinToString(separator = " ")
 }
+
+
 
 
 data class Statsborgerskap(
