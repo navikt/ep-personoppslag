@@ -10,7 +10,8 @@
             "husbokstav": null,
             "postnummer": "0557"
           },
-          "utenlandskAdresse": null
+          "utenlandskAdresse": null,
+          "gyldigFraOgMed": "1963-03-21T00:00"
         }
       ],
       "oppholdsadresse": [
@@ -21,7 +22,8 @@
             "husbokstav": null,
             "postnummer": "0557"
           },
-          "utenlandskAdresse": null
+          "utenlandskAdresse": null,
+          "gyldigFraOgMed": "1963-03-21T00:00"
         }
       ],
       "navn": [

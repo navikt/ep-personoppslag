@@ -19,6 +19,7 @@ query($ident: ID!) {
                 postkode
                 regionDistriktOmraade
             }
+            gyldigFraOgMed
         }
         oppholdsadresse {
             vegadresse {
@@ -36,6 +37,7 @@ query($ident: ID!) {
                 postkode
                 regionDistriktOmraade
             }
+            gyldigFraOgMed
         }
         navn {
             fornavn

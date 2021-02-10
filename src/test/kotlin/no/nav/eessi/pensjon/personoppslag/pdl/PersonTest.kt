@@ -39,6 +39,13 @@ internal class PersonTest {
         assertEquals(Sivilstandstype.GIFT, sivilstand.type)
         assertEquals(LocalDate.of(2010, 1, 25), sivilstand.gyldigFraOgMed)
         assertEquals("03128222382", sivilstand.relatertVedSivilstand)
+
+        val bostedsadresse = hentPerson.bostedsadresse
+            .filterNot { it.gyldigFraOgMed == null }
+            .maxBy { it.gyldigFraOgMed!! }
+
+        assertEquals("SANNERGATA", bostedsadresse?.vegadresse?.adressenavn)
+
     }
 
     @Test
