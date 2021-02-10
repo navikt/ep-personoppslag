@@ -19,5 +19,11 @@ data class Vegadresse(
 )
 
 data class UtenlandskAdresse(
-        val landkode: String
+        val adressenavnNummer: String?,
+        val bySted: String?,
+        val bygningEtasjeLeilighet: String?,
+        val landkode: String,
+        val postboksNummerNavn: String?,
+        val postkode: String?,
+        val regionDistriktOmraade: String?
 )
