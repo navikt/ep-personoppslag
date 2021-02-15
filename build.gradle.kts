@@ -42,7 +42,7 @@ dependencies {
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
     implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.8")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.0")
+    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.1")
 
     // Spring
     implementation("org.springframework:spring-web:$springVersion")
