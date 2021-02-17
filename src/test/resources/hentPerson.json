@@ -11,7 +11,21 @@
             "postnummer": "0557"
           },
           "utenlandskAdresse": null,
-          "gyldigFraOgMed": "1963-03-21T00:00"
+          "gyldigFraOgMed": "1963-03-21T00:00",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
+            "historisk": false
+          }
         }
       ],
       "oppholdsadresse": [
@@ -23,21 +37,65 @@
             "postnummer": "0557"
           },
           "utenlandskAdresse": null,
-          "gyldigFraOgMed": "1963-03-21T00:00"
+          "gyldigFraOgMed": "1963-03-21T00:00",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
+            "historisk": false
+          }
         }
       ],
       "navn": [
         {
           "fornavn": "BLÅ",
           "mellomnavn": null,
-          "etternavn": "STAUDE"
+          "etternavn": "STAUDE",
+          "forkortetNavn": "STAUDE BLÅ",
+          "gyldigFraOgMed": "2021-02-15",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
         }
       ],
       "statsborgerskap": [
         {
           "land": "NOR",
           "gyldigFraOgMed": "1985-06-11",
-          "gyldigTilOgMed": null
+          "gyldigTilOgMed": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
         }
       ],
       "foedsel": [
@@ -45,12 +103,40 @@
           "foedselsdato": "1985-01-01",
           "folkeregistermetadata": {
             "gyldighetstidspunkt": "2020-01-05T15:42:45"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
           }
         },
         {
           "foedselsdato": "1985-06-11",
           "folkeregistermetadata": {
             "gyldighetstidspunkt": "2021-01-14T15:42:45"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
           }
         }
       ],
@@ -60,12 +146,40 @@
           "kjoenn": "MANN",
           "folkeregistermetadata": {
             "gyldighetstidspunkt": "2021-01-01T15:42:45"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
           }
         },
         {
           "kjoenn": "KVINNE",
           "folkeregistermetadata": {
             "gyldighetstidspunkt": "2021-01-14T15:42:45"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
           }
         }
       ],
@@ -73,34 +187,114 @@
         {
           "relatertPersonsIdent": "20081779660",
           "relatertPersonsRolle": "BARN",
-          "minRolleForPerson": "MOR"
+          "minRolleForPerson": "MOR",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
+            "historisk": false
+          }
         }
       ],
       "sivilstand": [
         {
           "type": "UGIFT",
           "gyldigFraOgMed": "1985-06-11",
-          "relatertVedSivilstand": null
-        },
+          "relatertVedSivilstand": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }        },
         {
           "type": "GIFT",
           "gyldigFraOgMed": "2005-03-14",
-          "relatertVedSivilstand": "03128222382"
-        },
+          "relatertVedSivilstand": "03128222382",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }        },
         {
           "type": "SKILT",
           "gyldigFraOgMed": "2006-01-30",
-          "relatertVedSivilstand": null
-        },
+          "relatertVedSivilstand": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }        },
         {
           "type": "PARTNER",
           "gyldigFraOgMed": "2009-01-30",
-          "relatertVedSivilstand": "03128222382"
-        },
+          "relatertVedSivilstand": "03128222382",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }        },
         {
           "type": "GIFT",
           "gyldigFraOgMed": "2010-01-25",
-          "relatertVedSivilstand": "03128222382"
+          "relatertVedSivilstand": "03128222382",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
         }
       ]
     }

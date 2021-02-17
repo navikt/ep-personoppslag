@@ -5,80 +5,127 @@ query($ident: ID!) {
         }
         bostedsadresse {
             vegadresse {
-                adressenavn
-                husnummer
-                husbokstav
-                postnummer
+                ...vegadresseDetails
             }
             utenlandskAdresse {
-                adressenavnNummer
-                bySted
-                bygningEtasjeLeilighet
-                landkode
-                postboksNummerNavn
-                postkode
-                regionDistriktOmraade
+                ...utenlandskAdresseDetails
             }
             gyldigFraOgMed
+            gyldigTilOgMed
+            metadata {
+                ...metadataDetails
+            }
         }
         oppholdsadresse {
             vegadresse {
-                adressenavn
-                husnummer
-                husbokstav
-                postnummer
+                ...vegadresseDetails
             }
             utenlandskAdresse {
-                adressenavnNummer
-                bySted
-                bygningEtasjeLeilighet
-                landkode
-                postboksNummerNavn
-                postkode
-                regionDistriktOmraade
+                ...utenlandskAdresseDetails
             }
             gyldigFraOgMed
+            metadata {
+                ...metadataDetails
+            }
         }
         navn {
             fornavn
             mellomnavn
             etternavn
+            forkortetNavn
+            gyldigFraOgMed
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
         }
         statsborgerskap {
             land
             gyldigFraOgMed
             gyldigTilOgMed
+            metadata {
+                ...metadataDetails
+            }
         }
         foedsel {
             foedselsdato
             foedeland
             foedested
+            foedselsaar
             folkeregistermetadata {
-                gyldighetstidspunkt
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
             }
         }
         doedsfall {
             doedsdato
-            folkeregistermetadata {
-                gyldighetstidspunkt
+            metadata {
+                ...metadataDetails
             }
         }
         kjoenn {
             kjoenn
             folkeregistermetadata {
-                gyldighetstidspunkt
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
             }
         }
         familierelasjoner {
             relatertPersonsIdent
             relatertPersonsRolle
             minRolleForPerson
+            metadata {
+                ...metadataDetails
+            }
         }
         sivilstand {
             type
             gyldigFraOgMed
             relatertVedSivilstand
+            metadata {
+                ...metadataDetails
+            }
         }
 
     }
 }
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    master
+    opplysningsId
+    historisk
+}
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    gyldighetstidspunkt
+}
+fragment vegadresseDetails on Vegadresse {
+    husbokstav
+    husnummer
+    adressenavn
+    postnummer
+    kommunenummer
+    bydelsnummer
+}
+fragment utenlandskAdresseDetails on UtenlandskAdresse {
+    adressenavnNummer
+    bygningEtasjeLeilighet
+    postboksNummerNavn
+    postkode
+    bySted
+    regionDistriktOmraade
+    landkode
+}
+

@@ -6,7 +6,8 @@ data class Bostedsadresse(
         val gyldigFraOgMed: LocalDateTime?,
         val gyldigTilOgMed: LocalDateTime?,
         val vegadresse: Vegadresse?,
-        val utenlandskAdresse: UtenlandskAdresse?
+        val utenlandskAdresse: UtenlandskAdresse?,
+        val metadata: Metadata
 )
 
 typealias Oppholdsadresse = Bostedsadresse
@@ -15,7 +16,9 @@ data class Vegadresse(
         val adressenavn: String?,
         val husnummer: String?,
         val husbokstav: String?,
-        val postnummer: String?
+        val postnummer: String?,
+        val kommunenummer: String?,
+        val bydelsnummer: String?
 )
 
 data class UtenlandskAdresse(

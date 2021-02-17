@@ -1,0 +1,167 @@
+{
+  "data": {
+    "hentPerson": {
+      "adressebeskyttelse": [],
+      "bostedsadresse": [
+        {
+          "vegadresse": {
+            "husbokstav": null,
+            "husnummer": "15",
+            "adressenavn": "STASJONSHAGEN",
+            "postnummer": "3183",
+            "kommunenummer": "3801",
+            "bydelsnummer": null
+          },
+          "utenlandskAdresse": null,
+          "gyldigFraOgMed": "2021-02-15T10:41:02",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
+            "historisk": false
+          }
+        }
+      ],
+      "oppholdsadresse": [],
+      "navn": [
+        {
+          "fornavn": "ÅPENHJERTIG",
+          "mellomnavn": null,
+          "etternavn": "HEST",
+          "forkortetNavn": "HEST ÅPENHJERTIG",
+          "gyldigFraOgMed": "2021-02-15",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-02-15T10:41:02"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "acbe1a46-e3d1-42c7-b88e-7ecbf1317485",
+            "historisk": false
+          }
+        }
+      ],
+      "statsborgerskap": [
+        {
+          "land": "NOR",
+          "gyldigFraOgMed": "1974-03-17",
+          "gyldigTilOgMed": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "aef6d6fb-39a5-4236-ba00-893220462fec",
+            "historisk": false
+          }
+        }
+      ],
+      "foedsel": [
+        {
+          "foedselsdato": "1974-03-17",
+          "foedeland": null,
+          "foedested": null,
+          "foedselsaar": null,
+          "folkeregistermetadata": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "7c82e2a8-f8f9-44b2-bb8e-2ca542e268fd",
+            "historisk": false
+          }
+        }
+      ],
+      "doedsfall": [],
+      "kjoenn": [
+        {
+          "kjoenn": "UKJENT",
+          "folkeregistermetadata": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "a3794345-4ea6-471f-a96b-07bbba666fd3",
+            "historisk": false
+          }
+        },
+        {
+          "kjoenn": "MANN",
+          "folkeregistermetadata": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "a3794345-4ea6-471f-a96b-07bbba666fd3",
+            "historisk": false
+          }
+        }
+      ],
+      "familierelasjoner": [],
+      "sivilstand": [
+        {
+          "type": "UGIFT",
+          "gyldigFraOgMed": null,
+          "relatertVedSivilstand": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
+        }
+      ]
+    }
+  }
+}

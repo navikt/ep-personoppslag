@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
-import java.lang.RuntimeException
 import javax.annotation.PostConstruct
 
 @Service
@@ -61,49 +60,60 @@ class PersonService(
                 handleError(response.errors)
 
             return@measure response.data?.hentPerson
-                ?.let { konverterTilPerson(ident, it) }
+                ?.let {
+                    val identer = hentIdenter(ident)
+                    val geografiskTilknytning = hentGeografiskTilknytning(ident)
+                    konverterTilPerson(it, identer, geografiskTilknytning)
+                }
         }
     }
 
-    private fun <T : IdentType> konverterTilPerson(ident: Ident<T>, pdlPerson: HentPerson): Person {
-        val identer = hentIdenter(ident)
-        val geografiskTilknytning = hentGeografiskTilknytning(ident)
+    companion object {
 
-        val navn = pdlPerson.navn
+        fun konverterTilPerson(
+            pdlPerson: HentPerson,
+            identer: List<IdentInformasjon>,
+            geografiskTilknytning: GeografiskTilknytning?
+        ): Person {
+
+            val navn = pdlPerson.navn
                 .singleOrNull()
 
-        val graderingListe = pdlPerson.adressebeskyttelse
+            val graderingListe = pdlPerson.adressebeskyttelse
                 .map { it.gradering }
                 .distinct()
 
-        val statsborgerskap = pdlPerson.statsborgerskap
+            val statsborgerskap = pdlPerson.statsborgerskap
                 .distinctBy { it.land }
 
-        val foedsel = pdlPerson.foedsel
-                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+            val foedsel = pdlPerson.foedsel
+                .maxBy { it.metadata.maxby() }
+//                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
+//                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
-        val bostedsadresse = pdlPerson.bostedsadresse
+            val bostedsadresse = pdlPerson.bostedsadresse
                 .filterNot { it.gyldigFraOgMed == null }
                 .maxBy { it.gyldigFraOgMed!! }
 
-        val oppholdsadresse = pdlPerson.oppholdsadresse
+            val oppholdsadresse = pdlPerson.oppholdsadresse
                 .filterNot { it.gyldigFraOgMed == null }
                 .maxBy { it.gyldigFraOgMed!! }
 
-        val kjoenn = pdlPerson.kjoenn
-                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+            val kjoenn = pdlPerson.kjoenn
+                .maxBy { it.metadata.maxby() }
+//                .filterNot { it.folkeregistermetadata == null }
+//                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
+//                .maxBy { it.folkeregistermetadata?.gyldighetstidspunkt!! }
 
-        val doedsfall = pdlPerson.doedsfall
+            val doedsfall = pdlPerson.doedsfall
                 .filterNot { it.doedsdato == null }
                 .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
                 .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
-        val familierelasjoner = pdlPerson.familierelasjoner
-        val sivilstand = pdlPerson.sivilstand
+            val familierelasjoner = pdlPerson.familierelasjoner
+            val sivilstand = pdlPerson.sivilstand
 
-        return Person(
+            return Person(
                 identer,
                 navn,
                 graderingListe,
@@ -116,7 +126,8 @@ class PersonService(
                 doedsfall,
                 familierelasjoner,
                 sivilstand
-        )
+            )
+        }
     }
 
     /**
