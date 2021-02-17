@@ -14,7 +14,7 @@ internal data class PersonResponseData(
         val hentPerson: HentPerson?
 )
 
-internal data class HentPerson(
+data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
         val bostedsadresse: List<Bostedsadresse>,
         val oppholdsadresse: List<Oppholdsadresse>,
@@ -47,8 +47,12 @@ data class Person(
 data class Navn(
         val fornavn: String,
         val mellomnavn: String?,
-        val etternavn: String
-) {
+        val etternavn: String,
+        val forkortetNavn: String?,
+        val gyldigFraOgMed: LocalDate?,
+        val folkeregistermetadata: Folkeregistermetadata?,
+        val metadata: Metadata
+        ) {
     val sammensattNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn)
             .joinToString(separator = " ")
 
@@ -56,29 +60,57 @@ data class Navn(
             .joinToString(separator = " ")
 }
 
-
-
-
 data class Statsborgerskap(
         val land: String,
         val gyldigFraOgMed: LocalDate?,
-        val gyldigTilOgMed: LocalDate?
+        val gyldigTilOgMed: LocalDate?,
+        val metadata: Metadata
 )
 
 data class Foedsel(
         val foedselsdato: LocalDate?,
         val foedeland: String?,
         val foedested: String?,
-        val folkeregistermetadata: Folkeregistermetadata?
+        val foedselsaar: Int?,
+        val folkeregistermetadata: Folkeregistermetadata?,
+        val metadata: Metadata
 )
 
 data class Folkeregistermetadata(
         val gyldighetstidspunkt: LocalDateTime?
 )
 
+data class Metadata(
+        val endringer: List<Endring>,
+        val historisk: Boolean,
+        val master: String,
+        val opplysningsId: String
+) {
+        fun maxby(): LocalDate {
+                return endringer.let { endringer
+                        .filterNot { it.type == Endringstype.OPPHOER }
+                        .maxBy { it.registrert }?.registrert!! }
+        }
+}
+
+data class Endring(
+        val kilde: String,
+        val registrert: LocalDate,
+        val registrertAv: String,
+        val systemkilde: String,
+        val type: Endringstype
+)
+
+enum class Endringstype {
+        KORRIGER,
+        OPPHOER,
+        OPPRETT;
+}
+
 data class Doedsfall(
         val doedsdato: LocalDate?,
-        val folkeregistermetadata: Folkeregistermetadata?
+        val folkeregistermetadata: Folkeregistermetadata?,
+        val metadata: Metadata
 )
 
 enum class Sivilstandstype {
@@ -109,17 +141,20 @@ enum class KjoennType {
 
 data class Kjoenn(
         val kjoenn: KjoennType,
-        val folkeregistermetadata: Folkeregistermetadata?
+        val folkeregistermetadata: Folkeregistermetadata?,
+        val metadata: Metadata
 )
 
 data class Familierelasjon (
         val relatertPersonsIdent: String,
         val relatertPersonsRolle: Familierelasjonsrolle,
-        val minRolleForPerson: Familierelasjonsrolle?
+        val minRolleForPerson: Familierelasjonsrolle?,
+        val metadata: Metadata
 )
 
 data class Sivilstand(
         val type: Sivilstandstype,
         val gyldigFraOgMed: LocalDate?,
-        val relatertVedSivilstand: String?
+        val relatertVedSivilstand: String?,
+        val metadata: Metadata
 )

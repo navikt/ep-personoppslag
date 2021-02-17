@@ -7,6 +7,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -32,12 +33,21 @@ internal class PersonServiceIntegrationTest {
      * Example: kubectl port-forward svc/pdl-api 8089:80
      */
     private val service = PersonService(
-            PersonClient(mockClient, "http://localhost:8089/graphql")
+            PersonClient(mockClient, "http://localhost:8099/graphql")
     )
+
+    @BeforeEach
+    fun startup() {
+        service.initMetrics()
+    }
 
     @Test
     fun hentPerson_virkerSomForventet() {
         val person = service.hentPerson(NorskIdent("25078521492"))
+
+
+        println(person.toString())
+
 
         assertNotNull(person?.navn)
     }

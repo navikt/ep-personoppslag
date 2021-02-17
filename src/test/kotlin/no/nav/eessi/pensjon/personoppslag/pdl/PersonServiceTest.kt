@@ -10,9 +10,11 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ErrorExtension
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjon
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
@@ -29,6 +31,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Kjoenn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
@@ -63,11 +66,27 @@ internal class PersonServiceTest {
         service.initMetrics()
     }
 
+    private fun mockMeta(registrert: LocalDate = LocalDate.of(2010, 4,1)): Metadata {
+        return no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata(
+            listOf(
+                Endring(
+                    "TEST",
+                    registrert,
+                    "Test",
+                    "Kilde test",
+                    Endringstype.OPPRETT
+                )),
+            false,
+            "Test",
+            "acbe1a46-e3d1"
+        )
+    }
+
     @Test
     fun hentPerson() {
         val pdlPerson = createHentPerson(
                 adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
-                navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn"))
+                navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", "EMF", null, null, mockMeta()))
         )
 
          val identer = listOf(
@@ -102,18 +121,19 @@ internal class PersonServiceTest {
                 Bostedsadresse(
                     LocalDateTime.of(2020, 10, 5, 10,5,2),
                     LocalDateTime.of(2030, 10, 5, 10, 5, 2),
-                    Vegadresse("TESTVEIEN","1020","A","0234"),
-                    null
+                    Vegadresse("TESTVEIEN","1020","A","0234", "231", null),
+                    null,
+                    mockMeta()
                 )
             ),
             oppholdsadresse = emptyList(),
-            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn")),
-            statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10))),
-            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
-            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)))),
-            doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2))) ),
-            familierelasjoner = listOf(Familierelasjon(relatertPersonsIdent = "101010", relatertPersonsRolle = Familierelasjonsrolle.BARN, minRolleForPerson = Familierelasjonsrolle.MOR)),
-            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010"))
+            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
+            statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
+            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            familierelasjoner = listOf(Familierelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
+            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta()))
         )
 
         val identer = listOf(
@@ -168,9 +188,9 @@ internal class PersonServiceTest {
     @Test
     fun kjoenn_sistGyldigeVerdiBlirValgt() {
         val kjoennListe = listOf(
-                Kjoenn(KjoennType.MANN, Folkeregistermetadata(LocalDateTime.now().minusDays(10))),
-                Kjoenn(KjoennType.UKJENT, null),
-                Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.now()))
+                Kjoenn(KjoennType.MANN, Folkeregistermetadata(LocalDateTime.now().minusDays(10)), mockMeta(LocalDate.now().minusDays (10))),
+                Kjoenn(KjoennType.UKJENT, null, mockMeta()),
+                Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.now()), mockMeta(LocalDate.now()))
         )
 
         val person = createHentPerson(kjoenn = kjoennListe)
@@ -189,11 +209,11 @@ internal class PersonServiceTest {
         val now = LocalDate.now()
 
         val doedsfallListe = listOf(
-                Doedsfall(LocalDate.now(), Folkeregistermetadata(null)), // Mangler gyldig-dato
-                Doedsfall(LocalDate.of(2020, 10, 1), null), // Mangler folkereg.-metadata
-                Doedsfall(null, Folkeregistermetadata(LocalDateTime.now())), // Mangler doedsfall-dato
-                Doedsfall(LocalDate.of(2019, 8, 5), Folkeregistermetadata(LocalDateTime.now().minusDays(50))), // 50 dager gammel gyldighet
-                Doedsfall(now, Folkeregistermetadata(LocalDateTime.now())) // Markert som gyldig fra nå (FORVENTET RESULTAT)
+                Doedsfall(LocalDate.now(), Folkeregistermetadata(null), mockMeta()), // Mangler gyldig-dato
+                Doedsfall(LocalDate.of(2020, 10, 1), null, mockMeta()), // Mangler folkereg.-metadata
+                Doedsfall(null, Folkeregistermetadata(LocalDateTime.now()), mockMeta()), // Mangler doedsfall-dato
+                Doedsfall(LocalDate.of(2019, 8, 5), Folkeregistermetadata(LocalDateTime.now().minusDays(50)), mockMeta()), // 50 dager gammel gyldighet
+                Doedsfall(now, Folkeregistermetadata(LocalDateTime.now()), mockMeta()) // Markert som gyldig fra nå (FORVENTET RESULTAT)
         )
 
         val person = createHentPerson(doedsfall = doedsfallListe)
