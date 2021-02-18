@@ -2,35 +2,7 @@
   "data": {
     "hentPerson": {
       "adressebeskyttelse": [],
-      "bostedsadresse": [
-        {
-          "vegadresse": null,
-          "gyldigFraOgMed": "2021-02-15T10:41:02",
-          "utenlandskAdresse": {
-              "adressenavnNummer": "GUBBAN GATA 21",
-              "bySted": "GØTAN",
-              "bygningEtasjeLeilighet": "1021",
-              "landkode": "SWE",
-              "postboksNummerNavn": "3201",
-              "postkode": "S-21233",
-              "regionDistriktOmraade": "SYDAN-SE"
-          },
-          "metadata": {
-            "endringer": [
-              {
-                "kilde": "Dolly",
-                "registrert": "2021-02-15T10:41:02",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
-                "type": "OPPRETT"
-              }
-            ],
-            "master": "FREG",
-            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
-            "historisk": false
-          }
-        }
-      ],
+      "bostedsadresse": [],
       "oppholdsadresse": [
         {
           "vegadresse": null,
@@ -48,10 +20,38 @@
             "endringer": [
               {
                 "kilde": "Dolly",
-                "registrert": "2021-02-15T10:41:02",
+                "registrert": "2010-02-15T10:41:02",
                 "registrertAv": "Folkeregisteret",
                 "systemkilde": "FREG",
                 "type": "OPPRETT"
+              },
+              {
+                "kilde": "Dolly",
+                "registrert": "2015-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              },
+              {
+                "kilde": "Dolly",
+                "registrert": "2017-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              },
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              },
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
               }
             ],
             "master": "FREG",

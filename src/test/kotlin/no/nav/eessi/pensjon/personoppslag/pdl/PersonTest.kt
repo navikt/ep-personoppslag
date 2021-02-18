@@ -2,25 +2,51 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
+import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
+import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 internal class PersonTest {
+
+    private val mockPersonClient: PersonClient = mockk(relaxed = true)
+
+    private val mockPersonService = PersonService(mockPersonClient)
+
+    @BeforeEach
+    fun setup() {
+        mockPersonService.initMetrics()
+    }
+
+    @AfterEach
+    fun after() {
+        clearAllMocks()
+    }
 
     private val mapper = jacksonObjectMapper()
         .registerModule(JavaTimeModule())
 
-    private fun mockMeta(registrert: LocalDate = LocalDate.of(2010, 4,1)): Metadata {
+
+
+    private fun mockMeta(registrert: LocalDateTime = LocalDateTime.of(2010, 4,1, 13, 23, 10)): Metadata {
         return no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata(
             endringer = listOf(Endring(
                 "TEST",
@@ -35,34 +61,47 @@ internal class PersonTest {
         )
     }
 
+    private fun hentPersonFraFil(hentPersonfil: String): Person? {
+        val response = mapper.readValue(hentPersonfil, PersonResponse::class.java)
+        val remptyResponseJson = """
+            {
+              "data": null,
+              "errors": null
+            }
+        """.trimIndent()
+        val identResponse = mapper.readValue(remptyResponseJson, IdenterResponse::class.java)
+        val geoResponse = mapper.readValue(remptyResponseJson, GeografiskTilknytningResponse::class.java)
+
+        every { mockPersonClient.hentIdenter (any()) } returns identResponse
+        every { mockPersonClient.hentGeografiskTilknytning (any()) }  returns geoResponse
+        every { mockPersonClient.hentPerson(any()) } returns response
+
+        return mockPersonService.hentPerson(NorskIdent("2"))
+    }
+
     @Test
-    fun hentPerson_deserialisering() {
+    fun `hentPerson med data i json deserialisering`() {
         val json = javaClass.getResource("/hentPerson.json").readText()
-        val response = mapper.readValue(json, PersonResponse::class.java)
+        val person = hentPersonFraFil(json)
 
-        val hentPerson = response.data?.hentPerson!!
+        val navn = person?.navn
+        assertEquals("BLÅ", navn?.fornavn)
+        assertEquals("STAUDE", navn?.etternavn)
 
-        val navn = hentPerson.navn.firstOrNull()!!
-        assertEquals("BLÅ", navn.fornavn)
-        assertEquals("STAUDE", navn.etternavn)
+        val foedsel = person?.foedsel
+        assertEquals(LocalDate.of(1985, 1, 1), foedsel?.foedselsdato)
+        assertNotNull(foedsel?.folkeregistermetadata)
 
-        val foedsel = hentPerson.foedsel.maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }!!
-        assertEquals(LocalDate.of(1985, 6, 11), foedsel.foedselsdato)
-        assertNotNull(foedsel.folkeregistermetadata)
+        val kjoenn = person?.kjoenn
+        assertEquals(KjoennType.KVINNE, kjoenn?.kjoenn)
+        assertNotNull(kjoenn?.folkeregistermetadata)
 
-        val kjoenn = hentPerson.kjoenn.maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }!!
-        assertEquals(KjoennType.KVINNE, kjoenn.kjoenn)
-        assertNotNull(kjoenn.folkeregistermetadata)
-
-        val sivilstand = hentPerson.sivilstand.maxBy { it.gyldigFraOgMed!! }!!
+        val sivilstand = person?.sivilstand?.maxBy { it.gyldigFraOgMed!! }!!
         assertEquals(Sivilstandstype.GIFT, sivilstand.type)
         assertEquals(LocalDate.of(2010, 1, 25), sivilstand.gyldigFraOgMed)
         assertEquals("03128222382", sivilstand.relatertVedSivilstand)
 
-        val bostedsadresse = hentPerson.bostedsadresse
-            .filterNot { it.gyldigFraOgMed == null }
-            .maxBy { it.gyldigFraOgMed!! }
-
+        val bostedsadresse = person?.bostedsadresse
         assertEquals("SANNERGATA", bostedsadresse?.vegadresse?.adressenavn)
 
     }
@@ -86,18 +125,21 @@ internal class PersonTest {
     }
 
     @Test
-    fun hentUtlandPerson_deserialisering() {
+    fun `hentPerson Utlandadresse fra opphold`() {
         val json = javaClass.getResource("/hentUtlandPerson.json").readText()
-        val response = mapper.readValue(json, PersonResponse::class.java)
+        val person = hentPersonFraFil(json)
 
-        val hentPerson = response.data?.hentPerson!!
+        val navn = person?.navn
+        assertEquals("BLÅ", navn?.fornavn)
+        assertEquals("STAUDE", navn?.etternavn)
 
-        val navn = hentPerson.navn.firstOrNull()!!
-        assertEquals("BLÅ", navn.fornavn)
-        assertEquals("STAUDE", navn.etternavn)
 
-        val bosted = hentPerson.bostedsadresse.firstOrNull()
-        val utlandadresse = bosted?.utenlandskAdresse
+        assertNull(person?.bostedsadresse)
+
+        val opphold = person?.oppholdsadresse
+        val utlandadresse = opphold?.utenlandskAdresse
+
+        assertEquals(LocalDateTime.of(2021, 2, 15, 10, 41, 2), opphold?.metadata?.sisteRegistrertDato())
 
         assertEquals("SWE", utlandadresse?.landkode)
         assertEquals("GUBBAN GATA 21", utlandadresse?.adressenavnNummer)
@@ -112,19 +154,12 @@ internal class PersonTest {
     @Test
     fun `hentPerson kjoenn og foedsel and konvert`() {
         val json = javaClass.getResource("/hentPerson2Kjoenn.json").readText()
-        val response = mapper.readValue(json, PersonResponse::class.java)
+        val person = hentPersonFraFil(json)
 
-        val hentPerson = response.data?.hentPerson!!
+        val vegadresse = person?.bostedsadresse?.vegadresse
 
-        val person = PersonService.konverterTilPerson(
-            hentPerson,
-            emptyList(),
-            null
-        )
+        assertNull(person?.bostedsadresse?.utenlandskAdresse)
 
-        val vegadresse = person.bostedsadresse?.vegadresse
-
-        assertNull(person.bostedsadresse?.utenlandskAdresse)
         assertEquals(null, vegadresse?.husbokstav)
         assertEquals("15", vegadresse?.husnummer)
         assertEquals("3183", vegadresse?.postnummer)
@@ -132,16 +167,16 @@ internal class PersonTest {
         assertEquals("3801", vegadresse?.kommunenummer)
         assertEquals(null, vegadresse?.bydelsnummer)
 
-        val navn = person.navn
+        val navn = person?.navn
 
         assertEquals("HEST", navn?.etternavn)
         assertEquals("ÅPENHJERTIG", navn?.fornavn)
 
-        val foedsel = person.foedsel
+        val foedsel = person?.foedsel
 
         assertEquals(LocalDate.of(1974, 3 , 17), foedsel?.foedselsdato)
 
-        val kjoenn = person.kjoenn
+        val kjoenn = person?.kjoenn
 
         assertEquals(KjoennType.MANN, kjoenn?.kjoenn)
 
@@ -150,19 +185,11 @@ internal class PersonTest {
     @Test
     fun `hentPerson and konvert`() {
         val json = javaClass.getResource("/hentPerson2.json").readText()
-        val response = mapper.readValue(json, PersonResponse::class.java)
+        val person = hentPersonFraFil(json)
 
-        val hentPerson = response.data?.hentPerson!!
+        val vegadresse = person?.bostedsadresse?.vegadresse
 
-        val person = PersonService.konverterTilPerson(
-            hentPerson,
-            emptyList(),
-            null
-        )
-
-        val vegadresse = person.bostedsadresse?.vegadresse
-
-        assertNull(person.bostedsadresse?.utenlandskAdresse)
+        assertNull(person?.bostedsadresse?.utenlandskAdresse)
         assertEquals(null, vegadresse?.husbokstav)
         assertEquals("15", vegadresse?.husnummer)
         assertEquals("3183", vegadresse?.postnummer)
@@ -170,16 +197,16 @@ internal class PersonTest {
         assertEquals("3801", vegadresse?.kommunenummer)
         assertEquals(null, vegadresse?.bydelsnummer)
 
-        val navn = person.navn
+        val navn = person?.navn
 
         assertEquals("HEST", navn?.etternavn)
         assertEquals("ÅPENHJERTIG", navn?.fornavn)
 
-        val foedsel = person.foedsel
+        val foedsel = person?.foedsel
 
         assertEquals(LocalDate.of(1974, 3 , 17), foedsel?.foedselsdato)
 
-        val kjoenn = person.kjoenn
+        val kjoenn = person?.kjoenn
 
         assertEquals(KjoennType.UKJENT, kjoenn?.kjoenn)
 

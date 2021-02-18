@@ -66,7 +66,7 @@ internal class PersonServiceTest {
         service.initMetrics()
     }
 
-    private fun mockMeta(registrert: LocalDate = LocalDate.of(2010, 4,1)): Metadata {
+    private fun mockMeta(registrert: LocalDateTime = LocalDateTime.of(2010, 4,1, 10, 2, 14)): Metadata {
         return no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata(
             listOf(
                 Endring(
@@ -188,9 +188,9 @@ internal class PersonServiceTest {
     @Test
     fun kjoenn_sistGyldigeVerdiBlirValgt() {
         val kjoennListe = listOf(
-                Kjoenn(KjoennType.MANN, Folkeregistermetadata(LocalDateTime.now().minusDays(10)), mockMeta(LocalDate.now().minusDays (10))),
+                Kjoenn(KjoennType.MANN, Folkeregistermetadata(LocalDateTime.now().minusDays(10)), mockMeta(LocalDateTime.now().minusDays (10))),
                 Kjoenn(KjoennType.UKJENT, null, mockMeta()),
-                Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.now()), mockMeta(LocalDate.now()))
+                Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.now()), mockMeta(LocalDateTime.now()))
         )
 
         val person = createHentPerson(kjoenn = kjoennListe)

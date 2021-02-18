@@ -14,7 +14,7 @@ internal data class PersonResponseData(
         val hentPerson: HentPerson?
 )
 
-data class HentPerson(
+internal data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
         val bostedsadresse: List<Bostedsadresse>,
         val oppholdsadresse: List<Oppholdsadresse>,
@@ -86,7 +86,7 @@ data class Metadata(
         val master: String,
         val opplysningsId: String
 ) {
-        fun maxby(): LocalDate {
+        fun sisteRegistrertDato(): LocalDateTime {
                 return endringer.let { endringer
                         .filterNot { it.type == Endringstype.OPPHOER }
                         .maxBy { it.registrert }?.registrert!! }
@@ -95,7 +95,7 @@ data class Metadata(
 
 data class Endring(
         val kilde: String,
-        val registrert: LocalDate,
+        val registrert: LocalDateTime,
         val registrertAv: String,
         val systemkilde: String,
         val type: Endringstype

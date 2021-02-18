@@ -68,9 +68,7 @@ class PersonService(
         }
     }
 
-    companion object {
-
-        fun konverterTilPerson(
+    internal fun konverterTilPerson(
             pdlPerson: HentPerson,
             identer: List<IdentInformasjon>,
             geografiskTilknytning: GeografiskTilknytning?
@@ -87,23 +85,16 @@ class PersonService(
                 .distinctBy { it.land }
 
             val foedsel = pdlPerson.foedsel
-                .maxBy { it.metadata.maxby() }
-//                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-//                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+                .maxBy { it.metadata.sisteRegistrertDato() }
 
             val bostedsadresse = pdlPerson.bostedsadresse
-                .filterNot { it.gyldigFraOgMed == null }
-                .maxBy { it.gyldigFraOgMed!! }
+                .maxBy { it.metadata.sisteRegistrertDato() }
 
             val oppholdsadresse = pdlPerson.oppholdsadresse
-                .filterNot { it.gyldigFraOgMed == null }
-                .maxBy { it.gyldigFraOgMed!! }
+                .maxBy { it.metadata.sisteRegistrertDato() }
 
             val kjoenn = pdlPerson.kjoenn
-                .maxBy { it.metadata.maxby() }
-//                .filterNot { it.folkeregistermetadata == null }
-//                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-//                .maxBy { it.folkeregistermetadata?.gyldighetstidspunkt!! }
+                .maxBy { it.metadata.sisteRegistrertDato() }
 
             val doedsfall = pdlPerson.doedsfall
                 .filterNot { it.doedsdato == null }
@@ -128,7 +119,6 @@ class PersonService(
                 sivilstand
             )
         }
-    }
 
     /**
      * Funksjon for å sjekke om en liste med personer (fnr.) har en bestemt grad av adressebeskyttelse.
