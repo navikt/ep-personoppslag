@@ -93,6 +93,9 @@ class PersonService(
             val oppholdsadresse = pdlPerson.oppholdsadresse
                 .maxBy { it.metadata.sisteRegistrertDato() }
 
+            val kontaktadresse = pdlPerson.kontaktadresse
+                .maxBy { it.metadata.sisteRegistrertDato() }
+
             val kjoenn = pdlPerson.kjoenn
                 .maxBy { it.metadata.sisteRegistrertDato() }
 
@@ -116,7 +119,8 @@ class PersonService(
                 kjoenn,
                 doedsfall,
                 familierelasjoner,
-                sivilstand
+                sivilstand,
+                kontaktadresse
             )
         }
 

@@ -204,6 +204,7 @@
           }
         }
       ],
+      "kontaktadresse": [],
       "sivilstand": [
         {
           "type": "UGIFT",

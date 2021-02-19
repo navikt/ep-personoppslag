@@ -31,6 +31,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Kjoenn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Kontaktadresse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
@@ -133,7 +134,8 @@ internal class PersonServiceTest {
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             familierelasjoner = listOf(Familierelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
-            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta()))
+            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
+            kontaktadresse = emptyList()
         )
 
         val identer = listOf(
@@ -422,9 +424,10 @@ internal class PersonServiceTest {
         kjoenn: List<Kjoenn> = emptyList(),
         doedsfall: List<Doedsfall> = emptyList(),
         familierelasjoner: List<Familierelasjon> = emptyList(),
-        sivilstand: List<Sivilstand> = emptyList()
+        sivilstand: List<Sivilstand> = emptyList(),
+        kontaktadresse: List<Kontaktadresse> = emptyList()
     ) = HentPerson(
-            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand
+            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse
     )
 
     private fun mockGradertPerson(gradering: AdressebeskyttelseGradering) =

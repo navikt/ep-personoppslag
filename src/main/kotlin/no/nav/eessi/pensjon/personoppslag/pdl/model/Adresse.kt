@@ -30,3 +30,29 @@ data class UtenlandskAdresse(
         val postkode: String?,
         val regionDistriktOmraade: String?
 )
+
+data class Kontaktadresse(
+        val coAdressenavn: String?,
+        val folkeregistermetadata: Folkeregistermetadata?,
+        val gyldigFraOgMed: LocalDateTime?,
+        val gyldigTilOgMed: LocalDateTime?,
+        val metadata: Metadata,
+        val type: KontaktadresseType,
+        val utenlandskAdresse: UtenlandskAdresse?,
+        val utenlandskAdresseIFrittFormat: UtenlandskAdresseIFrittFormat,
+        val vegadresse: Vegadresse?
+)
+
+enum class KontaktadresseType {
+        Innland,
+        Utland;
+}
+
+data class UtenlandskAdresseIFrittFormat(
+        val adresselinje1: String?,
+        val adresselinje2: String?,
+        val adresselinje3: String?,
+        val byEllerStedsnavn: String?,
+        val landkode: String,
+        val postkode: String?
+)

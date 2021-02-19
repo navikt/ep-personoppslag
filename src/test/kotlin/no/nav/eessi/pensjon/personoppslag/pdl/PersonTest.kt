@@ -10,6 +10,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.KontaktadresseType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
@@ -28,8 +29,8 @@ import java.time.LocalDateTime
 internal class PersonTest {
 
     private val mockPersonClient: PersonClient = mockk(relaxed = true)
-
     private val mockPersonService = PersonService(mockPersonClient)
+    private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
     @BeforeEach
     fun setup() {
@@ -40,11 +41,6 @@ internal class PersonTest {
     fun after() {
         clearAllMocks()
     }
-
-    private val mapper = jacksonObjectMapper()
-        .registerModule(JavaTimeModule())
-
-
 
     private fun mockMeta(registrert: LocalDateTime = LocalDateTime.of(2010, 4,1, 13, 23, 10)): Metadata {
         return no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata(
@@ -63,14 +59,14 @@ internal class PersonTest {
 
     private fun hentPersonFraFil(hentPersonfil: String): Person? {
         val response = mapper.readValue(hentPersonfil, PersonResponse::class.java)
-        val remptyResponseJson = """
+        val emptyResponseJson = """
             {
               "data": null,
               "errors": null
             }
         """.trimIndent()
-        val identResponse = mapper.readValue(remptyResponseJson, IdenterResponse::class.java)
-        val geoResponse = mapper.readValue(remptyResponseJson, GeografiskTilknytningResponse::class.java)
+        val identResponse = mapper.readValue(emptyResponseJson, IdenterResponse::class.java)
+        val geoResponse = mapper.readValue(emptyResponseJson, GeografiskTilknytningResponse::class.java)
 
         every { mockPersonClient.hentIdenter (any()) } returns identResponse
         every { mockPersonClient.hentGeografiskTilknytning (any()) }  returns geoResponse
@@ -150,6 +146,38 @@ internal class PersonTest {
         assertEquals("SYDAN-SE", utlandadresse?.regionDistriktOmraade)
 
     }
+
+    @Test
+    fun `hentPerson med kontaktadresse med utenlandsk adresse i fritt format`() {
+        val json = javaClass.getResource("/hentPersonUtlandMedKontaktAdresse.json").readText()
+        val person = hentPersonFraFil(json)
+
+        val navn = person?.navn
+        assertEquals("TVILSOM", navn?.fornavn)
+        assertEquals("KNOTT", navn?.etternavn)
+
+        assertNull(person?.bostedsadresse)
+
+        val opphold = person?.oppholdsadresse
+        val utlandadresse = opphold?.utenlandskAdresse
+
+        assertEquals(LocalDateTime.of(2021, 2, 16, 14, 53, 6), opphold?.metadata?.sisteRegistrertDato())
+
+        assertEquals("TUV", utlandadresse?.landkode)
+        assertEquals("1KOLEJOWA 6/5, 18-500 KOLNO, CAPITAL WEST 3000", utlandadresse?.adressenavnNummer)
+
+        val kontaktadresse = person?.kontaktadresse
+        val utenlandsadresseFrittformat = kontaktadresse?.utenlandskAdresseIFrittFormat
+
+        assertEquals(KontaktadresseType.Utland, kontaktadresse?.type)
+        assertNull(kontaktadresse?.utenlandskAdresse)
+        assertNull(kontaktadresse?.vegadresse)
+        assertEquals("1KOLEJOWA 6/5", utenlandsadresseFrittformat?.adresselinje1)
+        assertEquals("18-500 KOLNO", utenlandsadresseFrittformat?.adresselinje2)
+        assertEquals("CAPITAL WEST 3000", utenlandsadresseFrittformat?.adresselinje3)
+        assertEquals("TUV", utenlandsadresseFrittformat?.landkode)
+    }
+
 
     @Test
     fun `hentPerson kjoenn og foedsel and konvert`() {

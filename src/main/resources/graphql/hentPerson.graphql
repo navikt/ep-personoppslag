@@ -28,6 +28,27 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
+        kontaktadresse {
+            coAdressenavn
+            type
+            gyldigFraOgMed
+            gyldigTilOgMed
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+            vegadresse {
+                ...vegadresseDetails
+            }
+            utenlandskAdresse {
+                ...utenlandskAdresseDetails
+            }
+            utenlandskAdresseIFrittFormat {
+                ...utenlandskAdresseIFrittFormat
+            }
+        }
         navn {
             fornavn
             mellomnavn
@@ -128,4 +149,14 @@ fragment utenlandskAdresseDetails on UtenlandskAdresse {
     regionDistriktOmraade
     landkode
 }
+
+fragment utenlandskAdresseIFrittFormat on UtenlandskAdresseIFrittFormat {
+    adresselinje1
+    adresselinje2
+    adresselinje3
+    byEllerStedsnavn
+    landkode
+    postkode
+}
+
 

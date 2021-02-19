@@ -24,7 +24,8 @@ internal data class HentPerson(
         val kjoenn: List<Kjoenn>,
         val doedsfall: List<Doedsfall>,
         val familierelasjoner: List<Familierelasjon>,
-        val sivilstand: List<Sivilstand>
+        val sivilstand: List<Sivilstand>,
+        val kontaktadresse: List<Kontaktadresse>
 )
 
 data class Person(
@@ -39,7 +40,8 @@ data class Person(
         val kjoenn: Kjoenn?,
         val doedsfall: Doedsfall?,
         val familierelasjoner: List<Familierelasjon>,
-        val sivilstand: List<Sivilstand>
+        val sivilstand: List<Sivilstand>,
+        val kontaktadresse: Kontaktadresse?
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
 }

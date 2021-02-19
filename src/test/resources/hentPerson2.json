@@ -127,6 +127,7 @@
         }
       ],
       "familierelasjoner": [],
+      "kontaktadresse": [],
       "sivilstand": [
         {
           "type": "UGIFT",
