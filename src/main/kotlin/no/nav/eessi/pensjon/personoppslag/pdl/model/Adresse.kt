@@ -39,7 +39,7 @@ data class Kontaktadresse(
         val metadata: Metadata,
         val type: KontaktadresseType,
         val utenlandskAdresse: UtenlandskAdresse?,
-        val utenlandskAdresseIFrittFormat: UtenlandskAdresseIFrittFormat,
+        val utenlandskAdresseIFrittFormat: UtenlandskAdresseIFrittFormat?,
         val vegadresse: Vegadresse?
 )
 
