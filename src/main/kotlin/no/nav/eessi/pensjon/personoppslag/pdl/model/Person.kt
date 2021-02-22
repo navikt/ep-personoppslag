@@ -122,7 +122,7 @@ enum class Sivilstandstype {
         ENKE_ELLER_ENKEMANN,
         SKILT,
         SEPARERT,
-        PARTNER,
+        REGISTRERT_PARTNER,
         SEPARERT_PARTNER,
         SKILT_PARTNER,
         GJENLEVENDE_PARTNER;

@@ -261,7 +261,7 @@
             "historisk": false
           }        },
         {
-          "type": "PARTNER",
+          "type": "REGISTRERT_PARTNER",
           "gyldigFraOgMed": "2009-01-30",
           "relatertVedSivilstand": "03128222382",
           "metadata": {
