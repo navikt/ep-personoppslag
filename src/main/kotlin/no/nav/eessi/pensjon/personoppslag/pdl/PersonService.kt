@@ -85,24 +85,24 @@ class PersonService(
                 .distinctBy { it.land }
 
             val foedsel = pdlPerson.foedsel
-                .maxBy { it.metadata.sisteRegistrertDato() }
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val bostedsadresse = pdlPerson.bostedsadresse
-                .maxBy { it.metadata.sisteRegistrertDato() }
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val oppholdsadresse = pdlPerson.oppholdsadresse
-                .maxBy { it.metadata.sisteRegistrertDato() }
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val kontaktadresse = pdlPerson.kontaktadresse
-                .maxBy { it.metadata.sisteRegistrertDato() }
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val kjoenn = pdlPerson.kjoenn
-                .maxBy { it.metadata.sisteRegistrertDato() }
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val doedsfall = pdlPerson.doedsfall
                 .filterNot { it.doedsdato == null }
                 .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-                .maxBy { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+                .maxByOrNull { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
 
             val familierelasjoner = pdlPerson.familierelasjoner
             val sivilstand = pdlPerson.sivilstand

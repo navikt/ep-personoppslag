@@ -91,7 +91,7 @@ data class Metadata(
         fun sisteRegistrertDato(): LocalDateTime {
                 return endringer.let { endringer
                         .filterNot { it.type == Endringstype.OPPHOER }
-                        .maxBy { it.registrert }?.registrert!! }
+                        .maxByOrNull { it.registrert }?.registrert!! }
         }
 }
 
