@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class IdenterResponse(
-        val data: IdenterDataResponse?,
+        val data: IdenterDataResponse? = null,
         val errors: List<ResponseError>? = null
 )
 

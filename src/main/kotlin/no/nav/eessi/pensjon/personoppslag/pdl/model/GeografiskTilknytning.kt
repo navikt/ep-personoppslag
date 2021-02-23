@@ -5,20 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class GeografiskTilknytningResponse(
-        val data: GeografiskTilknytningResponseData?,
+        val data: GeografiskTilknytningResponseData? = null,
         val errors: List<ResponseError>? = null
 )
 
 internal data class GeografiskTilknytningResponseData(
         @JsonProperty("hentGeografiskTilknytning")
-        val geografiskTilknytning: GeografiskTilknytning?
+        val geografiskTilknytning: GeografiskTilknytning? = null
 )
 
 data class GeografiskTilknytning(
         val gtType: GtType,
-        val gtKommune: String?,
-        val gtBydel: String?,
-        val gtLand: String?
+        val gtKommune: String? = null,
+        val gtBydel: String? = null,
+        val gtLand: String? = null
 )
 
 enum class GtType {

@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class AdressebeskyttelseResponse(
-        val data: HentAdressebeskyttelse?,
+        val data: HentAdressebeskyttelse? = null,
         val errors: List<ResponseError>? = null
 )
 
 internal data class HentAdressebeskyttelse(
-        val hentPersonBolk: List<AdressebeskyttelseBolkPerson>?
+        val hentPersonBolk: List<AdressebeskyttelseBolkPerson>? = null
 )
 
 data class AdressebeskyttelseBolkPerson(
-        val person: AdressebeskyttelsePerson?
+        val person: AdressebeskyttelsePerson? = null
 )
 
 data class AdressebeskyttelsePerson(

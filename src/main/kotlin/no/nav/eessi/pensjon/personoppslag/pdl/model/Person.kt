@@ -6,12 +6,12 @@ import java.time.LocalDateTime
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class PersonResponse(
-        val data: PersonResponseData?,
+        val data: PersonResponseData? = null,
         val errors: List<ResponseError>? = null
 )
 
 internal data class PersonResponseData(
-        val hentPerson: HentPerson?
+        val hentPerson: HentPerson? = null
 )
 
 internal data class HentPerson(
@@ -30,29 +30,29 @@ internal data class HentPerson(
 
 data class Person(
         val identer: List<IdentInformasjon>,
-        val navn: Navn?,
+        val navn: Navn? = null,
         val adressebeskyttelse: List<AdressebeskyttelseGradering>,
-        val bostedsadresse: Bostedsadresse?,
-        val oppholdsadresse: Oppholdsadresse?,
+        val bostedsadresse: Bostedsadresse? = null,
+        val oppholdsadresse: Oppholdsadresse? = null,
         val statsborgerskap: List<Statsborgerskap>,
-        val foedsel: Foedsel?,
-        val geografiskTilknytning: GeografiskTilknytning?,
-        val kjoenn: Kjoenn?,
-        val doedsfall: Doedsfall?,
+        val foedsel: Foedsel? = null,
+        val geografiskTilknytning: GeografiskTilknytning? = null,
+        val kjoenn: Kjoenn? = null,
+        val doedsfall: Doedsfall? = null,
         val familierelasjoner: List<Familierelasjon>,
         val sivilstand: List<Sivilstand>,
-        val kontaktadresse: Kontaktadresse?
+        val kontaktadresse: Kontaktadresse? = null
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
 }
 
 data class Navn(
         val fornavn: String,
-        val mellomnavn: String?,
+        val mellomnavn: String? = null,
         val etternavn: String,
-        val forkortetNavn: String?,
-        val gyldigFraOgMed: LocalDate?,
-        val folkeregistermetadata: Folkeregistermetadata?,
+        val forkortetNavn: String? = null,
+        val gyldigFraOgMed: LocalDate? = null,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
         val metadata: Metadata
         ) {
     val sammensattNavn: String = listOfNotNull(fornavn, mellomnavn, etternavn)
@@ -64,22 +64,22 @@ data class Navn(
 
 data class Statsborgerskap(
         val land: String,
-        val gyldigFraOgMed: LocalDate?,
-        val gyldigTilOgMed: LocalDate?,
+        val gyldigFraOgMed: LocalDate? = null,
+        val gyldigTilOgMed: LocalDate? = null,
         val metadata: Metadata
 )
 
 data class Foedsel(
-        val foedselsdato: LocalDate?,
-        val foedeland: String?,
-        val foedested: String?,
-        val foedselsaar: Int?,
-        val folkeregistermetadata: Folkeregistermetadata?,
+        val foedselsdato: LocalDate? = null,
+        val foedeland: String? = null,
+        val foedested: String? = null,
+        val foedselsaar: Int? = null,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
         val metadata: Metadata
 )
 
 data class Folkeregistermetadata(
-        val gyldighetstidspunkt: LocalDateTime?
+        val gyldighetstidspunkt: LocalDateTime? = null
 )
 
 data class Metadata(
@@ -110,8 +110,8 @@ enum class Endringstype {
 }
 
 data class Doedsfall(
-        val doedsdato: LocalDate?,
-        val folkeregistermetadata: Folkeregistermetadata?,
+        val doedsdato: LocalDate? = null,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
         val metadata: Metadata
 )
 
@@ -143,20 +143,20 @@ enum class KjoennType {
 
 data class Kjoenn(
         val kjoenn: KjoennType,
-        val folkeregistermetadata: Folkeregistermetadata?,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
         val metadata: Metadata
 )
 
 data class Familierelasjon (
         val relatertPersonsIdent: String,
         val relatertPersonsRolle: Familierelasjonsrolle,
-        val minRolleForPerson: Familierelasjonsrolle?,
+        val minRolleForPerson: Familierelasjonsrolle? = null,
         val metadata: Metadata
 )
 
 data class Sivilstand(
         val type: Sivilstandstype,
-        val gyldigFraOgMed: LocalDate?,
-        val relatertVedSivilstand: String?,
+        val gyldigFraOgMed: LocalDate? = null,
+        val relatertVedSivilstand: String? = null,
         val metadata: Metadata
 )
