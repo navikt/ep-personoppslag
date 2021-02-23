@@ -57,6 +57,7 @@
           },
           "vegadresse": null,
           "utenlandskAdresse": null,
+          "postadresseIFrittFormat": null,
           "utenlandskAdresseIFrittFormat": {
             "adresselinje1": "1KOLEJOWA 6/5",
             "adresselinje2": "18-500 KOLNO",

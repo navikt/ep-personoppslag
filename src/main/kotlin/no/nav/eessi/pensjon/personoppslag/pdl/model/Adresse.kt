@@ -40,7 +40,8 @@ data class Kontaktadresse(
         val type: KontaktadresseType,
         val utenlandskAdresse: UtenlandskAdresse?,
         val utenlandskAdresseIFrittFormat: UtenlandskAdresseIFrittFormat?,
-        val vegadresse: Vegadresse?
+        val vegadresse: Vegadresse?,
+        val postadresseIFrittFormat: PostadresseIFrittFormat?
 )
 
 enum class KontaktadresseType {
@@ -55,4 +56,11 @@ data class UtenlandskAdresseIFrittFormat(
         val byEllerStedsnavn: String?,
         val landkode: String,
         val postkode: String?
+)
+
+data class PostadresseIFrittFormat(
+        val adresselinje1: String?,
+        val adresselinje2: String?,
+        val adresselinje3: String?,
+        val postnummer: String?,
 )
