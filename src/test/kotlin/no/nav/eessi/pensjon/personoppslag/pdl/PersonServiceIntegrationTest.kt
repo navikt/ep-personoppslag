@@ -44,11 +44,7 @@ internal class PersonServiceIntegrationTest {
     @Test
     fun hentPerson_virkerSomForventet() {
         val person = service.hentPerson(NorskIdent("25078521492"))
-
-
         println(person.toString())
-
-
         assertNotNull(person?.navn)
     }
 

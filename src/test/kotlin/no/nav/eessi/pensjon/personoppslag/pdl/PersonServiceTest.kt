@@ -32,6 +32,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Kjoenn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Kontaktadresse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.KontaktinformasjonForDoedsbo
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
@@ -135,7 +136,8 @@ internal class PersonServiceTest {
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             familierelasjoner = listOf(Familierelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
             sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
-            kontaktadresse = emptyList()
+            kontaktadresse = emptyList(),
+            kontaktinformasjonForDoedsbo = emptyList()
         )
 
         val identer = listOf(
@@ -425,9 +427,10 @@ internal class PersonServiceTest {
         doedsfall: List<Doedsfall> = emptyList(),
         familierelasjoner: List<Familierelasjon> = emptyList(),
         sivilstand: List<Sivilstand> = emptyList(),
-        kontaktadresse: List<Kontaktadresse> = emptyList()
+        kontaktadresse: List<Kontaktadresse> = emptyList(),
+        kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo> = emptyList()
     ) = HentPerson(
-            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse
+            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
     )
 
     private fun mockGradertPerson(gradering: AdressebeskyttelseGradering) =

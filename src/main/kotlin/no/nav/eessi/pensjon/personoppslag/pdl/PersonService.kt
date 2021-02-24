@@ -96,13 +96,15 @@ class PersonService(
             val kontaktadresse = pdlPerson.kontaktadresse
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
+            val kontaktinformasjonForDoedsbo = pdlPerson.kontaktinformasjonForDoedsbo
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
+
             val kjoenn = pdlPerson.kjoenn
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val doedsfall = pdlPerson.doedsfall
                 .filterNot { it.doedsdato == null }
-                .filterNot { it.folkeregistermetadata?.gyldighetstidspunkt == null }
-                .maxByOrNull { it.folkeregistermetadata!!.gyldighetstidspunkt!! }
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val familierelasjoner = pdlPerson.familierelasjoner
             val sivilstand = pdlPerson.sivilstand
@@ -120,7 +122,8 @@ class PersonService(
                 doedsfall,
                 familierelasjoner,
                 sivilstand,
-                kontaktadresse
+                kontaktadresse,
+                kontaktinformasjonForDoedsbo
             )
         }
 

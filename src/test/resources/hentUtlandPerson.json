@@ -220,6 +220,7 @@
         }
       ],
       "kontaktadresse": [],
+      "kontaktinformasjonForDoedsbo": [],
       "sivilstand": [
         {
           "type": "UGIFT",

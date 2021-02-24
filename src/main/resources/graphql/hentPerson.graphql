@@ -52,6 +52,19 @@ query($ident: ID!) {
                 ...utenlandskAdresseIFrittFormat
             }
         }
+        kontaktinformasjonForDoedsbo {
+            adresse {
+                ...doedsboAdresse
+            }
+            attestutstedelsesdato
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+            skifteform
+        }
         navn {
             fornavn
             mellomnavn
@@ -168,4 +181,10 @@ fragment utenlandskAdresseIFrittFormat on UtenlandskAdresseIFrittFormat {
     postkode
 }
 
-
+fragment doedsboAdresse on KontaktinformasjonForDoedsboAdresse {
+    adresselinje1
+    adresselinje2
+    landkode
+    postnummer
+    poststedsnavn
+}

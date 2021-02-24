@@ -25,7 +25,8 @@ internal data class HentPerson(
         val doedsfall: List<Doedsfall>,
         val familierelasjoner: List<Familierelasjon>,
         val sivilstand: List<Sivilstand>,
-        val kontaktadresse: List<Kontaktadresse>
+        val kontaktadresse: List<Kontaktadresse>,
+        val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>
 )
 
 data class Person(
@@ -41,7 +42,8 @@ data class Person(
         val doedsfall: Doedsfall? = null,
         val familierelasjoner: List<Familierelasjon>,
         val sivilstand: List<Sivilstand>,
-        val kontaktadresse: Kontaktadresse? = null
+        val kontaktadresse: Kontaktadresse? = null,
+        val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
 }
@@ -90,7 +92,6 @@ data class Metadata(
 ) {
         fun sisteRegistrertDato(): LocalDateTime {
                 return endringer.let { endringer
-                        .filterNot { it.type == Endringstype.OPPHOER }
                         .maxByOrNull { it.registrert }?.registrert!! }
         }
 }
