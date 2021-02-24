@@ -91,8 +91,7 @@ data class Metadata(
         val opplysningsId: String
 ) {
         fun sisteRegistrertDato(): LocalDateTime {
-                return endringer.let { endringer
-                        .maxByOrNull { it.registrert }?.registrert!! }
+                return endringer.maxByOrNull { it.registrert }?.registrert!!
         }
 }
 
