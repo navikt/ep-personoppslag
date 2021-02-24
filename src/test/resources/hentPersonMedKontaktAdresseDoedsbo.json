@@ -3,19 +3,21 @@
     "hentPerson": {
       "adressebeskyttelse": [],
       "bostedsadresse": [],
-      "oppholdsadresse": [
+      "oppholdsadresse": [],
+      "kontaktadresse": [],
+      "kontaktinformasjonForDoedsbo": [
         {
-          "vegadresse": null,
-          "utenlandskAdresse": {
-            "adressenavnNummer": "1KOLEJOWA 6/5, 18-500 KOLNO, CAPITAL WEST 3000",
-            "bygningEtasjeLeilighet": "",
-            "postboksNummerNavn": null,
-            "postkode": null,
-            "bySted": null,
-            "regionDistriktOmraade": "",
-            "landkode": "TUV"
+          "adresse": {
+            "adresselinje1": "adresselinje1",
+            "adresselinje2": "adresselinje2",
+            "landkode": "SWE",
+            "postnummer": "3123",
+            "poststedsnavn": "POSTSTEDSETSNAVN"
           },
-          "gyldigFraOgMed": null,
+          "attestutstedelsesdato": "2021-02-16",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-02-16T14:53:06"
+          },
           "metadata": {
             "endringer": [
               {
@@ -27,48 +29,12 @@
               }
             ],
             "master": "FREG",
-            "opplysningsId": "5f03a486-6239-4309-8dde-a2f30e54ea1b",
-            "historisk": false
-          }
-        }
-      ],
-      "kontaktadresse": [
-        {
-          "coAdressenavn": null,
-          "type": "Utland",
-          "gyldigFraOgMed": "2021-02-16T14:53:07",
-          "gyldigTilOgMed": null,
-          "folkeregistermetadata": {
-            "gyldighetstidspunkt": "2021-02-16T14:53:07"
-          },
-          "metadata": {
-            "endringer": [
-              {
-                "kilde": "Dolly",
-                "registrert": "2021-02-16T14:53:07",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
-                "type": "OPPRETT"
-              }
-            ],
-            "master": "FREG",
-            "opplysningsId": "ea03dc43-4867-4022-9110-d80fef7b21a8",
+            "opplysningsId": "bf01eebf-2750-464b-bd19-062d4ab3e209",
             "historisk": false
           },
-          "vegadresse": null,
-          "utenlandskAdresse": null,
-          "postadresseIFrittFormat": null,
-          "utenlandskAdresseIFrittFormat": {
-            "adresselinje1": "1KOLEJOWA 6/5",
-            "adresselinje2": "18-500 KOLNO",
-            "adresselinje3": "CAPITAL WEST 3000",
-            "byEllerStedsnavn": null,
-            "landkode": "TUV",
-            "postkode": null
-          }
+          "skifteform": "ANNET"
         }
       ],
-      "kontaktinformasjonForDoedsbo": [],
       "navn": [
         {
           "fornavn": "TVILSOM",
@@ -141,7 +107,26 @@
           }
         }
       ],
-      "doedsfall": [],
+      "doedsfall": [
+        {
+          "doedsdato": "2021-02-16",
+          "folkeregistermetadata": null,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-16T14:53:06",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "5daad70a-0651-4ccd-9a96-c479a1201ba1",
+            "historisk": false
+          }
+        }
+      ],
       "kjoenn": [
         {
           "kjoenn": "MANN",

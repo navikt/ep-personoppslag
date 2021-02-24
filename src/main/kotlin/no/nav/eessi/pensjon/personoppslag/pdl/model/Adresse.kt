@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Bostedsadresse(
@@ -42,6 +43,28 @@ data class Kontaktadresse(
         val utenlandskAdresseIFrittFormat: UtenlandskAdresseIFrittFormat? = null,
         val vegadresse: Vegadresse? = null,
         val postadresseIFrittFormat: PostadresseIFrittFormat? = null
+)
+
+data class KontaktinformasjonForDoedsbo(
+        val adresse: KontaktinformasjonForDoedsboAdresse,
+        val attestutstedelsesdato: LocalDate,
+        val folkeregistermetadata: Folkeregistermetadata,
+        val metadata: Metadata,
+        val skifteform: KontaktinformasjonForDoedsboSkifteform
+)
+
+enum class KontaktinformasjonForDoedsboSkifteform{
+        ANNET,
+        OFFENTLIG;
+}
+
+
+data class KontaktinformasjonForDoedsboAdresse(
+        val adresselinje1: String,
+        val adresselinje2: String? = null,
+        val landkode: String? = null,
+        val postnummer: String,
+        val poststedsnavn: String
 )
 
 enum class KontaktadresseType {

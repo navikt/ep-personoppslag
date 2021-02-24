@@ -178,6 +178,30 @@ internal class PersonTest {
         assertEquals("TUV", utenlandsadresseFrittformat?.landkode)
     }
 
+    @Test
+    fun `hentPerson med KontaktinformasjonForDoedsboAdresse`() {
+        val json = javaClass.getResource("/hentPersonMedKontaktAdresseDoedsbo.json").readText()
+        val person = hentPersonFraFil(json)
+
+        val navn = person?.navn
+        assertEquals("TVILSOM", navn?.fornavn)
+        assertEquals("KNOTT", navn?.etternavn)
+
+        assertNull(person?.bostedsadresse)
+        assertNull(person?.oppholdsadresse)
+        assertNull(person?.kontaktadresse)
+        assertNotNull(person?.doedsfall)
+
+        val adresse = person?.kontaktinformasjonForDoedsbo?.adresse
+        assertNotNull(adresse)
+
+        assertEquals("adresselinje1", adresse?.adresselinje1)
+        assertEquals("adresselinje2", adresse?.adresselinje2)
+        assertEquals("SWE", adresse?.landkode)
+        assertEquals("3123", adresse?.postnummer)
+        assertEquals("POSTSTEDSETSNAVN", adresse?.poststedsnavn)
+    }
+
 
     @Test
     fun `hentPerson kjoenn og foedsel and konvert`() {
