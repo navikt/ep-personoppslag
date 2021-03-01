@@ -97,8 +97,19 @@ internal class PersonTest {
         assertEquals(LocalDate.of(2010, 1, 25), sivilstand.gyldigFraOgMed)
         assertEquals("03128222382", sivilstand.relatertVedSivilstand)
 
-        val bostedsadresse = person?.bostedsadresse
+        val bostedsadresse = person.bostedsadresse
         assertEquals("SANNERGATA", bostedsadresse?.vegadresse?.adressenavn)
+
+    }
+
+    @Test
+    fun `hentPerson med flere navn data i json deserialisering`() {
+        val json = javaClass.getResource("/hentPersonMedFlereNavn.json").readText()
+        val person = hentPersonFraFil(json)
+
+        val navn = person?.navn
+        assertEquals("BLÅ", navn?.fornavn)
+        assertEquals("STAUDE", navn?.etternavn)
 
     }
 

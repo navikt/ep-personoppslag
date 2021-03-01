@@ -75,7 +75,7 @@ class PersonService(
         ): Person {
 
             val navn = pdlPerson.navn
-                .singleOrNull()
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val graderingListe = pdlPerson.adressebeskyttelse
                 .map { it.gradering }
