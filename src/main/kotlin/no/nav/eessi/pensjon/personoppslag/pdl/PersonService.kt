@@ -16,6 +16,8 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -214,6 +216,33 @@ class PersonService(
 
             return@measure response.data?.hentIdenter?.identer ?: emptyList()
         }
+    }
+
+    fun sokPerson(sokKriterier: SokKriterier): Set<IdentInformasjon> {
+        val response = client.sokPerson(makeListCriteriaFromSok(sokKriterier))
+
+        if (!response.errors.isNullOrEmpty())
+            handleError(response.errors)
+
+        val hits = response.data?.sokPerson?.hits
+
+        return if (hits?.size == 1) {
+            return hits?.first()?.identer.toSet()
+        } else {
+            emptySet()
+        }
+    }
+
+    private fun makeListCriteriaFromSok(sokKriterier: SokKriterier): List<SokCriteria> {
+        val INNEHOLDER = "contains"
+        val ER_LIK = "equals"
+
+        return listOf(
+            SokCriteria("person.navn.fornavn",mapOf(INNEHOLDER to "${sokKriterier.fornavn}")),
+            SokCriteria("person.navn.etternavn", mapOf(INNEHOLDER to "${sokKriterier.etternavn}")),
+            SokCriteria("person.foedsel.foedselsdato", mapOf(ER_LIK to "${sokKriterier.foedselsdato}"))
+        )
+
     }
 
     /**

@@ -3,14 +3,18 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
 import no.nav.eessi.pensjon.security.sts.STSService
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.boot.web.client.RestTemplateBuilder
+import java.time.LocalDate
 
 @Disabled
 internal class PersonServiceIntegrationTest {
@@ -21,7 +25,7 @@ internal class PersonServiceIntegrationTest {
     private val mockStsService = mockk<STSService> {
         every {
             getSystemOidcToken()
-        } returns ""
+        } returns "eyJraWQiOiI2NjcyZWZiYy1jZjQyLTQyZGEtOTMxYS0yYjgwOWJmMDcxMDgiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJzcnZlZXNzaXBlbnNqb24iLCJhdWQiOlsic3J2ZWVzc2lwZW5zam9uIiwicHJlcHJvZC5sb2NhbCJdLCJ2ZXIiOiIxLjAiLCJuYmYiOjE2MTkxNjMxNzcsImF6cCI6InNydmVlc3NpcGVuc2pvbiIsImlkZW50VHlwZSI6IlN5c3RlbXJlc3N1cnMiLCJhdXRoX3RpbWUiOjE2MTkxNjMxNzcsImlzcyI6Imh0dHBzOlwvXC9zZWN1cml0eS10b2tlbi1zZXJ2aWNlLm5haXMucHJlcHJvZC5sb2NhbCIsImV4cCI6MTYxOTE2Njc3NywiaWF0IjoxNjE5MTYzMTc3LCJqdGkiOiI1MmM5MmQxOC0xZDNjLTRmOWMtYjFiZi03NmYyMzJjZDkwMjAifQ.nSRihLLvFZw8pRVc7fouG4hsW0Ez8EDBGSJhO5cVllChJ7O-TZ_G2gwUs2CZTFNQDZwPc6HcDG4sqvU3TbaF95mcLyXoWqjzK1rpH2r7_FMOl-NMFhXvQ2WvnMrZhkK8As6sjjFQTGocxptqMIX1srqUBC7UoA1lNReWnNF1bVZ1kBnHTzCzA3AMBxgDijXieN8MdCIularjgX3gshJlhqimM6dDbCtqoCj4ZUM50YnqoQEUTOUTqC9ubyOThZj0Ojhl2hxKokGkA4Ns6Cz8ZPQKRikE0XSq0xsFGrX2iR6grNlseToolmODcrT2TXXfvgqoen8s1NTKip51-cFWfQ"
     }
 
     private val mockClient = PdlConfiguration(mockStsService)
@@ -63,6 +67,33 @@ internal class PersonServiceIntegrationTest {
         assertNotNull(service.hentAktorId("11067122781"))
         assertNotNull(service.hentAktorId("09035225916"))
         assertNotNull(service.hentAktorId("22117320034"))
+    }
+
+    @Test
+    fun sokPerson() {
+//        P2000
+//        64045349924 - KARAFFEL TUNGSINDIG
+
+//        20035325957 - KARAFFEL KRAFTIG
+
+//        val sokKriterie = SokKriterier(
+//            fornavn = "TUNGSINDIG",
+//            etternavn = "KARAFFEL",
+//            foedselsdato = LocalDate.of(1953, 4, 24)
+//        )
+//
+//        val result = service.sokPerson(sokKriterie)
+//        println(result)
+
+        val sokKriterie2 = SokKriterier(
+            fornavn = "KRAFTIG",
+            etternavn = "KARAFFEL",
+            foedselsdato = LocalDate.of(1953, 3, 20)
+        )
+
+        val result2 = service.sokPerson(sokKriterie2)
+        assertEquals("20035325957", result2.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident)
+
     }
 
 }

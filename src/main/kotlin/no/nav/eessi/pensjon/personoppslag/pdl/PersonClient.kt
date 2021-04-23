@@ -5,6 +5,10 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningRespons
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GraphqlRequest
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonGraphqlRequest
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonVariables
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Variables
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
@@ -87,6 +91,13 @@ class PersonClient(
         val request = GraphqlRequest(query, Variables(ident))
 
         return pdlRestTemplate.postForObject(url, HttpEntity(request), GeografiskTilknytningResponse::class)
+    }
+
+    internal fun sokPerson(sokCriterias: List<SokCriteria>): SokPersonResponse {
+        val query = getGraphqlResource("/graphql/sokPerson.graphql")
+        val request = SokPersonGraphqlRequest(query, SokPersonVariables(criteria = sokCriterias))
+
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), SokPersonResponse::class)
     }
 
     private fun getGraphqlResource(file: String): String =
