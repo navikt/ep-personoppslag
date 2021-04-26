@@ -1,5 +1,8 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Adressebeskyttelse
@@ -13,10 +16,10 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ErrorExtension
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
+import no.nav.eessi.pensjon.personoppslag.pdl.model.ForelderBarnRelasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponseData
@@ -24,7 +27,9 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.GtType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.AKTORID
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.FOLKEREGISTERIDENT
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.NPID
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
@@ -43,6 +48,8 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstand
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
+import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Statsborgerskap
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -92,8 +99,8 @@ internal class PersonServiceTest {
         )
 
          val identer = listOf(
-                IdentInformasjon("25078521492", IdentGruppe.FOLKEREGISTERIDENT),
-                IdentInformasjon("100000000000053", IdentGruppe.AKTORID)
+                IdentInformasjon("25078521492", FOLKEREGISTERIDENT),
+                IdentInformasjon("100000000000053", AKTORID)
         )
 
         val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
@@ -134,15 +141,15 @@ internal class PersonServiceTest {
             foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
-            familierelasjoner = listOf(Familierelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
+            forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
             sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
             kontaktadresse = emptyList(),
             kontaktinformasjonForDoedsbo = emptyList()
         )
 
         val identer = listOf(
-            IdentInformasjon("25078521492", IdentGruppe.FOLKEREGISTERIDENT),
-            IdentInformasjon("100000000000053", IdentGruppe.AKTORID)
+            IdentInformasjon("25078521492", FOLKEREGISTERIDENT),
+            IdentInformasjon("100000000000053", AKTORID)
         )
 
         val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
@@ -175,9 +182,9 @@ internal class PersonServiceTest {
         assertEquals(LocalDate.of(2020, 10,10), resultat.doedsfall?.doedsdato)
         assertEquals(true, resultat.erDoed())
 
-        assertEquals("101010", resultat.familierelasjoner.lastOrNull()?.relatertPersonsIdent)
-        assertEquals(Familierelasjonsrolle.BARN, resultat.familierelasjoner.lastOrNull()?.relatertPersonsRolle)
-        assertEquals(Familierelasjonsrolle.MOR, resultat.familierelasjoner.lastOrNull()?.minRolleForPerson)
+        assertEquals("101010", resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsIdent)
+        assertEquals(Familierelasjonsrolle.BARN, resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsRolle)
+        assertEquals(Familierelasjonsrolle.MOR, resultat.forelderBarnRelasjon.lastOrNull()?.minRolleForPerson)
 
         assertEquals(Sivilstandstype.GIFT, resultat.sivilstand?.lastOrNull()?.type)
         assertEquals("1020203010", resultat.sivilstand?.lastOrNull()?.relatertVedSivilstand)
@@ -274,9 +281,9 @@ internal class PersonServiceTest {
     @Test
     fun hentIdenter() {
         val identer = listOf(
-                IdentInformasjon("1", IdentGruppe.AKTORID),
-                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT),
-                IdentInformasjon("3", IdentGruppe.NPID)
+                IdentInformasjon("1", AKTORID),
+                IdentInformasjon("2", FOLKEREGISTERIDENT),
+                IdentInformasjon("3", NPID)
         )
 
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
@@ -289,9 +296,9 @@ internal class PersonServiceTest {
     @Test
     fun hentAktorId() {
         val identer = listOf(
-                IdentInformasjon("1", IdentGruppe.AKTORID),
-                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT),
-                IdentInformasjon("3", IdentGruppe.NPID)
+                IdentInformasjon("1", AKTORID),
+                IdentInformasjon("2", FOLKEREGISTERIDENT),
+                IdentInformasjon("3", NPID)
         )
 
         every { client.hentAktorId(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
@@ -304,9 +311,9 @@ internal class PersonServiceTest {
     @Test
     fun hentIdent() {
         val identer = listOf(
-                IdentInformasjon("1", IdentGruppe.AKTORID),
-                IdentInformasjon("2", IdentGruppe.FOLKEREGISTERIDENT),
-                IdentInformasjon("3", IdentGruppe.NPID)
+                IdentInformasjon("1", AKTORID),
+                IdentInformasjon("2", FOLKEREGISTERIDENT),
+                IdentInformasjon("3", NPID)
         )
 
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
@@ -416,6 +423,85 @@ internal class PersonServiceTest {
         assertEquals("$code: $msg", exception.message)
     }
 
+    @Test
+    fun `SokPerson med perfekt resultat`() {
+
+        val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+        val response = """
+            {"data":{"sokPerson":{"pageNumber":1,"totalHits":1,"totalPages":1,"hits":[{"score":42.012856,"identer":[{"ident":"20035325957","gruppe":"FOLKEREGISTERIDENT"},{"ident":"2026844753303","gruppe":"AKTORID"}]}]}}}
+        """.trimIndent()
+
+        val sokPersonRespons = mapper.readValue(response, SokPersonResponse::class.java)
+        every { client.sokPerson(any()) } returns sokPersonRespons
+
+
+        val sokeKriterie = SokKriterier(
+            fornavn = "Fornavn",
+            etternavn = "Etternavn",
+            foedselsdato = LocalDate.of(1953, 3, 20))
+
+        val result = service.sokPerson(sokeKriterie)
+
+        assertEquals("20035325957", result.firstOrNull { it.gruppe == FOLKEREGISTERIDENT }?.ident)
+
+    }
+
+    @Test
+    fun `SokPerson med flere hits enn en leverer et tomt resultat`() {
+
+        val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+        val response = """
+            {"data":{"sokPerson":{"pageNumber":1,"totalHits":2,"totalPages":1,
+            "hits":[
+            {"score":42.012856,"identer":[{"ident":"20035325957","gruppe":"FOLKEREGISTERIDENT"},{"ident":"2026844753303","gruppe":"AKTORID"}]},
+            {"score":52.012856,"identer":[{"ident":"20099999999","gruppe":"FOLKEREGISTERIDENT"},{"ident":"2026844799999","gruppe":"AKTORID"}]}
+            ]}}}
+        """.trimIndent()
+
+        val sokPersonRespons = mapper.readValue(response, SokPersonResponse::class.java)
+        every { client.sokPerson(any()) } returns sokPersonRespons
+
+
+        val sokeKriterie = SokKriterier(
+            fornavn = "Fornavn",
+            etternavn = "Etternavn",
+            foedselsdato = LocalDate.of(1953, 3, 20))
+
+        val result = service.sokPerson(sokeKriterie)
+
+        assertEquals(emptySet<IdentInformasjon>(), result)
+
+    }
+
+    @Test
+    fun `SokPerson returnerer json med UNAUTHORIZED error som kaster en PersonoppslagException`() {
+
+        val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+        val response = """
+             {"errors":[{"message":"Ikke autentisert","locations":[{"line":1,"column":52}],"path":["sokPerson"],"extensions":{"code":"unauthenticated","classification":"ExecutionAborted"}}],"data":{"sokPerson":null}}
+        """.trimIndent()
+
+        val sokPersonRespons = mapper.readValue(response, SokPersonResponse::class.java)
+        every { client.sokPerson(any()) } returns sokPersonRespons
+
+
+        val sokeKriterie = SokKriterier(
+            fornavn = "Fornavn",
+            etternavn = "Etternavn",
+            foedselsdato = LocalDate.of(1953, 3, 20))
+
+        assertThrows<PersonoppslagException> {
+            service.sokPerson(sokeKriterie)
+        }
+
+    }
+
     private fun createHentPerson(
         adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),
         bostedsadresse: List<Bostedsadresse> = emptyList(),
@@ -425,7 +511,7 @@ internal class PersonServiceTest {
         foedsel: List<Foedsel> = emptyList(),
         kjoenn: List<Kjoenn> = emptyList(),
         doedsfall: List<Doedsfall> = emptyList(),
-        familierelasjoner: List<Familierelasjon> = emptyList(),
+        familierelasjoner: List<ForelderBarnRelasjon> = emptyList(),
         sivilstand: List<Sivilstand> = emptyList(),
         kontaktadresse: List<Kontaktadresse> = emptyList(),
         kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo> = emptyList()

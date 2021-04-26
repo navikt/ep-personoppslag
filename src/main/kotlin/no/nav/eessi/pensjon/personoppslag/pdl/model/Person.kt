@@ -23,7 +23,7 @@ internal data class HentPerson(
         val foedsel: List<Foedsel>,
         val kjoenn: List<Kjoenn>,
         val doedsfall: List<Doedsfall>,
-        val familierelasjoner: List<Familierelasjon>,
+        val forelderBarnRelasjon: List<ForelderBarnRelasjon>,
         val sivilstand: List<Sivilstand>,
         val kontaktadresse: List<Kontaktadresse>,
         val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>
@@ -40,7 +40,7 @@ data class Person(
         val geografiskTilknytning: GeografiskTilknytning? = null,
         val kjoenn: Kjoenn? = null,
         val doedsfall: Doedsfall? = null,
-        val familierelasjoner: List<Familierelasjon>,
+        val forelderBarnRelasjon: List<ForelderBarnRelasjon>,  //Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon
         val sivilstand: List<Sivilstand>,
         val kontaktadresse: Kontaktadresse? = null,
         val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null
@@ -147,7 +147,7 @@ data class Kjoenn(
         val metadata: Metadata
 )
 
-data class Familierelasjon (
+data class ForelderBarnRelasjon (
         val relatertPersonsIdent: String,
         val relatertPersonsRolle: Familierelasjonsrolle,
         val minRolleForPerson: Familierelasjonsrolle? = null,

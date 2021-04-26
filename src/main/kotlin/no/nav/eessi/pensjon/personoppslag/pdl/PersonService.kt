@@ -108,7 +108,7 @@ class PersonService(
                 .filterNot { it.doedsdato == null }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val familierelasjoner = pdlPerson.familierelasjoner
+            val forelderBarnRelasjon = pdlPerson.forelderBarnRelasjon
             val sivilstand = pdlPerson.sivilstand
 
             return Person(
@@ -122,7 +122,7 @@ class PersonService(
                 geografiskTilknytning,
                 kjoenn,
                 doedsfall,
-                familierelasjoner,
+                forelderBarnRelasjon,
                 sivilstand,
                 kontaktadresse,
                 kontaktinformasjonForDoedsbo
@@ -227,7 +227,7 @@ class PersonService(
         val hits = response.data?.sokPerson?.hits
 
         return if (hits?.size == 1) {
-            return hits?.first()?.identer.toSet()
+            return hits.first().identer.toSet()
         } else {
             emptySet()
         }

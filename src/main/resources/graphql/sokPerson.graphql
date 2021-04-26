@@ -8,23 +8,6 @@ query ($paging:Paging, $criteria:[Criterion]) {
             identer {
                 ident
                 gruppe
-            },
-            highlights {
-                opplysning,
-                opplysningsId
-                historisk
-                matches {
-                    field
-                    fragments
-                }
-            }
-            person {
-                navn(historikk: false) {
-                    fornavn
-                    etternavn
-                    mellomnavn
-                    metadata{historisk}
-                }
             }
         }
     }

@@ -113,7 +113,7 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
-        familierelasjoner {
+        forelderBarnRelasjon {
             relatertPersonsIdent
             relatertPersonsRolle
             minRolleForPerson
