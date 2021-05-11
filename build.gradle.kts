@@ -63,9 +63,6 @@ dependencies {
     implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
     implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 
-    //Mock
-    testImplementation("org.mockito:mockito-junit-jupiter:3.3.3")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 // https://github.com/researchgate/gradle-release

@@ -118,7 +118,7 @@ internal class PersonServiceTest {
 
         assertEquals(gt, resultat.geografiskTilknytning)
 
-        assertEquals(1, resultat.adressebeskyttelse!!.size)
+        assertEquals(1, resultat.adressebeskyttelse.size)
         assertEquals(2, resultat.identer.size)
     }
 
@@ -174,8 +174,8 @@ internal class PersonServiceTest {
         assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
 
         assertEquals(LocalDate.of(2000,10,3), resultat.foedsel?.foedselsdato)
-        assertEquals("NOR", resultat?.foedsel?.foedeland)
-        assertEquals("OSLO", resultat?.foedsel?.foedested)
+        assertEquals("NOR", resultat.foedsel?.foedeland)
+        assertEquals("OSLO", resultat.foedsel?.foedested)
 
         assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
 
@@ -186,13 +186,13 @@ internal class PersonServiceTest {
         assertEquals(Familierelasjonsrolle.BARN, resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsRolle)
         assertEquals(Familierelasjonsrolle.MOR, resultat.forelderBarnRelasjon.lastOrNull()?.minRolleForPerson)
 
-        assertEquals(Sivilstandstype.GIFT, resultat.sivilstand?.lastOrNull()?.type)
-        assertEquals("1020203010", resultat.sivilstand?.lastOrNull()?.relatertVedSivilstand)
-        assertEquals(LocalDate.of(2010, 10,10), resultat.sivilstand?.lastOrNull()?.gyldigFraOgMed)
+        assertEquals(Sivilstandstype.GIFT, resultat.sivilstand.lastOrNull()?.type)
+        assertEquals("1020203010", resultat.sivilstand.lastOrNull()?.relatertVedSivilstand)
+        assertEquals(LocalDate.of(2010, 10,10), resultat.sivilstand.lastOrNull()?.gyldigFraOgMed)
 
         assertEquals(gt, resultat.geografiskTilknytning)
 
-        assertEquals(1, resultat.adressebeskyttelse!!.size)
+        assertEquals(1, resultat.adressebeskyttelse.size)
         assertEquals(2, resultat.identer.size)
     }
 
