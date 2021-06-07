@@ -36,6 +36,7 @@ class PersonService(
     private lateinit var hentIdentMetric: Metric
     private lateinit var hentIdenterMetric: Metric
     private lateinit var hentGeografiskTilknytningMetric: Metric
+    private lateinit var sokPersonMetric: Metric
 
     @PostConstruct
     fun initMetrics() {
@@ -45,6 +46,7 @@ class PersonService(
         hentIdentMetric = metricsHelper.init("hentIdent", alert = OFF)
         hentIdenterMetric = metricsHelper.init("hentIdenter", alert = OFF)
         hentGeografiskTilknytningMetric = metricsHelper.init("hentGeografiskTilknytning", alert = OFF)
+        sokPersonMetric = metricsHelper.init("sokPersonMetric", alert = OFF)
     }
 
     /**
@@ -219,17 +221,19 @@ class PersonService(
     }
 
     fun sokPerson(sokKriterier: SokKriterier): Set<IdentInformasjon> {
-        val response = client.sokPerson(makeListCriteriaFromSok(sokKriterier))
+        return sokPersonMetric.measure {
+            val response = client.sokPerson(makeListCriteriaFromSok(sokKriterier))
 
-        if (!response.errors.isNullOrEmpty())
-            handleError(response.errors)
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
 
-        val hits = response.data?.sokPerson?.hits
+            val hits = response.data?.sokPerson?.hits
 
-        return if (hits?.size == 1) {
-            return hits.first().identer.toSet()
-        } else {
-            emptySet()
+            return@measure if (hits?.size == 1) {
+                hits.first().identer.toSet()
+            } else {
+                emptySet()
+            }
         }
     }
 
