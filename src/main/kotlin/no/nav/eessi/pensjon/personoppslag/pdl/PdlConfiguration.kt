@@ -16,31 +16,28 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
-//@Configuration
-abstract class PdlConfiguration(private val securityTokenExchangeService: STSService) {
 
-    abstract fun userToken() : String?
+@Configuration
+open class PdlConfiguration(private val securityTokenExchangeService: STSService) {
+
+    open fun userToken(): String? = null
 
     @Bean
     fun pdlRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
         return templateBuilder
-                .errorHandler(DefaultResponseErrorHandler())
-                .additionalInterceptors(
-                        RequestIdHeaderInterceptor(),
-                        RequestResponseLoggerInterceptor(),
-                        PdlTokenInterceptor(userToken(), securityTokenExchangeService))
-                .build().apply {
-                    requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
-                }
+            .errorHandler(DefaultResponseErrorHandler())
+            .additionalInterceptors(
+                RequestIdHeaderInterceptor(),
+                RequestResponseLoggerInterceptor(),
+                PdlTokenInterceptor(userToken(), securityTokenExchangeService))
+            .build().apply {
+                requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
+            }
     }
+
 }
 
-@Configuration
-class PdlConfigurationImp(private val securityTokenExchangeService: STSService): PdlConfiguration(securityTokenExchangeService) {
-    override fun userToken(): String? = null
-}
-
-internal class PdlTokenInterceptor(private val userTokan: String? = null, private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
+class PdlTokenInterceptor(private val userTokan: String? = null, private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
 
     override fun intercept(request: HttpRequest,
                            body: ByteArray,
@@ -54,7 +51,7 @@ internal class PdlTokenInterceptor(private val userTokan: String? = null, privat
     }
 }
 
-// TODO: Støtte bruker- OG system-token
+//system-token
 internal class PdlSystemTokenInterceptor(private val securityTokenExchangeService: STSService) {
 
     fun intercept(request: HttpRequest): HttpRequest {
@@ -74,7 +71,7 @@ internal class PdlSystemTokenInterceptor(private val securityTokenExchangeServic
     }
 }
 
-// TODO: Støtte bruker- OG system-token
+//bruker-token
 internal class PdlUserTokenInterceptor(private val userTokan: String, private val securityTokenExchangeService: STSService) {
 
     fun intercept(request: HttpRequest): HttpRequest {

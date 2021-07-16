@@ -28,7 +28,7 @@ internal class PersonServiceIntegrationTest {
         } returns ""
     }
 
-    private val mockClient = PdlConfigurationImp(mockStsService)
+    private val mockClient = PdlConfiguration(mockStsService)
             .pdlRestTemplate(RestTemplateBuilder())
 
     /**
