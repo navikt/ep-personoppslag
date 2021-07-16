@@ -16,8 +16,10 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
-@Configuration
-class PdlConfiguration(private val securityTokenExchangeService: STSService) {
+//@Configuration
+abstract class PdlConfiguration(private val securityTokenExchangeService: STSService) {
+
+    abstract fun userToken() : String?
 
     @Bean
     fun pdlRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
@@ -26,19 +28,36 @@ class PdlConfiguration(private val securityTokenExchangeService: STSService) {
                 .additionalInterceptors(
                         RequestIdHeaderInterceptor(),
                         RequestResponseLoggerInterceptor(),
-                        PdlTokenInterceptor(securityTokenExchangeService))
+                        PdlTokenInterceptor(userToken(), securityTokenExchangeService))
                 .build().apply {
                     requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
                 }
     }
 }
 
-// TODO: Støtte bruker- OG system-token
-internal class PdlTokenInterceptor(private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
+@Configuration
+class PdlConfigurationImp(private val securityTokenExchangeService: STSService): PdlConfiguration(securityTokenExchangeService) {
+    override fun userToken(): String? = null
+}
+
+internal class PdlTokenInterceptor(private val userTokan: String? = null, private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
 
     override fun intercept(request: HttpRequest,
                            body: ByteArray,
                            execution: ClientHttpRequestExecution): ClientHttpResponse {
+
+        return if (userTokan == null) {
+            execution.execute(PdlSystemTokenInterceptor(securityTokenExchangeService).intercept(request), body)
+        } else {
+            execution.execute(PdlUserTokenInterceptor(userTokan, securityTokenExchangeService).intercept(request), body)
+        }
+    }
+}
+
+// TODO: Støtte bruker- OG system-token
+internal class PdlSystemTokenInterceptor(private val securityTokenExchangeService: STSService) {
+
+    fun intercept(request: HttpRequest): HttpRequest {
 
         val token = securityTokenExchangeService.getSystemOidcToken()
 
@@ -51,7 +70,26 @@ internal class PdlTokenInterceptor(private val securityTokenExchangeService: STS
         // [System]
         request.headers["Nav-Consumer-Token"] = "Bearer $token"
 
-        return execution.execute(request, body)
+        return request
     }
 }
 
+// TODO: Støtte bruker- OG system-token
+internal class PdlUserTokenInterceptor(private val userTokan: String, private val securityTokenExchangeService: STSService) {
+
+    fun intercept(request: HttpRequest): HttpRequest {
+
+        val token = securityTokenExchangeService.getSystemOidcToken()
+
+        request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
+        request.headers["Tema"] = "PEN"
+
+        // [Borger, Saksbehandler eller System]
+        request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $userTokan"
+
+        // [System]
+        request.headers["Nav-Consumer-Token"] = "Bearer $token"
+
+        return request
+    }
+}
