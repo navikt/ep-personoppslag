@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
 import no.nav.eessi.pensjon.security.sts.STSService
+import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,11 +17,8 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
-
 @Configuration
-open class PdlConfiguration(private val securityTokenExchangeService: STSService) {
-
-    open fun userToken(): String? = null
+class PdlConfiguration(private val securityTokenExchangeService: STSService) {
 
     @Bean
     fun pdlRestTemplate(templateBuilder: RestTemplateBuilder): RestTemplate {
@@ -29,7 +27,7 @@ open class PdlConfiguration(private val securityTokenExchangeService: STSService
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 RequestResponseLoggerInterceptor(),
-                PdlTokenInterceptor(userToken(), securityTokenExchangeService))
+                PdlInterceptor(securityTokenExchangeService))
             .build().apply {
                 requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
             }
@@ -37,24 +35,28 @@ open class PdlConfiguration(private val securityTokenExchangeService: STSService
 
 }
 
-class PdlTokenInterceptor(private val userTokan: String? = null, private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
+class PdlInterceptor(private val securityTokenExchangeService: STSService) : ClientHttpRequestInterceptor {
+
+    private val logger = LoggerFactory.getLogger(PdlInterceptor::class.java)
 
     override fun intercept(request: HttpRequest,
                            body: ByteArray,
                            execution: ClientHttpRequestExecution): ClientHttpResponse {
 
-        return if (userTokan == null) {
-            execution.execute(PdlSystemTokenInterceptor(securityTokenExchangeService).intercept(request), body)
-        } else {
-            execution.execute(PdlUserTokenInterceptor(userTokan, securityTokenExchangeService).intercept(request), body)
-        }
+        val systemToken = PdlSystemTokenInterceptor(securityTokenExchangeService)
+        val userTokenInt = PdlUserTokenInterceptor(securityTokenExchangeService)
+
+        val tokenIntercetorRequest: HttpRequest = userTokenInt.intercept(request) ?: systemToken.intercept(request)
+        logger.info("tokenIntercetorRequest: userToken: ${userTokenInt.intercept(request) != null}")
+
+        return execution.execute(tokenIntercetorRequest, body)
     }
 }
 
 //system-token
-internal class PdlSystemTokenInterceptor(private val securityTokenExchangeService: STSService) {
+internal class PdlSystemTokenInterceptor(private val securityTokenExchangeService: STSService): PdlToken {
 
-    fun intercept(request: HttpRequest): HttpRequest {
+    override fun intercept(request: HttpRequest): HttpRequest {
 
         val token = securityTokenExchangeService.getSystemOidcToken()
 
@@ -71,22 +73,26 @@ internal class PdlSystemTokenInterceptor(private val securityTokenExchangeServic
     }
 }
 
-//bruker-token
-internal class PdlUserTokenInterceptor(private val userTokan: String, private val securityTokenExchangeService: STSService) {
+////bruker-token er default imp med null
+open class PdlUserTokenInterceptor(private val securityTokenExchangeService: STSService): PdlToken {
 
-    fun intercept(request: HttpRequest): HttpRequest {
-
-        val token = securityTokenExchangeService.getSystemOidcToken()
-
-        request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
-        request.headers["Tema"] = "PEN"
-
-        // [Borger, Saksbehandler eller System]
-        request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $userTokan"
-
-        // [System]
-        request.headers["Nav-Consumer-Token"] = "Bearer $token"
-
-        return request
+    override fun intercept(request: HttpRequest): HttpRequest? {
+//
+//        val token = securityTokenExchangeService.getSystemOidcToken()
+//
+//        request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
+//        request.headers["Tema"] = "PEN"
+//
+//        // [Borger, Saksbehandler eller System]
+//        request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $userTokan"
+//
+//        // [System]
+//        request.headers["Nav-Consumer-Token"] = "Bearer $token"
+//
+        return null
     }
+}
+
+interface PdlToken{
+    fun intercept(request: HttpRequest): HttpRequest?
 }
