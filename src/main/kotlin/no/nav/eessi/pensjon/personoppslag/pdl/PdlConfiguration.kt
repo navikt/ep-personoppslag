@@ -19,22 +19,22 @@ import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
 @Configuration
-class PdlConfiguration {
+open class PdlConfiguration {
 
     @Bean
-    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, pdlTokens: List<PdlToken>): RestTemplate {
+    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, pdlTokenCallback: PdlTokenCallBack): RestTemplate {
         return templateBuilder
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 RequestResponseLoggerInterceptor(),
-                PdlInterceptor(pdlTokens))
+                PdlInterceptor(pdlTokenCallback))
             .build().apply {
                 requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
             }
     }
 
-    class PdlInterceptor(private val pdlTokens: List<PdlToken>) : ClientHttpRequestInterceptor {
+    internal class PdlInterceptor(private val pdlTokens: PdlTokenCallBack) : ClientHttpRequestInterceptor {
 
         private val logger = LoggerFactory.getLogger(PdlInterceptor::class.java)
 
@@ -42,8 +42,8 @@ class PdlConfiguration {
                                body: ByteArray,
                                execution: ClientHttpRequestExecution): ClientHttpResponse {
 
-
-            val token = pdlTokens.firstOrNull { it.isUserToken == true } ?: pdlTokens.first { it.isUserToken == false }
+            //val token = pdlTokens.firstOrNull { it.isUserToken == true } ?: pdlTokens.first { it.isUserToken == false }
+            val token = pdlTokens.callBack()
 
             logger.info("tokenIntercetorRequest: userToken: ${token.isUserToken}")
 
@@ -58,55 +58,42 @@ class PdlConfiguration {
 
             return execution.execute(request, body)
         }
-    }
-
-    @Bean
-    @Lazy
-    fun pdlTokenCollection(securityTokenExchangeService: STSService): List<PdlToken> {
-        return listOf(pdlSystemOidcToken(securityTokenExchangeService))
-    }
-
-    @Bean("pdlSystemToken")
-    fun pdlSystemOidcToken(securityTokenExchangeService: STSService): PdlToken {
-        val token = securityTokenExchangeService.getSystemOidcToken()
-        return PdlTokenImp(systemToken = token, userToken = token, isUserToken = false)
-    }
-
-//    @Bean("pdlUserToken")
-//    fun pdlUserOidcToken(securityTokenExchangeService: STSService): PdlToken {
-//        val token = securityTokenExchangeService.getSystemOidcToken()
-//        return PdlTokenImp(systemToken = token, userToken = token, isUserToken = true)
-//    }
-
-
+   }
 }
 
-////bruker-token er default imp med null
-//open class PdlUserTokenInterceptor(private val securityTokenExchangeService: STSService): PdlToken {
-//
-//    override fun intercept(request: HttpRequest): HttpRequest? {
-//
-//        val token = securityTokenExchangeService.getSystemOidcToken()
-//
-//        request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
-//        request.headers["Tema"] = "PEN"
-//
-//        // [Borger, Saksbehandler eller System]
-//        request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $userTokan"
-//
-//        // [System]
-//        request.headers["Nav-Consumer-Token"] = "Bearer $token"
-//
-//
+@Configuration
+//override to configure systemtoken or usertoken.. default systemtoken
+open class PdlTokenConfiguration(private val securityTokenExchangeService: STSService) {
+
+        @Bean
+        @Lazy
+        open fun pdlTokenCallback(): PdlTokenCallBack {
+            return PdlSystemOidcToken(securityTokenExchangeService)
+        }
+
+        internal class PdlSystemOidcToken(private val securityTokenExchangeService: STSService): PdlTokenCallBack {
+            private val logger = LoggerFactory.getLogger(PdlSystemOidcToken::class.java)
+
+            override fun callBack(): PdlToken {
+                logger.info("PdlTokenCallBack: Systemtoken")
+                val token = securityTokenExchangeService.getSystemOidcToken()
+                return PdlTokenImp(systemToken = token, userToken = token, isUserToken = false)
+        }
+    }
+}
+
+interface PdlTokenCallBack {
+    fun callBack(): PdlToken
+}
 
 interface PdlToken{
     val systemToken: String
-    val userToken: String?
+    val userToken: String
     val isUserToken: Boolean
 }
 
 class PdlTokenImp(
     override val systemToken: String,
-    override val userToken: String? = null,
+    override val userToken: String,
     override val isUserToken: Boolean
 ) : PdlToken
