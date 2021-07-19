@@ -29,10 +29,10 @@ internal class PersonServiceIntegrationTest {
     }
 
     private val mockPDLConfiguration = PdlConfiguration()
-    private val mockCallBackToken = PdlTokenConfiguration(mockStsService)
+    private val mockCallBackToken = PdlTokenComponent(mockStsService)
 
     private val mockClient = mockPDLConfiguration
-            .pdlRestTemplate(RestTemplateBuilder(), mockCallBackToken.pdlTokenCallback() )
+            .pdlRestTemplate(RestTemplateBuilder(), mockCallBackToken )
 
     /**
      * Use local port forwarding using kubectl and nais

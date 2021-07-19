@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
@@ -16,20 +17,21 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.http.client.SimpleClientHttpRequestFactory
+import org.springframework.stereotype.Component
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
 @Configuration
-open class PdlConfiguration {
+class PdlConfiguration {
 
     @Bean
-    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, pdlTokenCallback: PdlTokenCallBack): RestTemplate {
+    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, pdlTokenComponent: PdlTokenCallBack): RestTemplate {
         return templateBuilder
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 RequestResponseLoggerInterceptor(),
-                PdlInterceptor(pdlTokenCallback))
+                PdlInterceptor(pdlTokenComponent))
             .build().apply {
                 requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
             }
@@ -62,26 +64,41 @@ open class PdlConfiguration {
    }
 }
 
-@Configuration
-//override to configure systemtoken or usertoken.. default systemtoken
-open class PdlTokenConfiguration(private val securityTokenExchangeService: STSService) {
+@Component
+@Lazy
+@Order(Ordered.LOWEST_PRECEDENCE)
+open class PdlTokenComponent(private val securityTokenExchangeService: STSService): PdlTokenCallBack {
 
-        @Bean
-        @Order(Ordered.LOWEST_PRECEDENCE)
-        open fun pdlTokenCallback(): PdlTokenCallBack {
-            return PdlSystemOidcToken(securityTokenExchangeService)
-        }
+    override fun callBack(): PdlToken {
+        return PdlSystemOidcToken(securityTokenExchangeService).callBack()
+    }
 
-        internal class PdlSystemOidcToken(private val securityTokenExchangeService: STSService): PdlTokenCallBack {
-            private val logger = LoggerFactory.getLogger(PdlSystemOidcToken::class.java)
 
-            override fun callBack(): PdlToken {
-                logger.info("PdlTokenCallBack: Systemtoken")
-                val token = securityTokenExchangeService.getSystemOidcToken()
-                return PdlTokenImp(systemToken = token, userToken = token, isUserToken = false)
-        }
+}
+
+
+//@Configuration
+////override to configure systemtoken or usertoken.. default systemtoken
+//open class PdlTokenConfiguration(private val securityTokenExchangeService: STSService) {
+//
+//        @Bean
+//        @Order(Ordered.LOWEST_PRECEDENCE)
+//        open fun pdlTokenCallback(): PdlTokenCallBack {
+//            return PdlSystemOidcToken(securityTokenExchangeService)
+//        }
+//
+//}
+
+internal class PdlSystemOidcToken(private val securityTokenExchangeService: STSService): PdlTokenCallBack {
+    private val logger = LoggerFactory.getLogger(PdlSystemOidcToken::class.java)
+
+    override fun callBack(): PdlToken {
+        logger.info("PdlTokenCallBack: Systemtoken")
+        val token = securityTokenExchangeService.getSystemOidcToken()
+        return PdlTokenImp(systemToken = token, userToken = token, isUserToken = false)
     }
 }
+
 
 interface PdlTokenCallBack {
     fun callBack(): PdlToken
