@@ -48,7 +48,7 @@ class PdlConfiguration {
             //val token = pdlTokens.firstOrNull { it.isUserToken == true } ?: pdlTokens.first { it.isUserToken == false }
             val token = pdlTokens.callBack()
 
-            logger.info("tokenIntercetorRequest: userToken: ${token.isUserToken}")
+            logger.debug("tokenIntercetorRequest: userToken: ${token.isUserToken}")
 
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
@@ -75,19 +75,6 @@ open class PdlTokenComponent(private val securityTokenExchangeService: STSServic
 
 
 }
-
-
-//@Configuration
-////override to configure systemtoken or usertoken.. default systemtoken
-//open class PdlTokenConfiguration(private val securityTokenExchangeService: STSService) {
-//
-//        @Bean
-//        @Order(Ordered.LOWEST_PRECEDENCE)
-//        open fun pdlTokenCallback(): PdlTokenCallBack {
-//            return PdlSystemOidcToken(securityTokenExchangeService)
-//        }
-//
-//}
 
 internal class PdlSystemOidcToken(private val securityTokenExchangeService: STSService): PdlTokenCallBack {
     private val logger = LoggerFactory.getLogger(PdlSystemOidcToken::class.java)

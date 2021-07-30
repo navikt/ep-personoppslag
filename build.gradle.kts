@@ -2,17 +2,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.4.30"
+    id("org.jetbrains.kotlin.jvm") version "1.5.21"
     `java-library`
     id("net.researchgate.release") version "2.8.1"
     `maven-publish`
     id("org.sonarqube") version "2.8"
     id("jacoco")
+    id("org.jetbrains.kotlin.plugin.spring") version "1.5.21"
     id("com.adarshr.test-logger") version "2.0.0"
-    id("org.jetbrains.kotlin.plugin.spring") version "1.4.30"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.13"
     id("org.owasp.dependencycheck") version "5.3.2.1"
+    id("com.vanniktech.dependency.graph.generator") version "0.5.0"
+
 }
 
 group = "no.nav.eessi.pensjon"
@@ -33,13 +35,24 @@ tasks.withType<Test> {
 
 val springVersion by extra("5.2.5.RELEASE")
 val junitVersion by extra("5.6.2")
-val cxfVersion by extra("3.3.6")
 
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
-    implementation(kotlin("stdlib", "1.4.30"))
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21")
+    implementation(kotlin("stdlib", "1.5.21"))
+    implementation("org.springframework.boot:spring-boot-starter-web:2.5.3") {
+        exclude(module = "tomcat-embed-core")
+    }
+
+    // Logging
+    implementation("net.logstash.logback:logstash-logback-encoder:6.6") {
+        exclude("commons-logging", "commons-logging")
+    }
+    implementation( group = "org.slf4j", name = "jcl-over-slf4j", version = "1.7.32")
+
+//    implementation("org.slf4j:jcl-over-slf4j")
+
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
     implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.14")
@@ -58,10 +71,6 @@ dependencies {
 
     //Jackson json
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
-
-    // Apache CXF
-    implementation("org.apache.cxf:cxf-spring-boot-starter-jaxws:${cxfVersion}")
-    implementation("org.apache.cxf:cxf-rt-ws-security:${cxfVersion}")
 
 }
 

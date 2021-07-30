@@ -92,7 +92,7 @@ internal class PersonTest {
         assertEquals(KjoennType.KVINNE, kjoenn?.kjoenn)
         assertNotNull(kjoenn?.folkeregistermetadata)
 
-        val sivilstand = person?.sivilstand?.maxBy { it.gyldigFraOgMed!! }!!
+        val sivilstand = person?.sivilstand?.maxByOrNull { it.gyldigFraOgMed!! }!!
         assertEquals(Sivilstandstype.GIFT, sivilstand.type)
         assertEquals(LocalDate.of(2010, 1, 25), sivilstand.gyldigFraOgMed)
         assertEquals("03128222382", sivilstand.relatertVedSivilstand)
