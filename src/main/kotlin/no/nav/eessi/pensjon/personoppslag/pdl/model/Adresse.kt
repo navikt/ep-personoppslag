@@ -77,7 +77,7 @@ data class UtenlandskAdresseIFrittFormat(
         val adresselinje2: String? = null,
         val adresselinje3: String? = null,
         val byEllerStedsnavn: String? = null,
-        val landkode: String,
+        val landkode: String? = null,
         val postkode: String? = null
 )
 
