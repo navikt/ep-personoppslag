@@ -179,7 +179,7 @@ type UtenlandskAdresse {
     postkode: String
     bySted: String
     regionDistriktOmraade: String
-    landkode: String!
+    landkode: String
 }
 
 type UtenlandskAdresseIFrittFormat {
@@ -188,7 +188,7 @@ type UtenlandskAdresseIFrittFormat {
     adresselinje3: String
     postkode: String
     byEllerStedsnavn: String
-    landkode: String!
+    landkode: String
 }
 
 type Postboksadresse {
