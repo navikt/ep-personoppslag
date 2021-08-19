@@ -98,7 +98,7 @@ class PersonService(
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val kontaktadresse = pdlPerson.kontaktadresse
-                .maxByOrNull { it.metadata.sisteRegistrertDato() }
+                ?.maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val kontaktinformasjonForDoedsbo = pdlPerson.kontaktinformasjonForDoedsbo
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }

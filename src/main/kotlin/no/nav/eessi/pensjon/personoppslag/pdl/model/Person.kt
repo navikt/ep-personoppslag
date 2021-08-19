@@ -25,7 +25,7 @@ internal data class HentPerson(
         val doedsfall: List<Doedsfall>,
         val forelderBarnRelasjon: List<ForelderBarnRelasjon>,
         val sivilstand: List<Sivilstand>,
-        val kontaktadresse: List<Kontaktadresse>,
+        val kontaktadresse: List<Kontaktadresse>?,
         val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>
 )
 
