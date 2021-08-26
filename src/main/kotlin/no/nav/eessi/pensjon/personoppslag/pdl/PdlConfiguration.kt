@@ -45,7 +45,6 @@ class PdlConfiguration {
                                body: ByteArray,
                                execution: ClientHttpRequestExecution): ClientHttpResponse {
 
-            //val token = pdlTokens.firstOrNull { it.isUserToken == true } ?: pdlTokens.first { it.isUserToken == false }
             val token = pdlTokens.callBack()
 
             logger.debug("tokenIntercetorRequest: userToken: ${token.isUserToken}")
@@ -77,10 +76,7 @@ open class PdlTokenComponent(private val securityTokenExchangeService: STSServic
 }
 
 internal class PdlSystemOidcToken(private val securityTokenExchangeService: STSService): PdlTokenCallBack {
-    private val logger = LoggerFactory.getLogger(PdlSystemOidcToken::class.java)
-
     override fun callBack(): PdlToken {
-        logger.info("PdlTokenCallBack: Systemtoken")
         val token = securityTokenExchangeService.getSystemOidcToken()
         return PdlTokenImp(systemToken = token, userToken = token, isUserToken = false)
     }
