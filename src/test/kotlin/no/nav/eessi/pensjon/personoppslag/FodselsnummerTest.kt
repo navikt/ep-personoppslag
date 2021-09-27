@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag
 
+import no.nav.eessi.pensjon.personoppslag.FodselsnummerGenerator.generateFnrForTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -91,9 +92,64 @@ internal class FodselsnummerTest {
         assertNull( Fodselsnummer.fra("82117320034") )
         assertNull( Fodselsnummer.fra("92117320034") )
         assertNull( Fodselsnummer.fra("F2117320034") )
-
-    //        assertThrows<IllegalArgumentException> {
-//            Fodselsnummer.fra("A2117320034")
-//        }
     }
+
+    @Test
+    fun `Test på bruker fnr 20år`() {
+        val fnr = generateFnrForTest(20)
+        println(fnr)
+        val navfnr = Fodselsnummer.fraMedValidation(fnr)
+        println(navfnr)
+        assertEquals(20, navfnr?.getAge())
+        assertEquals(false, navfnr?.isUnder18Year())
+    }
+
+    @Test
+    fun `Is 17 year old under 18year`() {
+        val fnr = generateFnrForTest(17)
+        val navfnr = Fodselsnummer.fra(fnr)
+
+        assertEquals(17, navfnr?.getAge())
+        assertEquals(true, navfnr?.isUnder18Year())
+    }
+
+    @Test
+    fun `Is 16 year old under 18year`() {
+        val fnr = generateFnrForTest(16)
+        val navfnr = Fodselsnummer.fra(fnr)
+
+        assertEquals(16, navfnr?.getAge())
+        assertEquals(true, navfnr?.isUnder18Year())
+    }
+
+    @Test
+    fun `not valid pension very young age`() {
+        val fnr = generateFnrForTest(10)
+        val navfnr = Fodselsnummer.fra(fnr)
+        assertEquals(10, navfnr?.getAge())
+        assertEquals(true, navfnr?.isUnder18Year())
+    }
+
+    @Test
+    fun `valid check for age`() {
+        val fnr = generateFnrForTest(48)
+        val navfnr = Fodselsnummer.fra(fnr)
+        assertEquals(48, navfnr?.getAge())
+    }
+
+    @Test
+    fun `valid check for old age`() {
+        val fnr = generateFnrForTest(72)
+        val navfnr = Fodselsnummer.fra(fnr)
+        assertEquals(72, navfnr?.getAge())
+    }
+
+
+    @Test
+    fun `valid pension age`() {
+        val fnr = generateFnrForTest(67)
+        val navfnr = Fodselsnummer.fra(fnr)
+        assertEquals(67, navfnr?.getAge())
+    }
+
 }

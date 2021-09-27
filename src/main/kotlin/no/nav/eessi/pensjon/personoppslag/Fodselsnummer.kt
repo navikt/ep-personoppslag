@@ -3,6 +3,7 @@ package no.nav.eessi.pensjon.personoppslag
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 /**
  * Norwegian national identity number
@@ -32,7 +33,19 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
                 null
             }
         }
+
+        @JvmStatic
+        @JsonCreator
+        fun fraMedValidation(fnr: String?): Fodselsnummer? {
+            return try {
+                Fodselsnummer(fnr!!.replace(Regex("[^0-9]"), ""))
+            } catch (e: Exception) {
+                throw e
+            }
+        }
     }
+
+
 
     /**
      * @return birthdate as [LocalDate]
@@ -68,8 +81,8 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
         val century: String = when (val individnummer = value.slice(6 until 9).toInt()) {
             in 0..499,
             in 900..999 -> "19"
-            in 500..749 -> "18"
             in 500..999 -> "20"
+            in 500..749 -> "18"
             else -> {
                 throw IllegalArgumentException("Ingen gyldig årstall funnet for individnummer $individnummer")
             }
@@ -78,6 +91,18 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
         val year = value.slice(4 until 6)
 
         return "$century$year".toInt()
+    }
+
+    fun isUnder18Year(): Boolean {
+        val validAge = 18
+        val nowDate = LocalDate.now()
+        val copyBdate = LocalDate.from(getBirthDate())
+        val resultAge = ChronoUnit.YEARS.between(copyBdate, nowDate).toInt()
+        return resultAge < validAge
+    }
+
+    fun getAge(): Int {
+        return ChronoUnit.YEARS.between(getBirthDate(), LocalDate.now()).toInt()
     }
 
     /**
@@ -100,7 +125,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
     /**
      * Validate control digits.
      */
-    private fun validateControlDigits(): Boolean {
+    fun validateControlDigits(): Boolean {
         val ks1 = Character.getNumericValue(value[9])
 
         val c1 = mod(controlDigits1)
@@ -115,6 +140,8 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
 
         return true
     }
+
+
 
     /**
      * Control Digits 1:
