@@ -14,14 +14,15 @@ object FodselsnummerGenerator {
         var kontrollsiffer = 35
         var dag = 11
         do {
-            val month = withLeadingZero(fnrdate.month.value.toString())
+            val month = withLeadingZero(fnrdate.month.minus (1).value.toString())
             val fixedyear = y.substring(2, y.length)
             val indivdnr = indvididnr(fnrdate.year)
             fnr = "${dag++}" + month + fixedyear + indivdnr + kontrollsiffer++
             if (kontrollsiffer > 99) kontrollsiffer = 0
             if (dag > 27) dag = 1
             val fodselsnummer = Fodselsnummer.fra(fnr)
-        } while (fodselsnummer == null)
+            //println("ient: $fodselsnummer, alder: ${fodselsnummer?.getAge()}, og test-fnr: $fnr")
+        } while (fodselsnummer == null || (fodselsnummer.getAge() != alder))
         return fnr
     }
 
