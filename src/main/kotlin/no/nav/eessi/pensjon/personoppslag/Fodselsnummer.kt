@@ -78,11 +78,11 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
      * @return 4 digit year of birth as [Int]
      */
     private fun getYearOfBirth(): Int {
+        val aarstall = value.slice(4 until 6).toInt()
         val century: String = when (val individnummer = value.slice(6 until 9).toInt()) {
-            in 0..499,
-            in 900..999 -> "19"
-            in 500..999 -> "20"
-            in 500..749 -> "18"
+            in 0..499 -> "19"
+            in 900..999 -> evalueteAarstall(aarstall, 40..99)
+            in 500..999 -> evalueteAarstall(aarstall, 0..99)
             else -> {
                 throw IllegalArgumentException("Ingen gyldig årstall funnet for individnummer $individnummer")
             }
@@ -91,6 +91,13 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
         val year = value.slice(4 until 6)
 
         return "$century$year".toInt()
+    }
+
+    private fun evalueteAarstall(aarstall: Int, range: ClosedRange<Int>): String {
+        if(aarstall in range){
+            "19"
+        }
+        return "20"
     }
 
     fun isUnder18Year(): Boolean {

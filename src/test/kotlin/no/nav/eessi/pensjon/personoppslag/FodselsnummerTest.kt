@@ -52,7 +52,7 @@ internal class FodselsnummerTest {
         assertEquals("1971-06-11", KRAFTIG_VEGGPRYD.getBirthDateAsIso())
         assertEquals("1952-03-09", SLAPP_SKILPADDE.getBirthDateAsIso())
         assertEquals("1955-11-08", GOD_BOLLE.getBirthDateAsIso())
-        assertEquals("1900-06-01", DNUMMER_GYLDIG.getBirthDateAsIso())
+        assertEquals("2000-06-01", DNUMMER_GYLDIG.getBirthDateAsIso())
     }
 
     @Test
@@ -62,7 +62,7 @@ internal class FodselsnummerTest {
         assertEquals(LocalDate.of(1971, 6, 11), KRAFTIG_VEGGPRYD.getBirthDate())
         assertEquals(LocalDate.of(1952, 3, 9), SLAPP_SKILPADDE.getBirthDate())
         assertEquals(LocalDate.of(1955, 11, 8), GOD_BOLLE.getBirthDate())
-        assertEquals(LocalDate.of(1900, 6, 1), DNUMMER_GYLDIG.getBirthDate())
+        assertEquals(LocalDate.of(2000, 6, 1), DNUMMER_GYLDIG.getBirthDate())
     }
 
     @Test
