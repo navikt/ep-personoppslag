@@ -34,8 +34,6 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
             }
         }
 
-        @JvmStatic
-        @JsonCreator
         fun fraMedValidation(fnr: String?): Fodselsnummer? {
             return try {
                 Fodselsnummer(fnr!!.replace(Regex("[^0-9]"), ""))
