@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.21"
+    id("org.jetbrains.kotlin.jvm") version "1.5.31"
     `java-library`
     id("net.researchgate.release") version "2.8.1"
     `maven-publish`
     id("org.sonarqube") version "2.8"
     id("jacoco")
-    id("org.jetbrains.kotlin.plugin.spring") version "1.5.21"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.5.31"
     id("com.adarshr.test-logger") version "2.0.0"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.13"
@@ -33,7 +33,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-val springVersion by extra("5.2.5.RELEASE")
+val springVersion by extra("5.2.6.RELEASE")
 val junitVersion by extra("5.6.2")
 
 
@@ -51,11 +51,8 @@ dependencies {
     }
     implementation( group = "org.slf4j", name = "jcl-over-slf4j", version = "1.7.32")
 
-//    implementation("org.slf4j:jcl-over-slf4j")
-
-
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.14")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.19")
     implementation("no.nav.eessi.pensjon:ep-metrics:0.4.2")
 
     // Spring
@@ -63,7 +60,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:1.3.0")
 
     implementation("javax.servlet:javax.servlet-api:4.0.1")
-    implementation("no.nav.eessi.pensjon:ep-logging:0.0.16")
+    implementation("no.nav.eessi.pensjon:ep-logging:1.0.12")
 
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.springframework:spring-test:$springVersion")
