@@ -103,9 +103,7 @@ class PersonService(
             if (!response.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            val hentPerson = response.data?.hentPerson
-
-            return@measure hentPerson?.let {
+            return@measure response.data?.hentPerson?.let {
                     val identer = hentIdenter(ident)
                     val geografiskTilknytning = hentGeografiskTilknytning(ident)
                     konverterTilPerson(it, identer, geografiskTilknytning)

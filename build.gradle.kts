@@ -52,7 +52,7 @@ dependencies {
     implementation( group = "org.slf4j", name = "jcl-over-slf4j", version = "1.7.32")
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.19")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.14")
     implementation("no.nav.eessi.pensjon:ep-metrics:0.4.2")
 
     // Spring
