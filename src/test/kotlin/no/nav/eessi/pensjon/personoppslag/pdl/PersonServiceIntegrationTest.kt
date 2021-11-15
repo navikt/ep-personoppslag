@@ -73,11 +73,26 @@ internal class PersonServiceIntegrationTest {
     }
 
     @Test
+    fun hentPersonMedUid() {
+        val dnr = "56128249015"
+        val person = service.hentPersonUtenlandskIdent(NorskIdent(dnr))
+
+        assertNotNull(person?.navn)
+        assertEquals("STAFFELI BLÅØYD", person?.navn?.forkortetNavn)
+
+        assertEquals(dnr, person?.identer?.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident)
+
+        val uid = person?.utenlandskIdentifikasjonsnummer?.firstOrNull()
+
+        assertEquals("123456-123456", uid?.identifikasjonsnummer)
+        assertEquals("SWE", uid?.utstederland)
+
+    }
+
+
+    @Test
     fun sokPerson() {
-//        P2000
 //        64045349924 - KARAFFEL TUNGSINDIG
-//
-//        20035325957 - KARAFFEL KRAFTIG
 
         val sokKriterie = SokKriterier(
             fornavn = "TUNGSINDIG",
@@ -87,16 +102,6 @@ internal class PersonServiceIntegrationTest {
 
         val result = service.sokPerson(sokKriterie)
         assertEquals("64045349924", result.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident)
-
-
-        val sokKriterie2 = SokKriterier(
-            fornavn = "KRAFTIG",
-            etternavn = "KARAFFEL",
-            foedselsdato = LocalDate.of(1953, 3, 20)
-        )
-
-        val result2 = service.sokPerson(sokKriterie2)
-        assertEquals("20035325957", result2.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident)
 
     }
 

@@ -8,6 +8,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUtenlandskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
@@ -15,6 +16,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
+import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonUtenlandskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
@@ -37,6 +39,7 @@ class PersonService(
     private lateinit var hentIdenterMetric: Metric
     private lateinit var hentGeografiskTilknytningMetric: Metric
     private lateinit var sokPersonMetric: Metric
+    private lateinit var hentPersonUidMetric: Metric
 
     @PostConstruct
     fun initMetrics() {
@@ -47,7 +50,44 @@ class PersonService(
         hentIdenterMetric = metricsHelper.init("hentIdenter", alert = OFF)
         hentGeografiskTilknytningMetric = metricsHelper.init("hentGeografiskTilknytning", alert = OFF)
         sokPersonMetric = metricsHelper.init("sokPersonMetric", alert = OFF)
+        hentPersonUidMetric = metricsHelper.init("hentPersonUid", alert = OFF)
     }
+
+
+    fun <T : IdentType> hentPersonUtenlandskIdent(ident: Ident<T>): PersonUtenlandskIdent? {
+        return hentPersonMetric.measure {
+            val response = client.hentPersonUtenlandsIdent(ident.id)
+
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
+
+            return@measure response.data?.hentPerson
+                ?.let {
+                    val identer = hentIdenter(ident)
+                    konverterTilPersonMedUid(it, identer)
+                }
+        }
+    }
+
+    internal fun konverterTilPersonMedUid(
+        pdlPerson: HentPersonUtenlandskIdent,
+        identer: List<IdentInformasjon>,
+        ): PersonUtenlandskIdent {
+
+        val navn = pdlPerson.navn
+            .maxByOrNull { it.metadata.sisteRegistrertDato() }
+
+        val kjoenn = pdlPerson.kjoenn
+            .maxByOrNull { it.metadata.sisteRegistrertDato() }
+
+        return PersonUtenlandskIdent(
+            identer,
+            navn,
+            kjoenn,
+            pdlPerson.utenlandskIdentifikasjonsnummer
+        )
+    }
+
 
     /**
      * Funksjon for å hente ut person basert på fnr.
@@ -63,8 +103,9 @@ class PersonService(
             if (!response.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.hentPerson
-                ?.let {
+            val hentPerson = response.data?.hentPerson
+
+            return@measure hentPerson?.let {
                     val identer = hentIdenter(ident)
                     val geografiskTilknytning = hentGeografiskTilknytning(ident)
                     konverterTilPerson(it, identer, geografiskTilknytning)

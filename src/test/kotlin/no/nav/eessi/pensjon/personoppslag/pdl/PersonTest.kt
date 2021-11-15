@@ -8,6 +8,7 @@ import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.KontaktadresseType
@@ -15,7 +16,6 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -58,7 +58,7 @@ internal class PersonTest {
     }
 
     private fun hentPersonFraFil(hentPersonfil: String): Person? {
-        val response = mapper.readValue(hentPersonfil, PersonResponse::class.java)
+        val response = mapper.readValue(hentPersonfil, HentPersonResponse::class.java)
         val emptyResponseJson = """
             {
               "data": null,
@@ -74,6 +74,8 @@ internal class PersonTest {
 
         return mockPersonService.hentPerson(NorskIdent("2"))
     }
+
+
 
     @Test
     fun `hentPerson med data i json deserialisering`() {

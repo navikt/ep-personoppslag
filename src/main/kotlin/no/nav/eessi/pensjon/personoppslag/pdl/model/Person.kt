@@ -1,18 +1,17 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-internal data class PersonResponse(
-        val data: PersonResponseData? = null,
-        val errors: List<ResponseError>? = null
-)
-
-internal data class PersonResponseData(
-        val hentPerson: HentPerson? = null
-)
+//@JsonIgnoreProperties(ignoreUnknown = true)
+//internal data class PersonResponse<T>(
+//        val data: PersonResponseData<T>? = null,
+//        val errors: List<ResponseError>? = null
+//)
+//
+//internal data class PersonResponseData<T>(
+//        val hentPerson: T? = null
+//)
 
 internal data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
@@ -26,7 +25,28 @@ internal data class HentPerson(
         val forelderBarnRelasjon: List<ForelderBarnRelasjon>,
         val sivilstand: List<Sivilstand>,
         val kontaktadresse: List<Kontaktadresse>?,
-        val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>
+        val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>,
+)
+
+internal data class HentPersonUtenlandskIdent(
+        val navn: List<Navn>,
+        val kjoenn: List<Kjoenn>,
+        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
+)
+
+data class PersonUtenlandskIdent(
+        val identer: List<IdentInformasjon>,
+        val navn: Navn? = null,
+        val kjoenn: Kjoenn? = null,
+        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
+)
+
+data class UtenlandskIdentifikasjonsnummer(
+        val identifikasjonsnummer: String,
+        val utstederland: String,
+        val opphoert: Boolean,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
+        val metadata: Metadata
 )
 
 data class Person(

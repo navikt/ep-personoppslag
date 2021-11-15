@@ -1,0 +1,92 @@
+{
+  "data": {
+    "hentPerson": {
+      "navn": [
+        {
+          "fornavn": "BLÅ",
+          "mellomnavn": null,
+          "etternavn": "STAUDE",
+          "forkortetNavn": "STAUDE BLÅ",
+          "gyldigFraOgMed": "2021-02-15",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
+        }
+      ],
+      "kjoenn": [
+        {
+          "kjoenn": "MANN",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-01-01T15:42:45"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-01-01T15:42:45",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
+        },
+        {
+          "kjoenn": "KVINNE",
+          "folkeregistermetadata": {
+            "gyldighetstidspunkt": "2021-01-14T15:42:45"
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-01-14T15:42:45",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
+        }
+      ],
+      "utenlandskIdentifikasjonsnummer": [
+        {
+          "identifikasjonsnummer" : "12312312-234134134-14351345",
+          "utstederland": "SWE",
+          "opphoert": false,
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
+            "historisk": false
+          }
+        }
+      ]
+    }
+  }
+}

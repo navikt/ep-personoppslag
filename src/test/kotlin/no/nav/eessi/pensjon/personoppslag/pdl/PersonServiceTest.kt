@@ -27,6 +27,8 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.GtType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.AKTORID
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.FOLKEREGISTERIDENT
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.NPID
@@ -43,8 +45,6 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Oppholdsadresse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstand
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
@@ -105,7 +105,7 @@ internal class PersonServiceTest {
 
         val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
 
-        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(pdlPerson))
+        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
         every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
 
@@ -154,7 +154,7 @@ internal class PersonServiceTest {
 
         val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
 
-        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(pdlPerson))
+        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
         every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
 
@@ -206,7 +206,7 @@ internal class PersonServiceTest {
 
         val person = createHentPerson(kjoenn = kjoennListe)
 
-        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(person))
+        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(person))
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
         every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(null, null)
 
@@ -229,7 +229,7 @@ internal class PersonServiceTest {
 
         val person = createHentPerson(doedsfall = doedsfallListe)
 
-        every { client.hentPerson(any()) } returns PersonResponse(PersonResponseData(person))
+        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(person))
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
         every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(null, null)
 
@@ -350,7 +350,7 @@ internal class PersonServiceTest {
 
         val errors = listOf(ResponseError(msg, extensions = ErrorExtension(code, null, null)))
 
-        every { client.hentPerson(any()) } returns PersonResponse(null, errors)
+        every { client.hentPerson(any()) } returns HentPersonResponse(null, errors)
 
         val exception = assertThrows<PersonoppslagException> {
             service.hentPerson(NorskIdent("test"))

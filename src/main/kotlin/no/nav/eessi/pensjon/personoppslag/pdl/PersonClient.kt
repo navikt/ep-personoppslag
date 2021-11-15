@@ -3,8 +3,9 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GraphqlRequest
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonGraphqlRequest
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonResponse
@@ -16,11 +17,19 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.postForObject
 
+
 @Component
 class PersonClient(
     private val pdlRestTemplate: RestTemplate,
     @Value("\${PDL_URL}") private val url: String
 ) {
+
+    internal fun hentPersonUtenlandsIdent(ident: String): HentPersonUidResponse {
+        val query = getGraphqlResource("/graphql/hentPersonUtenlandsIdent.graphql")
+        val request = GraphqlRequest(query, Variables(ident))
+
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonUidResponse::class)
+    }
 
     /**
      * Oppretter GraphQL Query for uthentig av person
@@ -29,12 +38,11 @@ class PersonClient(
      *
      * @return GraphQL-objekt [PersonResponse] som inneholder data eller error.
      */
-    internal fun hentPerson(ident: String): PersonResponse {
+    internal fun hentPerson(ident: String): HentPersonResponse {
         val query = getGraphqlResource("/graphql/hentPerson.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), PersonResponse::class)
-    }
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonResponse::class)
+  }
 
     /**
      * Oppretter GraphQL Query for uthentig av adressebeskyttelse

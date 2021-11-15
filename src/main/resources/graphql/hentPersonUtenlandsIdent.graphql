@@ -1,0 +1,54 @@
+query($ident: ID!) {
+    hentPerson(ident: $ident) {
+        navn {
+            fornavn
+            mellomnavn
+            etternavn
+            forkortetNavn
+            gyldigFraOgMed
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
+        kjoenn {
+            kjoenn
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
+        utenlandskIdentifikasjonsnummer {
+            identifikasjonsnummer
+            utstederland
+            opphoert
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
+    }
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    master
+    opplysningsId
+    historisk
+}
+
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    gyldighetstidspunkt
+}
