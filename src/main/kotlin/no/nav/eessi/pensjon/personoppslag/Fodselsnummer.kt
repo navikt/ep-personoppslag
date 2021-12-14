@@ -130,7 +130,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
     /**
      * Validate control digits.
      */
-    fun validateControlDigits(): Boolean {
+    private fun validateControlDigits(): Boolean {
         val ks1 = Character.getNumericValue(value[9])
 
         val c1 = mod(controlDigits1)
@@ -157,7 +157,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
      */
     private fun mod(arr: IntArray): Int {
         val sum = arr.withIndex()
-                .sumBy { (i, m) -> m * Character.getNumericValue(value[i]) }
+                .sumOf { (i, m) -> m * Character.getNumericValue(value[i]) }
 
         val result = 11 - (sum % 11)
         return if (result == 11) 0 else result

@@ -21,7 +21,6 @@ object FodselsnummerGenerator {
             if (kontrollsiffer > 99) kontrollsiffer = 0
             if (dag > 27) dag = 1
             val fodselsnummer = Fodselsnummer.fra(fnr)
-            //println("ient: $fodselsnummer, alder: ${fodselsnummer?.getAge()}, og test-fnr: $fnr")
         } while (fodselsnummer == null || (fodselsnummer.getAge() != alder))
         return fnr
     }

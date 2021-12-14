@@ -68,9 +68,9 @@ internal class PersonTest {
         val identResponse = mapper.readValue(emptyResponseJson, IdenterResponse::class.java)
         val geoResponse = mapper.readValue(emptyResponseJson, GeografiskTilknytningResponse::class.java)
 
+        every { mockPersonClient.hentPerson( any()) } returns response
         every { mockPersonClient.hentIdenter (any()) } returns identResponse
         every { mockPersonClient.hentGeografiskTilknytning (any()) }  returns geoResponse
-        every { mockPersonClient.hentPerson(any()) } returns response
 
         return mockPersonService.hentPerson(NorskIdent("2"))
     }
