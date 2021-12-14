@@ -14,8 +14,8 @@ plugins {
     id("se.patrikerdes.use-latest-versions") version "0.2.18"
     id("org.owasp.dependencycheck") version "6.5.0.1"
     id("com.vanniktech.dependency.graph.generator") version "0.6.0"
-
 }
+
 
 group = "no.nav.eessi.pensjon"
 
@@ -35,40 +35,49 @@ tasks.withType<Test> {
 
 val springVersion by extra("5.3.13")
 val junitVersion by extra("5.8.+")
-
+val springStarterWebVersion  by extra( "2.6.1")
+val logbackEncoderVersion by extra("7.0.1")
+val jclSlf4jVersion by extra("1.7.32")
+val epSecurityVersion by extra("0.0.21")
+val epMetricsVersion by extra("0.4.12")
+val epLoggingVersion  by extra("1.0.15")
+val prometheusVersion  by extra("1.8.0")
+val jacksonKotlinVersion by extra("2.13.0")
+val javaxServletVersion by extra("4.0.1")
+val mockkVersion by extra("1.12.1")
 
 dependencies {
+
+    // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
-    implementation(kotlin("stdlib", "1.6.10"))
-    implementation("org.springframework.boot:spring-boot-starter-web:2.5.3") {
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+
+    implementation("org.springframework.boot:spring-boot-starter-web:$springStarterWebVersion") {
         exclude(module = "tomcat-embed-core")
     }
     // Logging
-    implementation("net.logstash.logback:logstash-logback-encoder:7.0.1") {
+    implementation("net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion") {
         exclude("commons-logging", "commons-logging")
     }
-    implementation( group = "org.slf4j", name = "jcl-over-slf4j", version = "1.7.32")
+    implementation( group = "org.slf4j", name = "jcl-over-slf4j", version = jclSlf4jVersion)
 
-    implementation("io.micrometer:micrometer-registry-prometheus:1.4.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
     // Spring
     implementation("org.springframework:spring-web:$springVersion")
-//    implementation("org.springframework.retry:spring-retry:1.3.0")
 
-    implementation("javax.servlet:javax.servlet-api:4.0.1")
+    implementation("javax.servlet:javax.servlet-api:$javaxServletVersion")
+    //Jackson json
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonKotlinVersion")
 
-    implementation("no.nav.eessi.pensjon:ep-security-sts:0.0.21")
-    implementation("no.nav.eessi.pensjon:ep-metrics:0.4.12")
-//    implementation(files("../ep-metrics/build/libs/ep-metrics-0.4.12.jar"))
-
-    implementation("no.nav.eessi.pensjon:ep-logging:1.0.15")
+    implementation("no.nav.eessi.pensjon:ep-security-sts:$epSecurityVersion")
+    implementation("no.nav.eessi.pensjon:ep-metrics:$epMetricsVersion")
+    implementation("no.nav.eessi.pensjon:ep-logging:$epLoggingVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.springframework:spring-test:$springVersion")
-    testImplementation("io.mockk:mockk:1.12.1")
+    testImplementation("io.mockk:mockk:$mockkVersion")
 
-    //Jackson json
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
 
 }
 
