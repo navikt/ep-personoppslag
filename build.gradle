@@ -105,7 +105,7 @@ release {
 // https://help.github.com/en/actions/language-and-framework-guides/publishing-java-packages-with-gradle#publishing-packages-to-github-packages
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
         }
     }
@@ -113,7 +113,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = layout.buildDirectory.dir("https://maven.pkg.github.com/navikt/${rootProject.name}")
+            url = "https://maven.pkg.github.com/navikt/ep-personoppslag"
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
