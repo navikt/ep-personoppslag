@@ -10,7 +10,7 @@ object FodselsnummerGenerator {
     fun generateFnrForTest(alder: Int): String {
         val fnrdate = LocalDate.now().minusYears(alder.toLong())
         val y = fnrdate.year.toString()
-        var fnr = ""
+        var fnr: String
         var kontrollsiffer = 35
         var dag = 11
         do {
