@@ -3,12 +3,12 @@ buildscript {
     ext {
         springBootVersion = '5.3.13'
         springWebVersion = '2.6.1'
-        kotlinVersion = '1.6.0'
+        kotlinVersion = '1.6.10'
         jacksonModuleKotlinVersion = '2.13.0'
-        prometheusVersion = '1.8.0'
-        eessiMetricsVersion = '0.4.2'
-        eessiEpLoggingVersion = '1.0.12'
-        eessiEpSecVersion = '0.0.14'
+        prometheusVersion = '1.8.1'
+        eessiMetricsVersion = '0.4.12'
+        eessiEpLoggingVersion = '1.0.15'
+        eessiEpSecVersion = '0.0.21'
         junitVersion = '5.8.2'
         mockkVersion = '1.12.1'
     }
@@ -21,16 +21,16 @@ buildscript {
 plugins {
     id("java-library")
     id("maven-publish")
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
+    id("org.jetbrains.kotlin.jvm") version "1.6.10"
     id("net.researchgate.release") version "2.8.1"
-    id("org.sonarqube") version "2.8"
+    id("org.sonarqube") version "3.3"
     id("jacoco")
-    id("org.jetbrains.kotlin.plugin.spring") version "1.5.31"
-    id("com.adarshr.test-logger") version "2.0.0"
-    id("com.github.ben-manes.versions") version "0.28.0"
-    id("se.patrikerdes.use-latest-versions") version "0.2.13"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.6.10"
+    id("com.adarshr.test-logger") version "3.1.0"
+    id("com.github.ben-manes.versions") version "0.39.0"
+    id("se.patrikerdes.use-latest-versions") version "0.2.18"
     id("org.owasp.dependencycheck") version "6.5.0.1"
-    id("com.vanniktech.dependency.graph.generator") version "0.5.0"
+    id("com.vanniktech.dependency.graph.generator") version "0.6.0"
 }
 
 group = "no.nav.eessi.pensjon"
