@@ -12,13 +12,13 @@ import java.time.LocalDate
 internal class FodselsnummerTest {
 
     companion object {
-        private val LEALAUS_KAKE = Fodselsnummer.fra("22117320034")!!
-        private val STERK_BUSK = Fodselsnummer.fra("12011577847")!!
-        private val KRAFTIG_VEGGPRYD = Fodselsnummer.fra("11067122781")!!
-        private val SLAPP_SKILPADDE = Fodselsnummer.fra("09035225916")!!
-        private val GOD_BOLLE = Fodselsnummer.fra("08115525221")!!
-
-        private val DNUMMER_GYLDIG = Fodselsnummer.fra("41060094231")!!
+        private val LEALAUS_KAKE = Fodselsnummer.fra("22117320034")!!          //1973
+        private val STERK_BUSK = Fodselsnummer.fra("12011577847")!!            //2015
+        private val KRAFTIG_VEGGPRYD = Fodselsnummer.fra("11067122781")!!      //1971
+        private val SLAPP_SKILPADDE = Fodselsnummer.fra("09035225916")!!       //1952
+        private val GOD_BOLLE = Fodselsnummer.fra("08115525221")!!             //1955
+        private val VELDIG_GAMMEL_SYKKEL = Fodselsnummer.fra("08118974914")!!  //1889
+        private val DNUMMER_GYLDIG = Fodselsnummer.fra("41060094231")!!        //2000
     }
 
     @Test
@@ -63,6 +63,8 @@ internal class FodselsnummerTest {
         assertEquals(LocalDate.of(1952, 3, 9), SLAPP_SKILPADDE.getBirthDate())
         assertEquals(LocalDate.of(1955, 11, 8), GOD_BOLLE.getBirthDate())
         assertEquals(LocalDate.of(2000, 6, 1), DNUMMER_GYLDIG.getBirthDate())
+        assertEquals(LocalDate.of(1889, 11, 8), VELDIG_GAMMEL_SYKKEL.getBirthDate())
+
     }
 
     @Test
@@ -142,6 +144,7 @@ internal class FodselsnummerTest {
         val fnr = generateFnrForTest(72)
         val navfnr = Fodselsnummer.fra(fnr)
         assertEquals(72, navfnr?.getAge())
+        println(navfnr)
     }
 
 
@@ -151,5 +154,7 @@ internal class FodselsnummerTest {
         val navfnr = Fodselsnummer.fra(fnr)
         assertEquals(67, navfnr?.getAge())
     }
+
+
 
 }
