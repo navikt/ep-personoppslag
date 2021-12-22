@@ -76,9 +76,6 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
      * @return 4 digit year of birth as [Int]
      */
     private fun getYearOfBirth(): Int {
-        val aarstall = value.slice(4 until 6).toInt()
-        println("aarstal: $aarstall")
-
         val birthYear = get2DigitBirthYear().toInt()
         val individnummer = value.slice(6 until 9).toInt()
 
