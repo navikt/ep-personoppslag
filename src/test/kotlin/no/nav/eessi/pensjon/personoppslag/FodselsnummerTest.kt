@@ -109,7 +109,7 @@ internal class FodselsnummerTest {
     @Test
     fun `Is 17 year old under 18year`() {
         val fnr = generateFnrForTest(17)
-        val navfnr = Fodselsnummer.fra(fnr)
+        val navfnr = Fodselsnummer.fraMedValidation(fnr)
 
         assertEquals(17, navfnr?.getAge())
         assertEquals(true, navfnr?.isUnder18Year())
@@ -118,7 +118,7 @@ internal class FodselsnummerTest {
     @Test
     fun `Is 16 year old under 18year`() {
         val fnr = generateFnrForTest(16)
-        val navfnr = Fodselsnummer.fra(fnr)
+        val navfnr = Fodselsnummer.fraMedValidation(fnr)
 
         assertEquals(16, navfnr?.getAge())
         assertEquals(true, navfnr?.isUnder18Year())
@@ -127,7 +127,7 @@ internal class FodselsnummerTest {
     @Test
     fun `not valid pension very young age`() {
         val fnr = generateFnrForTest(10)
-        val navfnr = Fodselsnummer.fra(fnr)
+        val navfnr = Fodselsnummer.fraMedValidation(fnr)
         assertEquals(10, navfnr?.getAge())
         assertEquals(true, navfnr?.isUnder18Year())
     }
