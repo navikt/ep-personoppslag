@@ -63,7 +63,8 @@ data class Person(
         val forelderBarnRelasjon: List<ForelderBarnRelasjon>,  //Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon
         val sivilstand: List<Sivilstand>,
         val kontaktadresse: Kontaktadresse? = null,
-        val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null
+        val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
+        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
 ) {
         fun erDoed() = doedsfall?.doedsdato != null
 }

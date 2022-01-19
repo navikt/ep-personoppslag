@@ -75,17 +75,25 @@ internal class PersonServiceIntegrationTest {
     @Test
     fun hentPersonMedUid() {
         val dnr = "56128249015"
-        val person = service.hentPersonUtenlandskIdent(NorskIdent(dnr))
+        val personuid = service.hentPersonUtenlandskIdent(NorskIdent(dnr))
 
-        assertNotNull(person?.navn)
-        assertEquals("STAFFELI BLÅØYD", person?.navn?.forkortetNavn)
+        assertNotNull(personuid?.navn)
+        assertEquals("STAFFELI BLÅØYD", personuid?.navn?.forkortetNavn)
 
-        assertEquals(dnr, person?.identer?.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident)
+        assertEquals(dnr, personuid?.identer?.firstOrNull { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident)
 
-        val uid = person?.utenlandskIdentifikasjonsnummer?.firstOrNull()
+        val uid = personuid?.utenlandskIdentifikasjonsnummer?.firstOrNull()
 
         assertEquals("123456-123456", uid?.identifikasjonsnummer)
         assertEquals("SWE", uid?.utstederland)
+
+        val person = service.hentPerson(NorskIdent(dnr))
+
+        val puid = person?.utenlandskIdentifikasjonsnummer?.firstOrNull()
+
+        assertEquals("123456-123456", puid?.identifikasjonsnummer)
+        assertEquals("SWE", puid?.utstederland)
+
 
     }
 

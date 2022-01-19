@@ -29,6 +29,9 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponseData
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponseData
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUtenlandskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.AKTORID
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.FOLKEREGISTERIDENT
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.NPID
@@ -51,6 +54,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Statsborgerskap
+import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -147,6 +151,12 @@ internal class PersonServiceTest {
             kontaktinformasjonForDoedsbo = emptyList()
         )
 
+        val pdlUidPerson = HentPersonUtenlandskIdent(
+            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
+            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            utenlandskIdentifikasjonsnummer = listOf(UtenlandskIdentifikasjonsnummer("231234-12331", "SE",false, null, mockMeta()))
+        )
+
         val identer = listOf(
             IdentInformasjon("25078521492", FOLKEREGISTERIDENT),
             IdentInformasjon("100000000000053", AKTORID)
@@ -157,6 +167,7 @@ internal class PersonServiceTest {
         every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
         every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
+        every { client.hentPersonUtenlandsIdent(any()) } returns HentPersonUidResponse(HentPersonUidResponseData(pdlUidPerson))
 
         val resultat = service.hentPerson(NorskIdent("12345"))
 
@@ -194,6 +205,9 @@ internal class PersonServiceTest {
 
         assertEquals(1, resultat.adressebeskyttelse.size)
         assertEquals(2, resultat.identer.size)
+
+        assertEquals(1, resultat.utenlandskIdentifikasjonsnummer.size)
+        assertEquals("231234-12331", resultat.utenlandskIdentifikasjonsnummer.first().identifikasjonsnummer)
     }
 
     @Test

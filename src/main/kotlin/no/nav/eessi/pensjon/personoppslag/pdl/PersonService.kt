@@ -20,6 +20,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonUtenlandskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
+import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -106,7 +107,8 @@ class PersonService(
             return@measure response.data?.hentPerson?.let {
                     val identer = hentIdenter(ident)
                     val geografiskTilknytning = hentGeografiskTilknytning(ident)
-                    konverterTilPerson(it, identer, geografiskTilknytning)
+                    val utenlandskIdentifikasjonsnummer = hentPersonUtenlandskIdent(ident)?.utenlandskIdentifikasjonsnummer ?: emptyList()
+                    konverterTilPerson(it, identer, geografiskTilknytning, utenlandskIdentifikasjonsnummer)
                 }
         }
     }
@@ -114,7 +116,8 @@ class PersonService(
     internal fun konverterTilPerson(
             pdlPerson: HentPerson,
             identer: List<IdentInformasjon>,
-            geografiskTilknytning: GeografiskTilknytning?
+            geografiskTilknytning: GeografiskTilknytning?,
+            utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
         ): Person {
 
             val navn = pdlPerson.navn
@@ -166,7 +169,8 @@ class PersonService(
                 forelderBarnRelasjon,
                 sivilstand,
                 kontaktadresse,
-                kontaktinformasjonForDoedsbo
+                kontaktinformasjonForDoedsbo,
+                utenlandskIdentifikasjonsnummer
             )
         }
 
