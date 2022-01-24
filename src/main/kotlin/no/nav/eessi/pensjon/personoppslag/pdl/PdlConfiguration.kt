@@ -22,45 +22,41 @@ import java.util.*
 @Configuration
 class PdlConfiguration {
 
-    private val logger = LoggerFactory.getLogger(PdlConfiguration::class.java)
-
     @Bean
-    fun oAuth(clientConfigurationProperties: ClientConfigurationProperties, oAuth2AccessTokenService: OAuth2AccessTokenService): String {
-        //val token = pdlTokens.callBack()
-        val clientProperties =  Optional.ofNullable(clientConfigurationProperties.registration["begrens-innsyn-credentials"]).orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
-        val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
-        val token = response.accessToken
-
-        logger.debug("tokenIntercetorRequest: userToken: $token")
-        return token
-    }
-
-    @Bean
-    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, oatuh: String): RestTemplate {
+    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, clientConfigurationProperties: ClientConfigurationProperties, oAuth2AccessTokenService: OAuth2AccessTokenService): RestTemplate {
         return templateBuilder
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 RequestResponseLoggerInterceptor(),
-                PdlInterceptor(oatuh))
+                PdlInterceptor(clientConfigurationProperties, oAuth2AccessTokenService))
             .build().apply {
                 requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
             }
     }
 
-    internal class PdlInterceptor(private val oatuhtoken: String) : ClientHttpRequestInterceptor {
+    internal class PdlInterceptor(private val clientConfigurationProperties: ClientConfigurationProperties, private val oAuth2AccessTokenService: OAuth2AccessTokenService) : ClientHttpRequestInterceptor {
+
+        private val logger = LoggerFactory.getLogger(PdlInterceptor::class.java)
+
         override fun intercept(request: HttpRequest,
                                body: ByteArray,
                                execution: ClientHttpRequestExecution): ClientHttpResponse {
+
+            val clientProperties =  Optional.ofNullable(clientConfigurationProperties.registration["begrens-innsyn-credentials"]).orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
+            val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
+            val token = response.accessToken
+
+            logger.debug("oAuth token: $token")
 
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
 
             // [Borger, Saksbehandler eller System]
-            request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $oatuhtoken"
+            request.headers[HttpHeaders.AUTHORIZATION] = "Bearer $token"
 
             // [System]
-            request.headers["Nav-Consumer-Token"] = "Bearer $oatuhtoken"
+            request.headers["Nav-Consumer-Token"] = "Bearer $token"
 
             return execution.execute(request, body)
         }
