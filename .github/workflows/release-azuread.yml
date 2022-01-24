@@ -1,0 +1,39 @@
+name: Release new version
+
+on:
+  push:
+    branches: 
+      - azuread
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: set up git
+      run: git config user.email "${{ github.actor }}@users.noreply.github.com" && git config user.name "Github Actions"
+      
+    - name: capture version number for release
+      run: echo "VERSION=$(grep -v '^#' gradle.properties | grep 'version=' | cut -d '=' -f2 | xargs)" >> $GITHUB_ENV
+
+     # JAVA 11
+    - name: 'Java 11'
+      uses: actions/setup-java@v1.4.3
+      with:
+        java-version: 11
+
+    - name: build and update version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: ./gradlew build release -Prelease.useAutomaticVersion=true
+  
+    - name: check out release-version
+      uses: actions/checkout@v2
+      with: 
+        ref: "release-${{ env.VERSION }}"
+
+    - name: publish package
+      run: ./gradlew publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

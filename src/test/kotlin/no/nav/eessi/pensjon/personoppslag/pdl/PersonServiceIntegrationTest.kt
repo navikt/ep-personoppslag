@@ -1,12 +1,9 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
-import io.mockk.every
-import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
-import no.nav.eessi.pensjon.security.sts.STSService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -19,20 +16,13 @@ import java.time.LocalDate
 @Disabled
 internal class PersonServiceIntegrationTest {
 
+    private val mockPDLConfiguration = PdlConfiguration()
+
     /**
      * Paste valid token
      */
-    private val mockStsService = mockk<STSService> {
-        every {
-            getSystemOidcToken()
-        } returns ""
-    }
-
-    private val mockPDLConfiguration = PdlConfiguration()
-    private val mockCallBackToken = PdlTokenComponent(mockStsService)
-
-    private val mockClient = mockPDLConfiguration
-            .pdlRestTemplate(RestTemplateBuilder(), mockCallBackToken )
+    val oauthtoken = ""
+    private val mockClient = mockPDLConfiguration.pdlRestTemplate(RestTemplateBuilder(), oauthtoken)
 
     /**
      * Use local port forwarding using kubectl and nais
