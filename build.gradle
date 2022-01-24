@@ -105,6 +105,10 @@ test {
 release {
     newVersionCommitMessage = "[Release Plugin] - next version commit: "
     tagTemplate = "release-\${version}"
+
+    git {
+        requireBranch = 'azuread'
+    }
 }
 
 // https://help.github.com/en/actions/language-and-framework-guides/publishing-java-packages-with-gradle#publishing-packages-to-github-packages
