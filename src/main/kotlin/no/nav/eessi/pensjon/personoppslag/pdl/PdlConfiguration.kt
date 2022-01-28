@@ -43,7 +43,7 @@ class PdlConfiguration {
                                body: ByteArray,
                                execution: ClientHttpRequestExecution): ClientHttpResponse {
 
-            val clientProperties =  Optional.ofNullable(clientConfigurationProperties.registration["begrens-innsyn-credentials"]).orElseThrow { RuntimeException("could not find oauth2 client config for example-onbehalfof") }
+            val clientProperties =  Optional.ofNullable(clientConfigurationProperties.registration["pdl-credentials"]).orElseThrow { RuntimeException("could not find oauth2 client config for pdl-credentials") }
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
             val token = response.accessToken
 
