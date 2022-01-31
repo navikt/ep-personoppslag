@@ -54,18 +54,17 @@ class PdlConfiguration {
             logger.debug("tokenIntercetorRequest: userToken: ${token.isUserToken}")
             logger.debug("""
                 oAuth-token:
-                  system: ${token.systemToken},
-                  user: ${token.userToken}
-                """)
+                  system: ${token.systemToken}
+                 """)
 
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
 
             // [Borger, Saksbehandler eller System]
-            request.headers[HttpHeaders.AUTHORIZATION] = "Bearer ${token.userToken}"
+            request.headers[HttpHeaders.AUTHORIZATION] = "Bearer ${token.systemToken}"
 
             // [System]
-            request.headers["Nav-Consumer-Token"] = "Bearer ${token.systemToken}"
+            //request.headers["Nav-Consumer-Token"] = "Bearer ${token.systemToken}"
 
             return execution.execute(request, body)
         }
