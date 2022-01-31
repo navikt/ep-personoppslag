@@ -52,7 +52,11 @@ class PdlConfiguration {
 
             val token = pdlToken.callBack()
             logger.debug("tokenIntercetorRequest: userToken: ${token.isUserToken}")
-            logger.debug("oAuth pdl token: $token")
+            logger.debug("""
+                oAuth-token:
+                  system: ${token.systemToken},
+                  user: ${token.userToken}
+                """)
 
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
