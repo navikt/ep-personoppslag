@@ -41,8 +41,15 @@ internal class FodselsnummerTest {
     }
 
     @Test
-    fun `Validate d-number`() {
-        assertTrue(DNUMMER_GYLDIG.isDNumber())
+    fun `syntetic fdata should be valid`() {
+        assertNotNull(Fodselsnummer.fra("17912099997"))
+        assertNotNull(Fodselsnummer.fra("29822099635"))
+        assertNotNull(Fodselsnummer.fra("05840399895"))
+        assertNotNull(Fodselsnummer.fra("12829499914"))
+        assertNotNull(Fodselsnummer.fra("12905299938"))
+        assertNotNull(Fodselsnummer.fra("21883649874"))
+        assertNotNull(Fodselsnummer.fra("21929774873"))
+        assertNotNull(Fodselsnummer.fra("54496214261"))
     }
 
     @Test
@@ -109,9 +116,7 @@ internal class FodselsnummerTest {
     @Test
     fun `Test på bruker fnr 20år`() {
         val fnr = generateFnrForTest(20)
-        println(fnr)
         val navfnr = Fodselsnummer.fraMedValidation(fnr)
-        println(navfnr)
         assertEquals(20, navfnr?.getAge())
         assertEquals(false, navfnr?.isUnder18Year())
     }
@@ -120,7 +125,6 @@ internal class FodselsnummerTest {
     fun `Is 17 year old under 18year`() {
         val fnr = generateFnrForTest(17)
         val navfnr = Fodselsnummer.fraMedValidation(fnr)
-
         assertEquals(17, navfnr?.getAge())
         assertEquals(true, navfnr?.isUnder18Year())
     }
@@ -154,9 +158,7 @@ internal class FodselsnummerTest {
         val fnr = generateFnrForTest(72)
         val navfnr = Fodselsnummer.fra(fnr)
         assertEquals(72, navfnr?.getAge())
-        println(navfnr)
     }
-
 
     @Test
     fun `valid pension age`() {
@@ -164,7 +166,6 @@ internal class FodselsnummerTest {
         val navfnr = Fodselsnummer.fra(fnr)
         assertEquals(67, navfnr?.getAge())
     }
-
 
 
 }
