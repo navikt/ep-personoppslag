@@ -2,6 +2,8 @@ package no.nav.eessi.pensjon.personoppslag
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
+import no.nav.eessi.pensjon.personoppslag.Fodselsnummer.Companion.tabeller.kontrollsiffer1
+import no.nav.eessi.pensjon.personoppslag.Fodselsnummer.Companion.tabeller.kontrollsiffer2
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -12,16 +14,103 @@ import java.time.temporal.ChronoUnit
  * Everyone on the Norwegian National Registry has a national identity number.
  *
  * @see <a href="https://www.skatteetaten.no/person/folkeregister/fodsel-og-navnevalg/barn-fodt-i-norge/fodselsnummer">Skatteetaten om fødselsnummer</a>
+ * @see <a href="https://github.com/navikt/nav-foedselsnummer">nav-foedselsnummer</a>
  */
 class Fodselsnummer private constructor(@JsonValue val value: String) {
-    private val controlDigits1 = intArrayOf(3, 7, 6, 1, 8, 9, 4, 5, 2)
-    private val controlDigits2 = intArrayOf(5, 4, 3, 2, 7, 6, 5, 4, 3, 2)
-
     init {
-        require(Regex("\\d{11}").matches(value)) { "Ikke et gyldig fødselsnummer: $value" }
-        require(!(isHNumber() || isFhNumber())) { "Impelentasjonen støtter ikke H-nummer og FH-nummer" }
-        require(validateControlDigits()) { "Ugyldig kontrollnummer" }
+        require("""\d{11}""".toRegex().matches(value)) { "Ikke et gyldig fødselsnummer: $value" }
+        require(!fhNummer) { "Impelemntasjonen støtter ikke H-nummer og FH-nummer" }
+        require(gyldigeKontrollsiffer) { "Ugyldig kontrollnummer" }
     }
+
+    fun getAge(): Int = ChronoUnit.YEARS.between(getBirthDate(), LocalDate.now()).toInt()
+    fun getBirthDate(): LocalDate = foedselsdato
+    fun isUnder18Year(): Boolean {
+        val resultAge = ChronoUnit.YEARS.between(foedselsdato, LocalDate.now()).toInt()
+        return resultAge < 18
+    }
+    fun isDNumber() = dNummer
+    fun getBirthDateAsIso() = foedselsdato.toString()
+
+    val kjoenn: Kjoenn
+        get() {
+            val kjoenn = value.slice(8 until 9).toInt()
+            return if(kjoenn % 2 == 0) Kjoenn.KVINNE else Kjoenn.MANN
+        }
+
+    val dNummer: Boolean
+        get() {
+            val dag = value[0].toString().toInt()
+            return dag in 4..7
+        }
+
+    private val syntetiskFoedselsnummerFraNavEllerHNummer: Boolean
+        get() {
+            return value[2].toString().toInt() in 4..7
+        }
+
+    private val syntetiskFoedselsnummerFraSkatteetaten: Boolean
+        get() = value[2].toString().toInt() >= 8
+
+    private val fhNummer: Boolean
+        get() {
+            return when(value[0]) {
+                '8', '9' -> true
+                else -> false
+            }
+        }
+
+    val foedselsdato: LocalDate
+        get() {
+            val fnrMonth = value.slice(2 until 4).toInt()
+
+            val dayFelt = value.slice(0 until 2).toInt()
+            val fnrDay = if(dNummer) dayFelt - 40 else dayFelt
+
+            val beregnetMaaned =
+                if (syntetiskFoedselsnummerFraSkatteetaten) {
+                    fnrMonth - 80
+                } else if (syntetiskFoedselsnummerFraNavEllerHNummer) {
+                    fnrMonth - 40
+                } else {
+                    fnrMonth
+                }
+
+            return LocalDate.of(foedselsaar, beregnetMaaned, fnrDay)
+        }
+
+    val gyldigeKontrollsiffer: Boolean
+        get() {
+            val ks1 = value[9].toString().toInt()
+            val ks2 = value[10].toString().toInt()
+
+            val c1 = checksum(kontrollsiffer1, value)
+            if(c1 == 10 || c1 != ks1) {
+                return false
+            }
+
+            val c2 = checksum(kontrollsiffer2, value)
+            if(c2 == 10 || c2 != ks2) {
+                return false
+            }
+            return true
+        }
+
+    private val foedselsaar: Int
+        get() {
+            val fnrYear = value.slice(4 until 6)
+            val individnummer = value.slice(6 until 9).toInt()
+
+            for((individSerie, aarSerie) in tabeller.serier) {
+                val kandidat = (aarSerie.start.toString().slice(0 until 2) + fnrYear).toInt()
+                if(individSerie.contains(individnummer) && aarSerie.contains(kandidat)) {
+                    return kandidat
+                }
+            }
+            throw IllegalStateException("Ugyldig individnummer: $individnummer")
+        }
+
+
 
     companion object {
         @JvmStatic
@@ -41,133 +130,38 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
                 throw e
             }
         }
-    }
+        object tabeller {
+            // https://www.skatteetaten.no/person/folkeregister/fodsel-og-navnevalg/barn-fodt-i-norge/fodselsnummer/
+            val serier: List<Pair<ClosedRange<Int>, ClosedRange<Int>>> = listOf(
+                500..749 to 1854..1899,
+                0..499 to 1900..1999,
+                900..999 to 1940..1999,
+                500..999 to 2000..2039
+            )
 
-
-
-    /**
-     * @return birthdate as [LocalDate]
-     */
-    fun getBirthDate(): LocalDate {
-        val month = value.slice(2 until 4).toInt()
-
-        val fnrDay = value.slice(0 until 2).toInt()
-        val day = if (isDNumber()) fnrDay - 40 else fnrDay
-
-        return LocalDate.of(getYearOfBirth(), month, day)
-    }
-
-    /**
-     * @return the birthdate as a ISO 8601 [String]
-     */
-    fun getBirthDateAsIso() = getBirthDate().toString()
-
-    /**
-     * Checks if the identity number is of type D-number.
-     *
-     * A D-number consists of 11 digits, of which the first six digits show the date of birth,
-     * but the first digit is increased by 4.
-     */
-    fun isDNumber(): Boolean = Character.getNumericValue(value[0]) in 4..7
-
-    /**
-     * Calculates year of birth using the individual number.
-     *
-     * @return 4 digit year of birth as [Int]
-     */
-    private fun getYearOfBirth(): Int {
-        val birthYear = get2DigitBirthYear().toInt()
-        val individnummer = value.slice(6 until 9).toInt()
-
-        val century = if (individnummer <= 499) {
-             "19";
-        } else if (individnummer >= 500 && birthYear < 40) {
-             "20";
-        } else if (individnummer >= 500 && individnummer <= 749 && birthYear > 54) {
-             "18";
-        } else if (individnummer >= 900 && birthYear > 39) {
-             "19";
-        }
-        else {
-            throw IllegalArgumentException("Ingen gyldig årstall funnet for individnummer $individnummer")
+            val kontrollsiffer1: List<Int> = listOf(3,7,6,1,8,9,4,5,2)
+            val kontrollsiffer2: List<Int> = listOf(5,4,3,2,7,6,5,4,3,2)
         }
 
-        val year = value.slice(4 until 6)
-        return "$century$year".toInt()
-    }
+        fun checksum(liste: List<Int>, str: String): Int {
+            var sum = 0
+            for((i, m) in liste.withIndex()) {
+                sum += m * str[i].toString().toInt()
+            }
 
-    fun get2DigitBirthYear(): String = value.substring(4, 6)
-
-    fun isUnder18Year(): Boolean {
-        val validAge = 18
-        val nowDate = LocalDate.now()
-        val copyBdate = LocalDate.from(getBirthDate())
-        val resultAge = ChronoUnit.YEARS.between(copyBdate, nowDate).toInt()
-        return resultAge < validAge
-    }
-
-    fun getAge(): Int {
-        return ChronoUnit.YEARS.between(getBirthDate(), LocalDate.now()).toInt()
-    }
-
-    /**
-     * Sjekker om fødselsnummeret er av typen "Hjelpenummer".
-     *
-     * H-nummer er et hjelpenummer, en virksomhetsintern, unik identifikasjon av en person som
-     * ikke har fødselsnummer eller D-nummer eller hvor dette er ukjent.
-     */
-    private fun isHNumber(): Boolean = Character.getNumericValue(value[2]) >= 4
-
-    /**
-     * Sjekker om fødselsnummeret er av typen "Felles Nasjonalt Hjelpenummer".
-     *
-     * Brukes av helsevesenet i tilfeller hvor de har behov for unikt å identifisere pasienter
-     * som ikke har et kjent fødselsnummer eller D-nummer.
-     */
-
-    private fun isFhNumber(): Boolean = Character.getNumericValue(value[0]) in 8..9
-
-    /**
-     * Validate control digits.
-     */
-    private fun validateControlDigits(): Boolean {
-        val ks1 = Character.getNumericValue(value[9])
-
-        val c1 = mod(controlDigits1)
-        if (c1 == 10 || c1 != ks1) {
-            return false
+            val res = 11 - (sum % 11)
+            return if (res == 11) 0 else res
         }
-
-        val c2 = mod(controlDigits2)
-        if (c2 == 10 || c2 != Character.getNumericValue(value[10])) {
-            return false
-        }
-
-        return true
     }
 
-
-
-    /**
-     * Control Digits 1:
-     *  k1 = 11 - ((3 × d1 + 7 × d2 + 6 × m1 + 1 × m2 + 8 × å1 + 9 × å2 + 4 × i1 + 5 × i2 + 2 × i3) mod 11)
-     *
-     * Control Digits 2
-     *  k2 = 11 - ((5 × d1 + 4 × d2 + 3 × m1 + 2 × m2 + 7 × å1 + 6 × å2 + 5 × i1 + 4 × i2 + 3 × i3 + 2 × k1) mod 11)
-     */
-    private fun mod(arr: IntArray): Int {
-        val sum = arr.withIndex()
-                .sumOf { (i, m) -> m * Character.getNumericValue(value[i]) }
-
-        val result = 11 - (sum % 11)
-        return if (result == 11) 0 else result
+    enum class Kjoenn {
+        MANN,
+        KVINNE
     }
 
     override fun equals(other: Any?): Boolean {
         return this.value == (other as Fodselsnummer?)?.value
     }
-
     override fun hashCode(): Int = this.value.hashCode()
-
     override fun toString(): String = this.value
 }

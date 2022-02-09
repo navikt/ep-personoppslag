@@ -41,6 +41,28 @@ internal class FodselsnummerTest {
     }
 
     @Test
+    fun `syntetic fdata should be valid`() {
+        assertNotNull(Fodselsnummer.fra("17912099997"))
+        assertNotNull(Fodselsnummer.fra("29822099635"))
+        assertNotNull(Fodselsnummer.fra("05840399895"))
+        assertNotNull(Fodselsnummer.fra("12829499914"))
+        assertNotNull(Fodselsnummer.fra("12905299938"))
+        assertNotNull(Fodselsnummer.fra("21883649874"))
+        assertNotNull(Fodselsnummer.fra("21929774873"))
+        assertNotNull(Fodselsnummer.fra("54496214261"))
+    }
+
+    @Test
+    fun `syntetic date and birthdate`() {
+        val synt = "54496214261" //KAFFI DØLL
+        val fnr = Fodselsnummer.fra(synt)
+        assertNotNull(fnr)
+        assertEquals("1962-09-14", fnr?.getBirthDateAsIso())
+        assertTrue(fnr!!.getAge() > 58)
+        assertEquals(Fodselsnummer.Kjoenn.KVINNE, fnr.kjoenn)
+    }
+
+    @Test
     fun `Validate d-number`() {
         assertTrue(DNUMMER_GYLDIG.isDNumber())
     }
@@ -99,9 +121,7 @@ internal class FodselsnummerTest {
     @Test
     fun `Test på bruker fnr 20år`() {
         val fnr = generateFnrForTest(20)
-        println(fnr)
         val navfnr = Fodselsnummer.fraMedValidation(fnr)
-        println(navfnr)
         assertEquals(20, navfnr?.getAge())
         assertEquals(false, navfnr?.isUnder18Year())
     }
@@ -110,7 +130,6 @@ internal class FodselsnummerTest {
     fun `Is 17 year old under 18year`() {
         val fnr = generateFnrForTest(17)
         val navfnr = Fodselsnummer.fraMedValidation(fnr)
-
         assertEquals(17, navfnr?.getAge())
         assertEquals(true, navfnr?.isUnder18Year())
     }
@@ -144,9 +163,7 @@ internal class FodselsnummerTest {
         val fnr = generateFnrForTest(72)
         val navfnr = Fodselsnummer.fra(fnr)
         assertEquals(72, navfnr?.getAge())
-        println(navfnr)
     }
-
 
     @Test
     fun `valid pension age`() {
@@ -154,7 +171,6 @@ internal class FodselsnummerTest {
         val navfnr = Fodselsnummer.fra(fnr)
         assertEquals(67, navfnr?.getAge())
     }
-
 
 
 }
