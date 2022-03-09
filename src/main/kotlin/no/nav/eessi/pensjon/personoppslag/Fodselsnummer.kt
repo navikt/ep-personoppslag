@@ -60,7 +60,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
             }
         }
 
-    val foedselsdato: LocalDate
+    private val foedselsdato: LocalDate
         get() {
             val fnrMonth = value.slice(2 until 4).toInt()
 
@@ -79,7 +79,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
             return LocalDate.of(foedselsaar, beregnetMaaned, fnrDay)
         }
 
-    val gyldigeKontrollsiffer: Boolean
+    private val gyldigeKontrollsiffer: Boolean
         get() {
             val ks1 = value[9].toString().toInt()
             val ks2 = value[10].toString().toInt()
