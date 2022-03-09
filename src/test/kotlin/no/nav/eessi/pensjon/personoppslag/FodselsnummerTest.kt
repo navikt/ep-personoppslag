@@ -46,6 +46,16 @@ internal class FodselsnummerTest {
     }
 
     @Test
+    fun `syntetic date and birthdate`() {
+        val synt = "54496214261" //KAFFI DØLL
+        val fnr = Fodselsnummer.fra(synt)
+        assertNotNull(fnr)
+        assertEquals("1962-09-14", fnr?.getBirthDateAsIso())
+        assertTrue(fnr!!.getAge() > 58)
+        assertEquals(Fodselsnummer.Kjoenn.KVINNE, fnr.kjoenn)
+    }
+
+    @Test
     fun `Validate birthdate as ISO 8603`() {
         assertEquals("1973-11-22", LEALAUS_KAKE.getBirthDateAsIso())
         assertEquals("2015-01-12", STERK_BUSK.getBirthDateAsIso())
