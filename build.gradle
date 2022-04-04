@@ -1,14 +1,14 @@
 
 buildscript {
     ext {
-        springBootVersion = '5.3.17'
+        springBootVersion = '5.3.18'
         springWebVersion = '2.6.4'
         kotlinVersion = '1.6.10'
         jacksonModuleKotlinVersion = '2.13.2'
         prometheusVersion = '1.8+'
-        eessiMetricsVersion = '0.4.16'
-        eessiEpLoggingVersion = '1.0.16'
-        eessiEpSecVersion = '0.0.21'
+        eessiMetricsVersion = '0.4.+'
+        eessiEpLoggingVersion = '1.0.+'
+        eessiEpSecVersion = '0.0.+'
         junitVersion = '5.8.2'
         mockkVersion = '1.12.3'
         oidcTokenSupportVersion = '1.3.9'
