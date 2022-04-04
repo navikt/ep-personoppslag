@@ -112,6 +112,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    failFast = true
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams true
+    }
 }
 
 // https://github.com/researchgate/gradle-release
@@ -160,18 +166,6 @@ repositories {
     }
 }
 
-// https://docs.gradle.org/current/userguide/jacoco_plugin.html
-jacoco {
-    toolVersion = "0.8.5"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
-tasks.sonarqube.dependsOn tasks["jacocoTestReport"]
 
 /* https://github.com/ben-manes/gradle-versions-plugin */
 dependencyUpdates {
