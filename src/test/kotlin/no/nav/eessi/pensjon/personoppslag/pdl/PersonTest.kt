@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
@@ -73,6 +74,15 @@ internal class PersonTest {
         every { mockPersonClient.hentGeografiskTilknytning (any()) }  returns geoResponse
 
         return mockPersonService.hentPerson(NorskIdent("2"))
+    }
+
+
+    @Test
+    fun `hentPerson med manglende relatertPersonsIdent skal fortsatt gi gyldig resultat`() {
+        val json = javaClass.getResource("/hentPersonFamilieRelasjonUtenIdent.json").readText()
+        var person = hentPersonFraFil(json)
+        assertEquals(Familierelasjonsrolle.BARN, person?.forelderBarnRelasjon?.get(0)?.relatertPersonsRolle)
+        assertNull(person?.forelderBarnRelasjon?.get(0)?.relatertPersonsIdent)
     }
 
 
