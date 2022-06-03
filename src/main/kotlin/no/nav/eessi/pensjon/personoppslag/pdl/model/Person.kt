@@ -169,8 +169,8 @@ data class Kjoenn(
 )
 
 data class ForelderBarnRelasjon (
-        val relatertPersonsIdent: String,
-        val relatertPersonsRolle: Familierelasjonsrolle,
+        val relatertPersonsIdent: String?,
+        val relatertPersonsRolle: Familierelasjonsrolle?,
         val minRolleForPerson: Familierelasjonsrolle? = null,
         val metadata: Metadata
 )
