@@ -107,7 +107,7 @@ release {
     tagTemplate = "release-\${version}"
 
     git {
-        requireBranch = 'azuread'
+        requireBranch = 'master'
     }
 }
 
