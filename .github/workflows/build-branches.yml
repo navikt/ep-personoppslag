@@ -6,7 +6,7 @@ on:
       - '*'
       - '*/*'
       - '!master'
-      - '!azuread'
+      - '!last-with-onprem-support'
 
 jobs:
   build:
