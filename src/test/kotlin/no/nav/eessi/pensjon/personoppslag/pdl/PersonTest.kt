@@ -202,27 +202,40 @@ internal class PersonTest {
     }
 
     @Test
-    fun `hentPerson med KontaktinformasjonForDoedsboAdresse`() {
-        val json = javaClass.getResource("/hentPersonMedKontaktAdresseDoedsbo.json").readText()
+    fun `hentPerson med KontaktinformasjonForDoedsboAdresse - advokat`() {
+        val json = javaClass.getResource("/hentPersonMedKontaktAdresseDoedsbo-Advokat.json")!!.readText()
         val person = hentPersonFraFil(json)
-
-        val navn = person?.navn
-        assertEquals("TVILSOM", navn?.fornavn)
-        assertEquals("KNOTT", navn?.etternavn)
-
-        assertNull(person?.bostedsadresse)
-        assertNull(person?.oppholdsadresse)
-        assertNull(person?.kontaktadresse)
-        assertNotNull(person?.doedsfall)
-
         val adresse = person?.kontaktinformasjonForDoedsbo?.adresse
-        assertNotNull(adresse)
 
-        assertEquals("adresselinje1", adresse?.adresselinje1)
-        assertEquals("adresselinje2", adresse?.adresselinje2)
-        assertEquals("SWE", adresse?.landkode)
-        assertEquals("3123", adresse?.postnummer)
-        assertEquals("POSTSTEDSETSNAVN", adresse?.poststedsnavn)
+        assertEquals("adresselinje1", adresse!!.adresselinje1)
+        assertEquals("adresselinje2", adresse.adresselinje2)
+        assertEquals("SWE", adresse.landkode)
+        assertEquals("3123", adresse.postnummer)
+        assertEquals("POSTSTEDSETSNAVN", adresse.poststedsnavn)
+
+        val advokatSomKontakt = person.kontaktinformasjonForDoedsbo!!.advokatSomKontakt!!
+        assertEquals("Arve", advokatSomKontakt.personnavn.fornavn)
+        assertEquals("Bjørn", advokatSomKontakt.personnavn.mellomnavn)
+        assertEquals("Stein", advokatSomKontakt.personnavn.etternavn)
+        assertEquals("Stein Gale Advokater", advokatSomKontakt.organisasjonsnavn)
+    }
+
+    @Test
+    fun `hentPerson med KontaktinformasjonForDoedsboAdresse - person`() {
+        val json = javaClass.getResource("/hentPersonMedKontaktAdresseDoedsbo-Person.json")!!.readText()
+        val person = hentPersonFraFil(json)
+        val personSomKontakt = person!!.kontaktinformasjonForDoedsbo!!.personSomKontakt!!
+        assertEquals("12345678910", personSomKontakt.identifikasjonsnummer)
+    }
+
+    @Test
+    fun `hentPerson med KontaktinformasjonForDoedsboAdresse - organisasjon`() {
+        val json = javaClass.getResource("/hentPersonMedKontaktAdresseDoedsbo-Organisasjon.json")!!.readText()
+        val person = hentPersonFraFil(json)
+        val organisasjonSomKontakt = person!!.kontaktinformasjonForDoedsbo!!.organisasjonSomKontakt!!
+        assertEquals("Hvite", organisasjonSomKontakt.kontaktperson!!.fornavn)
+        assertEquals("Blomster", organisasjonSomKontakt.kontaktperson!!.etternavn)
+        assertEquals("ABC Vi Fikser Arven", organisasjonSomKontakt.organisasjonsnavn)
     }
 
 

@@ -53,6 +53,15 @@ query($ident: ID!) {
             }
         }
         kontaktinformasjonForDoedsbo {
+            personSomKontakt {
+                ...personSomKontakt
+            }
+            advokatSomKontakt {
+                ...advokatSomKontakt
+            }
+            organisasjonSomKontakt {
+                ...organisasjonSomKontakt
+            }
             adresse {
                 ...doedsboAdresse
             }
@@ -187,4 +196,31 @@ fragment doedsboAdresse on KontaktinformasjonForDoedsboAdresse {
     landkode
     postnummer
     poststedsnavn
+}
+
+fragment personSomKontakt on KontaktinformasjonForDoedsboPersonSomKontakt {
+    personnavn {
+        fornavn
+        mellomnavn
+        etternavn
+    }
+    identifikasjonsnummer
+}
+
+fragment advokatSomKontakt on KontaktinformasjonForDoedsboAdvokatSomKontakt {
+    personnavn {
+        fornavn
+        mellomnavn
+        etternavn
+    }
+    organisasjonsnavn
+}
+
+fragment organisasjonSomKontakt on KontaktinformasjonForDoedsboOrganisasjonSomKontakt {
+    kontaktperson  {
+        fornavn
+        mellomnavn
+        etternavn
+    }
+    organisasjonsnavn
 }

@@ -46,11 +46,35 @@ data class Kontaktadresse(
 )
 
 data class KontaktinformasjonForDoedsbo(
+        val personSomKontakt: KontaktinformasjonForDoedsboPersonSomKontakt? = null,
+        val advokatSomKontakt: KontaktinformasjonForDoedsboAdvokatSomKontakt? = null,
+        val organisasjonSomKontakt: KontaktinformasjonForDoedsboOrganisasjonSomKontakt? = null,
         val adresse: KontaktinformasjonForDoedsboAdresse,
         val attestutstedelsesdato: LocalDate,
         val folkeregistermetadata: Folkeregistermetadata,
         val metadata: Metadata,
         val skifteform: KontaktinformasjonForDoedsboSkifteform
+)
+
+data class KontaktinformasjonForDoedsboPersonSomKontakt(
+        val personnavn: Personnavn? = null,
+        val identifikasjonsnummer: String? = null
+)
+
+data class KontaktinformasjonForDoedsboAdvokatSomKontakt(
+        val personnavn: Personnavn,
+        val organisasjonsnavn: String? = null
+)
+
+data class KontaktinformasjonForDoedsboOrganisasjonSomKontakt(
+        val kontaktperson: Personnavn? = null,
+        val organisasjonsnavn: String
+)
+
+data class Personnavn(
+        val fornavn: String,
+        val mellomnavn: String? = null,
+        val etternavn: String
 )
 
 enum class KontaktinformasjonForDoedsboSkifteform{

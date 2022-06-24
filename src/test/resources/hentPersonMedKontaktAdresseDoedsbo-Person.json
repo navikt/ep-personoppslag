@@ -5,8 +5,10 @@
       "bostedsadresse": [],
       "oppholdsadresse": [],
       "kontaktadresse": [],
-      "kontaktinformasjonForDoedsbo": [
-        {
+      "kontaktinformasjonForDoedsbo": [{
+        "personSomKontakt": {
+          "identifikasjonsnummer": "12345678910"
+        },
           "adresse": {
             "adresselinje1": "adresselinje1",
             "adresselinje2": "adresselinje2",
