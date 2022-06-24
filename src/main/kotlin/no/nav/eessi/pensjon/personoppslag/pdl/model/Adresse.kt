@@ -45,6 +45,14 @@ data class Kontaktadresse(
         val postadresseIFrittFormat: PostadresseIFrittFormat? = null
 )
 
+/** 
+ * Avdøde personer kan ha en kontaktadresse for dødsboet.
+ * Kilden kan være Helse (gjerne pårørende) eller tingretten.
+ * Det er enten en personSomKontakt eller en advokatSomKontakt
+ * eller en organisasjonSomKontakt.
+ * Adressen er alltid satt og tilhører kontaktpersonen, advokaten eller
+ * organiasjonen.
+ */
 data class KontaktinformasjonForDoedsbo(
         val personSomKontakt: KontaktinformasjonForDoedsboPersonSomKontakt? = null,
         val advokatSomKontakt: KontaktinformasjonForDoedsboAdvokatSomKontakt? = null,
@@ -56,16 +64,28 @@ data class KontaktinformasjonForDoedsbo(
         val skifteform: KontaktinformasjonForDoedsboSkifteform
 )
 
+/** 
+ * Person som er kontakt for dødsbo.
+ * Enten er personnavn _eller_ identifikasjonsnummer satt.
+ */
 data class KontaktinformasjonForDoedsboPersonSomKontakt(
         val personnavn: Personnavn? = null,
         val identifikasjonsnummer: String? = null
 )
 
+/** 
+ * Advokat som er kontakt for dødsbo.
+ * Personnavn finnes alltid, men ikke alltid organisasjonsnavn.
+ */
 data class KontaktinformasjonForDoedsboAdvokatSomKontakt(
         val personnavn: Personnavn,
         val organisasjonsnavn: String? = null
 )
 
+/** 
+ * Organisasjon som er kontakt for dødsbo.
+ * Organisasjonsnavn finnes alltid, men ikke alltid kontaktnavn.
+ */
 data class KontaktinformasjonForDoedsboOrganisasjonSomKontakt(
         val kontaktperson: Personnavn? = null,
         val organisasjonsnavn: String
