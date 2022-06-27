@@ -6,7 +6,7 @@ buildscript {
         kotlinVersion = '1.6.10'
         jacksonModuleKotlinVersion = '2.13.2'
         prometheusVersion = '1.8+'
-        eessiMetricsVersion = '0.4.21'
+        eessiMetricsVersion = '0.4.25'
         eessiEpLoggingVersion = '1.0.22'
         eessiEpSecVersion = '0.0.+'
         junitVersion = '5.8.2'
