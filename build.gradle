@@ -7,7 +7,7 @@ buildscript {
         jacksonModuleKotlinVersion = '2.13.2'
         prometheusVersion = '1.8+'
         eessiMetricsVersion = '0.4.21'
-        eessiEpLoggingVersion = '1.0.19'
+        eessiEpLoggingVersion = '1.0.22'
         eessiEpSecVersion = '0.0.+'
         junitVersion = '5.8.2'
         mockkVersion = '1.12.3'
