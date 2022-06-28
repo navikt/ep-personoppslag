@@ -153,7 +153,7 @@ publishing {
 repositories {
     mavenCentral()
 
-    ["ep-metrics", "ep-logging", "ep-security-sts"].each { repo ->
+    ["ep-metrics", "ep-logging"].each { repo ->
         String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
         if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
         maven {
