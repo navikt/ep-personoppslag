@@ -1,0 +1,33 @@
+query($ident: ID!) {
+    hentPerson(ident: $ident) {
+        navn(historikk: false) {
+            fornavn
+            mellomnavn
+            etternavn
+            forkortetNavn
+            gyldigFraOgMed
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
+    }
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    master
+    opplysningsId
+    historisk
+}
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    ajourholdstidspunkt
+}

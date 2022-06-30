@@ -13,6 +13,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
+import java.time.LocalDateTime
 import javax.annotation.PostConstruct
 
 @Service
@@ -34,6 +36,7 @@ class PersonService(
 ) {
 
     private lateinit var hentPersonMetric: Metric
+    private lateinit var hentPersonnavnMetric: Metric
     private lateinit var harAdressebeskyttelseMetric: Metric
     private lateinit var hentAktoerIdMetric: Metric
     private lateinit var hentIdentMetric: Metric
@@ -45,6 +48,7 @@ class PersonService(
     @PostConstruct
     fun initMetrics() {
         hentPersonMetric = metricsHelper.init("hentPerson", alert = OFF)
+        hentPersonnavnMetric = metricsHelper.init("hentPersonnavn", alert = OFF)
         harAdressebeskyttelseMetric = metricsHelper.init("harAdressebeskyttelse", alert = OFF)
         hentAktoerIdMetric = metricsHelper.init("hentAktoerId", alert = OFF)
         hentIdentMetric = metricsHelper.init("hentIdent", alert = OFF)
@@ -109,6 +113,22 @@ class PersonService(
                     val geografiskTilknytning = hentGeografiskTilknytning(ident)
                     val utenlandskIdentifikasjonsnummer = hentPersonUtenlandskIdent(ident)?.utenlandskIdentifikasjonsnummer ?: emptyList()
                     konverterTilPerson(it, identer, geografiskTilknytning, utenlandskIdentifikasjonsnummer)
+                }
+        }
+    }
+
+
+    fun hentPersonnavn(norskIdent: NorskIdent): Navn? {
+        return hentPersonnavnMetric.measure {
+            val response = client.hentPersonnavn(norskIdent.id)
+
+            if (!response.errors.isNullOrEmpty())
+                handleError(response.errors)
+
+            return@measure response.data?.hentPersonnavn?.navn?.
+                maxByOrNull {
+                    if (it.metadata.master == "FREG") it.folkeregistermetadata?.ajourholdstidspunkt?:LocalDateTime.of(1900,1,1,0,0,0)
+                    else it.metadata.sisteRegistrertDato()
                 }
         }
     }

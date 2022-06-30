@@ -32,6 +32,9 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUtenlandskIdent
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavn
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavnResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavnResponseData
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.AKTORID
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.FOLKEREGISTERIDENT
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.NPID
@@ -124,6 +127,21 @@ internal class PersonServiceTest {
 
         assertEquals(1, resultat.adressebeskyttelse.size)
         assertEquals(2, resultat.identer.size)
+    }
+    @Test
+    fun hentPersonnavn() {
+        val pdlPersonnavn = createHentPersonnavn(
+                navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", "EMF", null, null, mockMeta()))
+        )
+
+        every { client.hentPersonnavn(any()) } returns HentPersonnavnResponse(HentPersonnavnResponseData(pdlPersonnavn))
+
+        val resultat = service.hentPersonnavn(NorskIdent("12345678901"))
+
+        val navn = resultat!!
+        assertEquals("Fornavn", navn.fornavn)
+        assertEquals("Mellomnavn", navn.mellomnavn)
+        assertEquals("Etternavn", navn.etternavn)
     }
 
     @Test
@@ -532,6 +550,8 @@ internal class PersonServiceTest {
     ) = HentPerson(
             adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
     )
+
+    private fun createHentPersonnavn(navn: List<Navn>) = HentPersonnavn(navn)
 
     private fun mockGradertPerson(gradering: AdressebeskyttelseGradering) =
             AdressebeskyttelseBolkPerson(

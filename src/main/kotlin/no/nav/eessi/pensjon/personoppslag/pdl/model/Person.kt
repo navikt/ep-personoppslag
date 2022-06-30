@@ -27,6 +27,9 @@ internal data class HentPerson(
         val kontaktadresse: List<Kontaktadresse>?,
         val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>,
 )
+internal data class HentPersonnavn(
+        val navn: List<Navn>
+)
 
 internal data class HentPersonUtenlandskIdent(
         val navn: List<Navn>,
@@ -102,7 +105,8 @@ data class Foedsel(
 )
 
 data class Folkeregistermetadata(
-        val gyldighetstidspunkt: LocalDateTime? = null
+        val gyldighetstidspunkt: LocalDateTime? = null,
+        val ajourholdstidspunkt: LocalDateTime? = null
 )
 
 data class Metadata(
@@ -181,3 +185,4 @@ data class Sivilstand(
         val relatertVedSivilstand: String? = null,
         val metadata: Metadata
 )
+

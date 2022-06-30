@@ -5,6 +5,7 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningRespons
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GraphqlRequest
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavnResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonGraphqlRequest
@@ -43,6 +44,14 @@ class PersonClient(
         val request = GraphqlRequest(query, Variables(ident))
         return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonResponse::class)
   }
+
+
+    internal fun hentPersonnavn(ident: String): HentPersonnavnResponse {
+        val query = getGraphqlResource("/graphql/hentPersonnavn.graphql")
+        val request = GraphqlRequest(query, Variables(ident))
+
+        return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonnavnResponse::class)
+    }
 
     /**
      * Oppretter GraphQL Query for uthentig av adressebeskyttelse

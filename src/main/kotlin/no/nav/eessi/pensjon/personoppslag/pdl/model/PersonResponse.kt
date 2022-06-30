@@ -8,8 +8,18 @@ internal data class HentPersonResponse(
     val errors: List<ResponseError>? = null
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+internal data class HentPersonnavnResponse(
+    val data: HentPersonnavnResponseData? = null,
+    val errors: List<ResponseError>? = null
+)
+
 internal data class HentPersonResponseData(
     val hentPerson: HentPerson? = null
+)
+
+internal data class HentPersonnavnResponseData(
+    val hentPersonnavn: HentPersonnavn? = null
 )
 
 
