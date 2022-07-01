@@ -4,7 +4,7 @@ buildscript {
         springBootVersion = '5.3.18'
         springWebVersion = '2.6.4'
         kotlinVersion = '1.6.10'
-        jacksonModuleKotlinVersion = '2.13.2'
+        jacksonModuleKotlinVersion = '2.13.3'
         prometheusVersion = '1.8.4'
         eessiMetricsVersion = '0.4.25'
         eessiEpLoggingVersion = '1.0.22'
