@@ -35,7 +35,7 @@ import javax.annotation.PostConstruct
 class PersonService(
     private val client: PersonClient,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry()),
-    @Value("\${ENV:") private val environment: String? = null
+    @Value("\${ENV:}") private val environment: String? = null
 ) {
 
     private lateinit var hentPersonMetric: Metric
