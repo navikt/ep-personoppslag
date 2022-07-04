@@ -22,7 +22,9 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
 import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
+import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -32,7 +34,8 @@ import javax.annotation.PostConstruct
 @Service
 class PersonService(
     private val client: PersonClient,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry()),
+    @Value("\${ENV}") private val environment: String? = null
 ) {
 
     private lateinit var hentPersonMetric: Metric
@@ -121,6 +124,11 @@ class PersonService(
     fun hentPersonnavn(norskIdent: NorskIdent): Navn? {
         return hentPersonnavnMetric.measure {
             val response = client.hentPersonnavn(norskIdent.id)
+            if ("q2" == environment) { // TODO Remove after debugging
+                println("***** RESPONSE FRA PDL ******")
+                println(response)
+                println("***** RESPONSE FRA PDL ******")
+            }
 
             if (!response.errors.isNullOrEmpty())
                 handleError(response.errors)
