@@ -1,0 +1,29 @@
+{
+  "data": {
+    "hentPerson": {
+      "navn": [
+        {
+          "fornavn": "BLÅ",
+          "mellomnavn": null,
+          "etternavn": "STAUDE",
+          "forkortetNavn": "STAUDE BLÅ",
+          "gyldigFraOgMed": "2021-02-15",
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2021-02-15T10:41:02",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "master": "FREG",
+            "opplysningsId": "032d411b-c493-46ec-820d-5e5fa14dfec1",
+            "historisk": false
+          }
+        }
+      ]
+    }
+  }
+}

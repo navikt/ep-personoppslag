@@ -19,7 +19,7 @@ internal data class HentPersonResponseData(
 )
 
 internal data class HentPersonnavnResponseData(
-    val hentPersonnavn: HentPersonnavn? = null
+    val hentPerson: HentPersonnavn? = null
 )
 
 
