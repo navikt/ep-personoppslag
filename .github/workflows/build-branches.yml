@@ -24,4 +24,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         export TZ=CET
-        ./gradlew build
+        ./gradlew build --stacktrace

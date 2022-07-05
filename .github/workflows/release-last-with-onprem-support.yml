@@ -26,7 +26,7 @@ jobs:
     - name: build and update version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: ./gradlew build release -Prelease.useAutomaticVersion=true
+      run: ./gradlew build release --stacktrace -Prelease.useAutomaticVersion=true
   
     - name: check out release-version
       uses: actions/checkout@v2
@@ -34,6 +34,6 @@ jobs:
         ref: "release-${{ env.VERSION }}"
 
     - name: publish package
-      run: ./gradlew publish
+      run: ./gradlew publish --stacktrace
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
