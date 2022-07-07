@@ -1,8 +1,9 @@
 
 buildscript {
     ext {
-        springBootVersion = '5.3.18'
-        springWebVersion = '2.6.4'
+        kotlinVersion = '1.7.0'
+        springFrameworkVersion = '5.3.18'
+        springBootVersion = '2.6.4'
         jacksonModuleKotlinVersion = '2.13.3'
         prometheusVersion = '1.8.4'
         eessiMetricsVersion = '0.4.29'
@@ -19,9 +20,9 @@ buildscript {
 plugins {
     id("java-library")
     id("maven-publish")
-    id("org.jetbrains.kotlin.jvm") version "1.7.0"
+    id("org.jetbrains.kotlin.jvm") version "${kotlinVersion}"
     id("net.researchgate.release") version "3.0.0"
-    id("org.jetbrains.kotlin.plugin.spring") version "1.7.0"
+    id("org.jetbrains.kotlin.plugin.spring") version "${kotlinVersion}"
     id("com.adarshr.test-logger") version "3.2.0"
     id("com.github.ben-manes.versions") version "0.42.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.18"
@@ -66,8 +67,7 @@ jacocoTestReport {
 tasks.sonarqube.dependsOn tasks["jacocoTestReport"]
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.7.0"))
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:${kotlinVersion}"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 
@@ -82,10 +82,10 @@ dependencies {
     implementation("no.nav.eessi.pensjon:ep-logging:$eessiEpLoggingVersion")
 
     // Spring
-    implementation("org.springframework.boot:spring-boot-starter-web:$springWebVersion") {
+    implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
         exclude module : "tomcat-embed-core"
     }
-    implementation("org.springframework:spring-web:$springBootVersion")
+    implementation("org.springframework:spring-web:$springFrameworkVersion")
 
     //Jackson json
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
@@ -94,7 +94,7 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.springframework:spring-test:$springBootVersion")
+    testImplementation("org.springframework:spring-test:$springFrameworkVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
 
     //Auth
