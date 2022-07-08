@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
@@ -32,7 +31,7 @@ import javax.annotation.PostConstruct
 @Service
 class PersonService(
     private val client: PersonClient,
-    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper(SimpleMeterRegistry())
+    @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
 
     private lateinit var hentPersonMetric: Metric
