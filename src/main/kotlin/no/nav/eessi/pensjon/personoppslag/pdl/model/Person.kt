@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -69,7 +70,66 @@ data class Person(
         val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
         val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
 ) {
+        private val logger = LoggerFactory.getLogger(Person::class.java)
+
         fun erDoed() = doedsfall?.doedsdato != null
+
+        /**
+         * Velger en landkode blant adressene tilknyttet personen, etter hva som først er definert av:
+         *
+         * 1. utenlandsk kontaktadresse (i fritt format)
+         * 2. utenlandsk bostedsadresse (strukturert)
+         * 3. utenlandsk oppholdsadresse
+         * 4. utenlandsk bostedsadresse
+         * 5. geografisk tilknytning
+         * 6. norsk bostedsadresse
+         * 7. norsk kontaktadresse (i fritt format)
+         * 8. eller returnerer tom streng om ingen av adressene er definert
+         */
+        fun landkode(): String {
+                val landkodeOppholdKontakt = kontaktadresse?.utenlandskAdresseIFrittFormat?.landkode
+                val landkodeUtlandsAdresse = kontaktadresse?.utenlandskAdresse?.landkode
+                val landkodeOppholdsadresse = oppholdsadresse?.utenlandskAdresse?.landkode
+                val landkodeBostedsadresse = bostedsadresse?.utenlandskAdresse?.landkode
+                val geografiskLandkode = geografiskTilknytning?.gtLand
+                val landkodeBostedNorge = bostedsadresse?.vegadresse
+                val landkodeKontaktNorge = kontaktadresse?.postadresseIFrittFormat
+
+                return when {
+                        landkodeOppholdKontakt != null -> {
+                                logger.info("Velger landkode fra kontaktadresse.utenlandskAdresseIFrittFormat ")
+                                landkodeOppholdKontakt
+                        }
+                        landkodeUtlandsAdresse != null -> {
+                                logger.info("Velger landkode fra kontaktadresse.utenlandskAdresse")
+                                landkodeUtlandsAdresse
+                        }
+                        landkodeOppholdsadresse != null -> {
+                                logger.info("Velger landkode fra oppholdsadresse.utenlandskAdresse")
+                                landkodeOppholdsadresse
+                        }
+                        landkodeBostedsadresse != null -> {
+                                logger.info("Velger landkode fra bostedsadresse.utenlandskAdresse")
+                                landkodeBostedsadresse
+                        }
+                        geografiskLandkode != null -> {
+                                logger.info("Velger landkode fra geografiskTilknytning.gtLand")
+                                geografiskLandkode
+                        }
+                        landkodeBostedNorge != null -> {
+                                logger.info("Velger landkode NOR fordi  bostedsadresse.vegadresse ikke er tom")
+                                "NOR"
+                        }
+                        landkodeKontaktNorge != null -> {
+                                logger.info("Velger landkode NOR fordi  kontaktadresse.postadresseIFrittFormat ikke er tom")
+                                "NOR"
+                        }
+                        else -> {
+                                logger.info("Velger tom landkode siden ingen særregler for adresseutvelger inntraff")
+                                ""
+                        }
+                }
+        }
 }
 
 data class Navn(
