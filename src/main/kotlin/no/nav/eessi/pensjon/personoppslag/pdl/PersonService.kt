@@ -304,8 +304,8 @@ class PersonService(
         val ER_LIK = "equals"
 
         return listOf(
-            SokCriteria("person.navn.fornavn",mapOf(INNEHOLDER to "${sokKriterier.fornavn}")),
-            SokCriteria("person.navn.etternavn", mapOf(INNEHOLDER to "${sokKriterier.etternavn}")),
+            SokCriteria("person.navn.fornavn",mapOf(INNEHOLDER to sokKriterier.fornavn)),
+            SokCriteria("person.navn.etternavn", mapOf(INNEHOLDER to sokKriterier.etternavn)),
             SokCriteria("person.foedsel.foedselsdato", mapOf(ER_LIK to "${sokKriterier.foedselsdato}"))
         )
 

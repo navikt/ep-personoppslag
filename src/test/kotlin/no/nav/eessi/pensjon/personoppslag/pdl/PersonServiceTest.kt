@@ -83,7 +83,7 @@ internal class PersonServiceTest {
     }
 
     private fun mockMeta(registrert: LocalDateTime = LocalDateTime.of(2010, 4,1, 10, 2, 14)): Metadata {
-        return no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata(
+        return Metadata(
             listOf(
                 Endring(
                     "TEST",
