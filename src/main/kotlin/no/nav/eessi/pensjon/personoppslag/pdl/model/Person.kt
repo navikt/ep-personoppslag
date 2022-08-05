@@ -194,6 +194,12 @@ enum class Endringstype {
         OPPRETT;
 }
 
+enum class Opplysningstype {
+        UTENLANDSKIDENTIFIKASJONSNUMMER,
+        KONTAKTADRESSE,
+        BOSTEDSADRESSE;
+}
+
 data class Doedsfall(
         val doedsdato: LocalDate? = null,
         val folkeregistermetadata: Folkeregistermetadata? = null,
