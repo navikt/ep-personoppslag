@@ -5,8 +5,8 @@ buildscript {
         springFrameworkVersion = '5.3.22'
         springBootVersion = '2.7.2'
         jacksonModuleKotlinVersion = '2.13.3'
-        eessiMetricsVersion = '0.5.5'
-        eessiEpLoggingVersion = '1.0.32'
+        eessiMetricsVersion = '0.5.8'
+        eessiEpLoggingVersion = '1.0.34'
         mockkVersion = '1.12.5'
         tokenSupportVersion = '2.1.3'
     }
