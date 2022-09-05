@@ -14,7 +14,10 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonVariables
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Variables
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.postForObject
 
@@ -25,6 +28,10 @@ class PersonClient(
     @Value("\${PDL_URL}") private val url: String
 ) {
 
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentPersonUtenlandsIdent(ident: String): HentPersonUidResponse {
         val query = getGraphqlResource("/graphql/hentPersonUtenlandsIdent.graphql")
         val request = GraphqlRequest(query, Variables(ident))
@@ -39,13 +46,20 @@ class PersonClient(
      *
      * @return GraphQL-objekt [PersonResponse] som inneholder data eller error.
      */
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentPerson(ident: String): HentPersonResponse {
         val query = getGraphqlResource("/graphql/hentPerson.graphql")
         val request = GraphqlRequest(query, Variables(ident))
         return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonResponse::class)
   }
 
-
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentPersonnavn(ident: String): HentPersonnavnResponse {
         val query = getGraphqlResource("/graphql/hentPersonnavn.graphql")
         val request = GraphqlRequest(query, Variables(ident))
@@ -60,6 +74,10 @@ class PersonClient(
      *
      * @return GraphQL-objekt [PersonResponse] som inneholder data eller error.
      */
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentAdressebeskyttelse(identer: List<String>): AdressebeskyttelseResponse {
         val query = getGraphqlResource("/graphql/hentAdressebeskyttelse.graphql")
         val request = GraphqlRequest(query, Variables(identer = identer))
@@ -74,6 +92,10 @@ class PersonClient(
      *
      * @return GraphQL-objekt [IdenterResponse] som inneholder data eller error.
      */
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentAktorId(ident: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentAktorId.graphql")
         val request = GraphqlRequest(query, Variables(ident))
@@ -89,6 +111,10 @@ class PersonClient(
      *
      * @return GraphQL-objekt [IdenterResponse] som inneholder data eller error.
      */
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentIdenter(ident: String): IdenterResponse {
         val query = getGraphqlResource("/graphql/hentIdenter.graphql")
         val request = GraphqlRequest(query, Variables(ident))
@@ -103,6 +129,11 @@ class PersonClient(
      *
      * @return GraphQL-objekt [GeografiskTilknytningResponse] som inneholder data eller error.
      */
+
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningResponse {
         val query = getGraphqlResource("/graphql/hentGeografiskTilknytning.graphql")
         val request = GraphqlRequest(query, Variables(ident))
@@ -110,6 +141,10 @@ class PersonClient(
         return pdlRestTemplate.postForObject(url, HttpEntity(request), GeografiskTilknytningResponse::class)
     }
 
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
     internal fun sokPerson(sokCriterias: List<SokCriteria>): SokPersonResponse {
         val query = getGraphqlResource("/graphql/sokPerson.graphql")
         val request = SokPersonGraphqlRequest(query, SokPersonVariables(criteria = sokCriterias))
