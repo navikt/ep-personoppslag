@@ -1,7 +1,5 @@
-
 buildscript {
     ext {
-        kotlinVersion = '1.6.21' // 1.7.0 skaper trøbbel for mockk: https://github.com/mockk/mockk/issues/832 - som igjen feiler tester i prefill-appen
         springFrameworkVersion = '5.3.22'
         springBootVersion = '2.7.3'
         jacksonModuleKotlinVersion = '2.13.3'
@@ -10,67 +8,19 @@ buildscript {
         mockkVersion = '1.12.5'
         tokenSupportVersion = '2.1.4'
     }
-
-    repositories {
-        mavenCentral()
-    }
 }
 
 plugins {
-    id("java-library")
-    id("maven-publish")
-    id("org.jetbrains.kotlin.jvm") version "${kotlinVersion}"
-    id("net.researchgate.release") version "3.0.1"
-    id("org.jetbrains.kotlin.plugin.spring") version "${kotlinVersion}"
-    id("com.adarshr.test-logger") version "3.2.0"
-    id("com.github.ben-manes.versions") version "0.42.0"
-    id("se.patrikerdes.use-latest-versions") version "0.2.18"
-    id("org.owasp.dependencycheck") version "7.1.2"
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
-    id "org.sonarqube" version "3.4.0.2513"
-    id 'jacoco'
 }
+
+apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.2.0/ep-module.gradle"
+apply from: "https://raw.githubusercontent.com/navikt/ep-script-plugins/release-0.2.0/ep-library.gradle"
 
 group = "no.nav.eessi.pensjon"
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-compileKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = "17"
-        allWarningsAsErrors = true
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
-        jvmTarget = "17"
-        allWarningsAsErrors = true
-    }
-}
-
-// https://docs.gradle.org/current/userguide/jacoco_plugin.html
-jacoco {
-    toolVersion = "0.8.8"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
-tasks.sonarqube.dependsOn tasks["jacocoTestReport"]
-
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:${kotlinVersion}"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-
 
     // Logging
     implementation('net.logstash.logback:logstash-logback-encoder:7.2') {
@@ -111,7 +61,6 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
     failFast = true
     testLogging {
         exceptionFormat "full"
@@ -122,56 +71,7 @@ test {
 
 // https://github.com/researchgate/gradle-release
 release {
-    newVersionCommitMessage = "[Release Plugin] - next version commit: "
-    tagTemplate = "release-\${version}"
-
     git {
         requireBranch.set('master')
     }
-}
-
-// https://help.github.com/en/actions/language-and-framework-guides/publishing-java-packages-with-gradle#publishing-packages-to-github-packages
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/navikt/ep-personoppslag"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-}
-
-repositories {
-    mavenCentral()
-
-    ["ep-metrics", "ep-logging"].each { repo ->
-        String token = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
-        if (!token) throw new NullPointerException("Missing token, you have to set GITHUB_TOKEN or gpr.key, see README")
-        maven {
-            url = uri("https://maven.pkg.github.com/navikt/$repo")
-            credentials {
-                username = "token"
-                password = token
-            }
-        }
-    }
-}
-
-
-/* https://github.com/ben-manes/gradle-versions-plugin */
-dependencyUpdates {
-    rejectVersionIf {
-        ['alpha', 'beta', 'b', 'rc', 'cr', 'm', 'preview', 'pr']
-                .any { qualifier -> it.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/}
-    }
-    revision = 'release'
 }
