@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Pull repo'
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: 'Sett opp bruker i git'
         run: git config user.email "${{ github.actor }}@users.noreply.github.com" && git config user.name "Github Actions"
