@@ -388,6 +388,7 @@ internal class PersonServiceTest {
             service.hentPerson(NorskIdent("test"))
         }
 
+        assertEquals(code, exception.code)
         assertEquals("$code: $msg", exception.message)
     }
 

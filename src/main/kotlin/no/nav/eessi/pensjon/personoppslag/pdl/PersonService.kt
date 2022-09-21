@@ -335,9 +335,12 @@ class PersonService(
         val code = error.extensions?.code ?: "unknown_error"
         val message = error.message ?: "Error message from PDL is missing"
 
-        throw PersonoppslagException("$code: $message")
+        throw PersonoppslagException(message, code)
     }
 
 }
 
-class PersonoppslagException(message: String) : RuntimeException(message)
+class PersonoppslagException(message: String, val code: String) : RuntimeException("$code: $message") {
+    @Deprecated("Bruk PersonoppslagException(message, code)")
+    constructor(combinedMessage: String): this(combinedMessage.split(": ").first(), combinedMessage.split(": ")[1])
+}

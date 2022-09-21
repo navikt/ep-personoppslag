@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.web.client.RestTemplateBuilder
 import java.time.LocalDate
 
-@Disabled
+@Disabled("Test laget for å kunne kjøre manuelt, kaller faktisk PDL")
 internal class PersonServiceIntegrationTest {
 
     private val mockPDLConfiguration = PdlConfiguration()
