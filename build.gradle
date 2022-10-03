@@ -126,7 +126,7 @@ release {
     tagTemplate = "release-\${version}"
 
     git {
-        requireBranch.set('master')
+        requireBranch.set('main')
     }
 }
 

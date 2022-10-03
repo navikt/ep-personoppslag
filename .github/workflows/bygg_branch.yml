@@ -5,8 +5,7 @@ on:
     branches:
       - '*'
       - '*/*'
-      - '!master'
-      - '!last-with-onprem-support'
+      - '!main'
 
 jobs:
   bygg:
