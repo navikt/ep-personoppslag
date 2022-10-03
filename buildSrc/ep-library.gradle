@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.researchgate:gradle-release:3.0.2"
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: net.researchgate.release.ReleasePlugin
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+// https://github.com/researchgate/gradle-release
+release {
+    newVersionCommitMessage = "[Release Plugin] - next version commit: "
+    tagTemplate = "release-\${version}"
+    git {
+        requireBranch.set('main')
+    }
+}
+
+// https://help.github.com/en/actions/language-and-framework-guides/publishing-java-packages-with-gradle#publishing-packages-to-github-packages
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/navikt/$rootProject.name"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
