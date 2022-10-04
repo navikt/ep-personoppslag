@@ -8,7 +8,7 @@ buildscript {
         eessiMetricsVersion = '0.5.19'
         eessiEpLoggingVersion = '1.0.47'
         mockkVersion = '1.12.5'
-        tokenSupportVersion = '2.1.4'
+        tokenSupportVersion = '2.1.6'
     }
 
     repositories {
