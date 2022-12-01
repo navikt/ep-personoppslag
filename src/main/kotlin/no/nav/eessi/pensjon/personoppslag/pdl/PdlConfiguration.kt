@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
@@ -27,13 +28,18 @@ import org.springframework.web.client.RestTemplate
 class PdlConfiguration {
 
     @Bean
-    fun pdlRestTemplate(templateBuilder: RestTemplateBuilder, pdlTokenComponent: PdlTokenCallBack): RestTemplate {
+    fun pdlRestTemplate(
+        templateBuilder: RestTemplateBuilder,
+        pdlTokenComponent: PdlTokenCallBack,
+        meterRegistry: io.micrometer.core.instrument.MeterRegistry
+    ): RestTemplate {
 
         return templateBuilder
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 IOExceptionRetryInterceptor(),
+                RequestCountInterceptor(meterRegistry),
                 RequestResponseLoggerInterceptor(),
                 PdlInterceptor(pdlTokenComponent))
             .build().apply {
