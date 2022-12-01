@@ -2,6 +2,7 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -32,6 +33,7 @@ class PdlConfiguration {
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
+                IOExceptionRetryInterceptor(),
                 RequestResponseLoggerInterceptor(),
                 PdlInterceptor(pdlTokenComponent))
             .build().apply {
