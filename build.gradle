@@ -1,12 +1,12 @@
 
 buildscript {
     ext {
-        kotlinVersion = '1.6.21' // 1.7.0 skaper trøbbel for mockk: https://github.com/mockk/mockk/issues/832 - som igjen feiler tester i prefill-appen
+        kotlinVersion = '1.7.10'
         springFrameworkVersion = '5.3.22'
         springBootVersion = '2.7.5'
         jacksonModuleKotlinVersion = '2.13.3'
         eessiEpLoggingVersion = '1.1.6'
-        mockkVersion = '1.12.5'
+        mockkVersion = '1.13.3'
         tokenSupportVersion = '2.1.7'
     }
 
