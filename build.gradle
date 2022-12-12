@@ -6,7 +6,6 @@ buildscript {
         springBootVersion = '2.7.5'
         jacksonModuleKotlinVersion = '2.13.3'
         eessiEpLoggingVersion = '1.1.6'
-        mockkVersion = '1.13.3'
         tokenSupportVersion = '2.1.7'
     }
 
@@ -99,7 +98,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework:spring-test")
-    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.mockk:mockk:1.13.3")
 
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
