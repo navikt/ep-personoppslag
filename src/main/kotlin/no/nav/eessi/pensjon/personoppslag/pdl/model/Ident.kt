@@ -9,7 +9,7 @@ internal data class IdenterResponse(
 )
 
 internal data class IdenterDataResponse(
-        val hentIdenter: HentIdenter
+        val hentIdenter: HentIdenter? = null
 )
 
 internal data class HentIdenter(
