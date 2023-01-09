@@ -2,16 +2,12 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import no.nav.eessi.pensjon.logging.RequestIdHeaderInterceptor
 import no.nav.eessi.pensjon.logging.RequestResponseLoggerInterceptor
+import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.RequestCountInterceptor
 import no.nav.eessi.pensjon.shared.retry.IOExceptionRetryInterceptor
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Lazy
-import org.springframework.core.Ordered
-import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpRequest
 import org.springframework.http.client.BufferingClientHttpRequestFactory
@@ -19,29 +15,23 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.http.client.SimpleClientHttpRequestFactory
-import org.springframework.stereotype.Component
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-@Configuration
-class PdlConfiguration {
+open class PdlConfiguration(@Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()) {
 
-    @Bean
     fun pdlRestTemplate(
-        templateBuilder: RestTemplateBuilder,
-        pdlTokenComponent: PdlTokenCallBack,
-        meterRegistry: io.micrometer.core.instrument.MeterRegistry
-    ): RestTemplate {
+        pdlTokenCallBack: PdlTokenCallBack): RestTemplate {
 
-        return templateBuilder
+        return RestTemplateBuilder()
             .errorHandler(DefaultResponseErrorHandler())
             .additionalInterceptors(
                 RequestIdHeaderInterceptor(),
                 IOExceptionRetryInterceptor(),
-                RequestCountInterceptor(meterRegistry),
+                RequestCountInterceptor(meterRegistry = metricsHelper.registry),
                 RequestResponseLoggerInterceptor(),
-                PdlInterceptor(pdlTokenComponent))
+                PdlInterceptor(pdlTokenCallBack))
             .build().apply {
                 requestFactory = BufferingClientHttpRequestFactory(SimpleClientHttpRequestFactory())
             }
@@ -66,17 +56,6 @@ class PdlConfiguration {
             return execution.execute(request, body)
         }
    }
-}
-
-@Component
-@Lazy
-@Order(Ordered.LOWEST_PRECEDENCE)
-class PdlTokenComponent(private val tokenValidationContextHolder: TokenValidationContextHolder): PdlTokenCallBack {
-
-    override fun callBack(): PdlToken {
-        return PdlTokenImp(accessToken = "token")
-    }
-
 }
 
 interface PdlTokenCallBack {
