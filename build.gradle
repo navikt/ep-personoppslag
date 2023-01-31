@@ -96,7 +96,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework:spring-test")
-    testImplementation("io.mockk:mockk:1.13.3")
+    testImplementation("io.mockk:mockk:1.13.4")
 
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
