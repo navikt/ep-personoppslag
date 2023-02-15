@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
+import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
@@ -26,7 +27,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDateTime
-import javax.annotation.PostConstruct
 
 @Service
 class PersonService(
