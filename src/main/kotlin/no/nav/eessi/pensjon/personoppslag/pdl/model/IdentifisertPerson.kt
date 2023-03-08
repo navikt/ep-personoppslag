@@ -2,7 +2,7 @@ package no.nav.eessi.pensjon.personoppslag.pdl.model
 
 import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.buc.SakType
-import no.nav.eessi.pensjon.personoppslag.Fodselsnummer
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 import java.time.LocalDate
 
 data class IdentifisertPerson(

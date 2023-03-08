@@ -1,9 +1,9 @@
-package no.nav.eessi.pensjon.personoppslag
+package no.nav.eessi.pensjon.shared.person
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import no.nav.eessi.pensjon.personoppslag.Fodselsnummer.Companion.tabeller.kontrollsiffer1
-import no.nav.eessi.pensjon.personoppslag.Fodselsnummer.Companion.tabeller.kontrollsiffer2
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer.Companion.tabeller.kontrollsiffer1
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer.Companion.tabeller.kontrollsiffer2
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 

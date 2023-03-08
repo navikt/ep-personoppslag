@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.personoppslag
 
-import no.nav.eessi.pensjon.personoppslag.FodselsnummerGenerator.generateFnrForTest
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
+import no.nav.eessi.pensjon.shared.person.FodselsnummerGenerator.generateFnrForTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull

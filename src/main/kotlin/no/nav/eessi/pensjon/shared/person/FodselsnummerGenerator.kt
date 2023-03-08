@@ -1,4 +1,4 @@
-package no.nav.eessi.pensjon.personoppslag
+package no.nav.eessi.pensjon.shared.person
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
