@@ -5,19 +5,13 @@ import no.nav.eessi.pensjon.eux.model.buc.SakType
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 import java.time.LocalDate
 
-data class IdentifisertPerson(
-    val aktoerId: String,                               //fra PDL
-    val personNavn: String?,                            //fra PDL
-    val landkode: String?,         //fra PDL
-    val geografiskTilknytning: String?,                              //fra PDL
-    val personRelasjon: SEDPersonRelasjon,                 //fra PDL
-    val fodselsdato: String? = null,              //innhenting fra FnrHelper og SED
-    var personListe: List<IdentifisertPerson>? = null   //fra PDL){}
-) {
-    override fun toString(): String {
-        return "IdentifisertPerson(aktoerId='$aktoerId', personNavn=$personNavn, landkode=$landkode, geografiskTilknytning=$geografiskTilknytning, personRelasjon=$personRelasjon)"
-    }
-    fun flereEnnEnPerson() = personListe != null && personListe!!.size > 1
+interface IdentifisertPerson {
+    val aktoerId: String                               //fra PDL
+    val landkode: String?                              //fra PDL
+    val geografiskTilknytning: String?                 //fra PDL
+    val personRelasjon: SEDPersonRelasjon?             //fra PDL
+    val fnr: Fodselsnummer?
+    val personListe: List<IdentifisertPerson>?         //fra PDL){}
 }
 
 data class SEDPersonRelasjon(
