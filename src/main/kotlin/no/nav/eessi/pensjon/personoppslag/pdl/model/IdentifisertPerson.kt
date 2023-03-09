@@ -12,6 +12,7 @@ interface IdentifisertPerson {
     val personRelasjon: SEDPersonRelasjon?             //fra PDL
     val fnr: Fodselsnummer?
     val personListe: List<IdentifisertPerson>?         //fra PDL){}
+    fun flereEnnEnPerson() = personListe != null && personListe!!.size > 1
 }
 
 data class SEDPersonRelasjon(
