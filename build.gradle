@@ -8,7 +8,7 @@ buildscript {
         kotlinVersion = '1.8.10'
         springBootVersion = '3.0.4'
         jacksonModuleKotlinVersion = '2.14.2'
-        tokenSupportVersion = '3.0.4'
+        tokenSupportVersion = '3.0.8'
     }
 }
 
