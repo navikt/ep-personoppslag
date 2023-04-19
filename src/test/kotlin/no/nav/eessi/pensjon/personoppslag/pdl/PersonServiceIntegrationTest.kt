@@ -5,13 +5,10 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.boot.web.client.RestTemplateBuilder
 import java.time.LocalDate
 
 @Disabled("Test laget for å kunne kjøre manuelt, kaller faktisk PDL")
@@ -32,7 +29,7 @@ internal class PersonServiceIntegrationTest {
      * Example: kubectl port-forward svc/pdl-api 8089:80
      */
     private val service = PersonService(
-            PersonClient(mockClient, "https://pdl-api.dev.intern.nav.no/graphql")
+            PersonClient(mockClient, "https://pdl-api.intern.dev.nav.no/graphql")
     )
 
     @BeforeEach
