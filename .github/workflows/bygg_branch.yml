@@ -1,3 +1,10 @@
+# ******************************************************************************************************************
+#
+# Dette er en auto-generert fil; endringer gjøres i templates/.github/workflows/bygg_branch.yml
+# Kjør deretter ' make generate-files' for oppdatering av workflow hos prosjekter
+#
+# ******************************************************************************************************************
+
 name: Bygg branch
 
 on:
