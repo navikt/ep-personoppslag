@@ -22,6 +22,8 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
 import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
+import no.nav.eessi.pensjon.utils.toJson
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -33,6 +35,8 @@ class PersonService(
     private val client: PersonClient,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
+
+    private val logger = LoggerFactory.getLogger(PersonService::class.java)
 
     private lateinit var hentPersonMetric: Metric
     private lateinit var hentPersonnavnMetric: Metric
@@ -330,6 +334,8 @@ class PersonService(
     }
 
     private fun handleError(errors: List<ResponseError>) {
+        errors.forEach{logger.error("PDL error: \n ${it.toJson()}")}
+
         val error = errors.first()
 
         val code = error.extensions?.code ?: "unknown_error"
