@@ -5,63 +5,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Adressebeskyttelse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseBolkPerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelsePerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Bostedsadresse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Doedsfall
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
-import no.nav.eessi.pensjon.personoppslag.pdl.model.ErrorExtension
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Foedsel
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Folkeregistermetadata
-import no.nav.eessi.pensjon.personoppslag.pdl.model.ForelderBarnRelasjon
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponseData
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GtType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentAdressebeskyttelse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentIdenter
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponseData
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponseData
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUtenlandskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavn
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavnResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavnResponseData
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.AKTORID
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.FOLKEREGISTERIDENT
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.NPID
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterDataResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Kjoenn
-import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Kontaktadresse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.KontaktinformasjonForDoedsbo
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
-import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Oppholdsadresse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstand
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
-import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
-import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Statsborgerskap
-import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Vegadresse
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import no.nav.eessi.pensjon.personoppslag.pdl.model.*
+import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -390,6 +336,62 @@ internal class PersonServiceTest {
 
         assertEquals(code, exception.code)
         assertEquals("$code: $msg", exception.message)
+    }
+
+    @Test
+    fun `hentPerson henter inn pdlperson med to kontaktadresser hvorav den ene er historisk og skal ikke velges`() {
+
+        val pdlPerson = HentPerson(
+            adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
+            bostedsadresse = emptyList(),
+            oppholdsadresse = emptyList(),
+            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
+            statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
+            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+            forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
+            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
+            kontaktadresse = listOf(
+                Kontaktadresse(
+                    coAdressenavn = null,
+                    type = KontaktadresseType.Innland,
+                    postadresseIFrittFormat = null,
+                    utenlandskAdresse = UtenlandskAdresse(
+                        adressenavnNummer = "adressenavnummer",
+                        bySted = "bysted",
+                        landkode = "SC",
+                        postkode = "Edinburg bladi bladi bladi bladi bladi"
+                    ),
+                    metadata = Metadata(emptyList(), true, "DOLLY", "Doll")
+                ), Kontaktadresse(
+                coAdressenavn = null,
+                type = KontaktadresseType.Innland,
+                postadresseIFrittFormat = null,
+                utenlandskAdresse = UtenlandskAdresse(
+                    adressenavnNummer = "Elle",
+                    bySted = "melle",
+                    landkode = "DK",
+                    postkode = "deg fortelle"
+                ),
+                metadata = Metadata(emptyList(), false, "DOLLY", "Doll")
+            )
+            ),
+            kontaktinformasjonForDoedsbo = emptyList()
+        )
+
+        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
+        every { client.hentIdenter(any()) } returns IdenterResponse()
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse()
+        every { client.hentPersonUtenlandsIdent(any()) } returns HentPersonUidResponse()
+
+        val person = service.hentPerson(NorskIdent("12345678912"))
+
+
+        assertEquals("deg fortelle",person?.kontaktadresse?.utenlandskAdresse?.postkode)
+        assertEquals("Elle",person?.kontaktadresse?.utenlandskAdresse?.adressenavnNummer)
+        assertEquals("melle",person?.kontaktadresse?.utenlandskAdresse?.bySted)
+        assertEquals("DK",person?.kontaktadresse?.utenlandskAdresse?.landkode)
     }
 
     @Test
