@@ -4,24 +4,7 @@ import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUtenlandskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
-import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonUtenlandskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
-import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
-import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
-import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
+import no.nav.eessi.pensjon.personoppslag.pdl.model.*
 import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -156,22 +139,22 @@ class PersonService(
             val foedsel = pdlPerson.foedsel
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val bostedsadresse = pdlPerson.bostedsadresse
+            val bostedsadresse = pdlPerson.bostedsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val oppholdsadresse = pdlPerson.oppholdsadresse
+            val oppholdsadresse = pdlPerson.oppholdsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val kontaktadresse = pdlPerson.kontaktadresse
+            val kontaktadresse = pdlPerson.kontaktadresse?.filter { !it.metadata.historisk }
                 ?.maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val kontaktinformasjonForDoedsbo = pdlPerson.kontaktinformasjonForDoedsbo
+            val kontaktinformasjonForDoedsbo = pdlPerson.kontaktinformasjonForDoedsbo.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
             val kjoenn = pdlPerson.kjoenn
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val doedsfall = pdlPerson.doedsfall
+            val doedsfall = pdlPerson.doedsfall.filter { !it.metadata.historisk }
                 .filterNot { it.doedsdato == null }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
