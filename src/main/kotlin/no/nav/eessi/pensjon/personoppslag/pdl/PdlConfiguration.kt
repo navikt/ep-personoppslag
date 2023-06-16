@@ -46,8 +46,6 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
                                execution: ClientHttpRequestExecution): ClientHttpResponse {
 
             val token = pdlToken.callBack()
-            logger.debug("tokenIntercetorRequest: accessToken: ${token.accessToken}")
-
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
 
