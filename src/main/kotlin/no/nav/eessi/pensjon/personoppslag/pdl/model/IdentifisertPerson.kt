@@ -25,7 +25,7 @@ data class SEDPersonRelasjon(
     val rinaDocumentId: String
 ) {
     fun isFnrDnrSinFdatoLikSedFdato(): Boolean {
-        if (fdato == null) return true
+        if (fdato == null) return false
         return fnr?.getBirthDate() == fdato
     }
 
