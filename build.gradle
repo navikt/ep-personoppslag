@@ -15,7 +15,7 @@ buildscript {
 dependencies {
 
     // Logging
-    implementation('net.logstash.logback:logstash-logback-encoder:7.3') {
+    implementation('net.logstash.logback:logstash-logback-encoder:7.4') {
         exclude module: "commons-logging"
     }
 
