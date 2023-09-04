@@ -16,6 +16,10 @@ on:
 
 jobs:
   bygg:
+    permissions:
+      packages: "write"
+      id-token: "write"
+      contents: "write"
     runs-on: ubuntu-latest
     steps:
       - name: 'Pull repo'
