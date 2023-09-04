@@ -4,24 +4,7 @@ import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AktoerId
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytning
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUtenlandskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentInformasjon
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
-import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Npid
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PersonUtenlandskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
-import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
-import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
-import no.nav.eessi.pensjon.personoppslag.pdl.model.UtenlandskIdentifikasjonsnummer
+import no.nav.eessi.pensjon.personoppslag.pdl.model.*
 import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -261,13 +244,13 @@ class PersonService(
         return hentIdentMetric.measure {
             val result = hentIdenter(ident)
                 .firstOrNull { it.gruppe == identTypeWanted.gruppe }
-                ?.ident ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
+                ?.ident
 
             @Suppress("USELESS_CAST", "UNCHECKED_CAST")
             return@measure when (identTypeWanted as IdentType) {
-                is IdentType.NorskIdent -> NorskIdent(result) as Ident<R>
-                is IdentType.AktoerId -> AktoerId(result) as Ident<R>
-                is IdentType.Npid -> Npid(result) as Ident<R>
+                is IdentType.NorskIdent -> result?.let { NorskIdent(it) } as Ident<R>
+                is IdentType.AktoerId -> result?.let { AktoerId(it) } as Ident<R>
+                is IdentType.Npid -> result?.let { Npid(it) } as Ident<R>
             }
         }
     }

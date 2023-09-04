@@ -39,6 +39,6 @@ sealed class Ident<T : IdentType> {
     abstract val id: String
 }
 
-data class AktoerId(override val id: String) : Ident<IdentType.AktoerId>()
-data class NorskIdent(override val id: String) : Ident<IdentType.NorskIdent>()
-data class Npid(override val id: String) : Ident<IdentType.Npid>()
+data class AktoerId(override val id: String) : Ident<IdentType>()
+data class NorskIdent(override val id: String) : Ident<IdentType>()
+data class Npid(override val id: String) : Ident<IdentType>()
