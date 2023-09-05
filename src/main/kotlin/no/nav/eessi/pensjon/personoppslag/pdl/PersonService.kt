@@ -45,7 +45,7 @@ class PersonService(
     }
 
 
-    fun <T : IdentType> hentPersonUtenlandskIdent(ident: Ident<T>): PersonUtenlandskIdent? {
+    fun <T : Ident> hentPersonUtenlandskIdent(ident: T): PersonUtenlandskIdent? {
         return hentPersonMetric.measure {
 
             logger.debug("Henter hentPersonUtenlandskIdent for ident: ${ident.id} fra pdl")
@@ -89,7 +89,7 @@ class PersonService(
      *
      * @return [Person]
      */
-    fun <T : IdentType> hentPerson(ident: Ident<T>): Person? {
+    fun <T : Ident> hentPerson(ident: T): Person? {
         return hentPersonMetric.measure {
 
             logger.debug("Henter person: ${ident.id} fra pdl")
@@ -240,17 +240,18 @@ class PersonService(
      *
      * @return [Ident] av valgt [IdentType]
      */
-    fun <T : IdentType, R : IdentType> hentIdent(identTypeWanted: R, ident: Ident<T>): Ident<R> {
+    fun <T : Ident, R : IdentGruppe> hentIdent(identTypeWanted: R, ident: T): Ident? {
         return hentIdentMetric.measure {
             val result = hentIdenter(ident)
-                .firstOrNull { it.gruppe == identTypeWanted.gruppe }
+                .firstOrNull { it.gruppe == identTypeWanted }
                 ?.ident
 
             @Suppress("USELESS_CAST", "UNCHECKED_CAST")
-            return@measure when (identTypeWanted as IdentType) {
-                is IdentType.NorskIdent -> result?.let { NorskIdent(it) } as Ident<R>
-                is IdentType.AktoerId -> result?.let { AktoerId(it) } as Ident<R>
-                is IdentType.Npid -> result?.let { Npid(it) } as Ident<R>
+            return@measure when (identTypeWanted) {
+                IdentGruppe.FOLKEREGISTERIDENT-> result?.let { NorskIdent(it) } as Ident
+                IdentGruppe.AKTORID-> result?.let { AktoerId(it) } as Ident
+                IdentGruppe.NPID -> result?.let { Npid(it) } as Ident
+                else -> null
             }
         }
     }
@@ -262,7 +263,7 @@ class PersonService(
      *
      * @return Liste med [IdentInformasjon]
      */
-    fun <T : IdentType> hentIdenter(ident: Ident<T>): List<IdentInformasjon> {
+    fun <T : Ident> hentIdenter(ident: T): List<IdentInformasjon> {
         return hentIdenterMetric.measure {
 
             logger.debug("Henter identer: ${ident.id} fra pdl")
@@ -311,7 +312,7 @@ class PersonService(
      *
      * @return [GeografiskTilknytning]
      */
-    fun <T : IdentType> hentGeografiskTilknytning(ident: Ident<T>): GeografiskTilknytning? {
+    fun <T : Ident> hentGeografiskTilknytning(ident: T): GeografiskTilknytning? {
         return hentGeografiskTilknytningMetric.measure {
             logger.debug("Henter hentGeografiskTilknytning for ident: ${ident.id} fra pdl")
 
