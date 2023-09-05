@@ -27,18 +27,18 @@ enum class IdentGruppe {
     NPID
 }
 
-sealed class IdentType(val gruppe: IdentGruppe) {
-    override fun toString() = gruppe.name
+//sealed class IdentType(val gruppe: IdentGruppe) {
+//    override fun toString() = gruppe.name
+//
+//    object AktoerId : IdentType(IdentGruppe.AKTORID)
+//    object Npid : IdentType(IdentGruppe.NPID)
+//    object NorskIdent : IdentType(IdentGruppe.FOLKEREGISTERIDENT)
+//}
 
-    object AktoerId : IdentType(IdentGruppe.AKTORID)
-    object Npid : IdentType(IdentGruppe.NPID)
-    object NorskIdent : IdentType(IdentGruppe.FOLKEREGISTERIDENT)
-}
-
-sealed class Ident<T : IdentType> {
+sealed class Ident {
     abstract val id: String
 }
 
-data class AktoerId(override val id: String) : Ident<IdentType>()
-data class NorskIdent(override val id: String) : Ident<IdentType>()
-data class Npid(override val id: String) : Ident<IdentType>()
+data class AktoerId(override val id: String) : Ident()
+data class NorskIdent(override val id: String) : Ident()
+data class Npid(override val id: String) : Ident()
