@@ -288,37 +288,58 @@ internal class PersonServiceTest {
 
     @Test
     fun hentIdent() {
-//        val identer = listOf(
-//                IdentInformasjon("1", AKTORID),
-//                IdentInformasjon("2", FOLKEREGISTERIDENT),
-//                IdentInformasjon("3", NPID)
-//        )
-//
-//        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
-//
-//        // Hente ut NorskIdent med AktørID
-//        val norskIdentFraAktorId = service.hentIdent(IdentType.NorskIdent, AktoerId("1"))
-//        assertEquals("2", norskIdentFraAktorId.id)
-//
-//        // Hente ut NPID med AktørID
-//        val npidFraAktorId = service.hentIdent(IdentType.Npid, AktoerId("1"))
-//        assertEquals("3", npidFraAktorId.id)
-//
-//        // Hente ut AktørID med NorskIdent
-//        val aktoeridFraNorskIdent = service.hentIdent(IdentType.AktoerId, NorskIdent("2"))
-//        assertEquals("1", aktoeridFraNorskIdent.id)
-//
-//        // Hente ut NPID med NorskIdent
-//        val npidFraNorskIdent = service.hentIdent(IdentType.Npid, NorskIdent("2"))
-//        assertEquals("3", npidFraNorskIdent.id)
-//
-//        // Hente ut AktørID med Npid
-//        val aktoeridFraNpid = service.hentIdent(IdentType.AktoerId, Npid("2"))
-//        assertEquals("1", aktoeridFraNpid.id)
-//
-//        // Hente ut NorskIdent med Npid
-//        val norskIdentFraNpid = service.hentIdent(IdentType.NorskIdent, Npid("2"))
-//        assertEquals("2", norskIdentFraNpid.id)
+        val identer = listOf(
+            IdentInformasjon("1", AKTORID),
+            IdentInformasjon("2", FOLKEREGISTERIDENT),
+            IdentInformasjon("3", NPID)
+        )
+
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
+
+        // Hente ut NorskIdent med AktørID
+        val tomNorskIdentFraAktorId = service.hentIdent(FOLKEREGISTERIDENT, AktoerId(""))
+        assertEquals("2", tomNorskIdentFraAktorId?.id)
+
+        // Hente ut NorskIdent med AktørID
+        val norskIdentFraAktorId = service.hentIdent(FOLKEREGISTERIDENT, AktoerId("1"))
+        assertEquals("2", norskIdentFraAktorId?.id)
+
+        // Hente ut NPID med AktørID
+        val npidFraAktorId = service.hentIdent(NPID, AktoerId("1"))
+        assertEquals("3", npidFraAktorId?.id)
+
+        // Hente ut AktørID med NorskIdent
+        val aktoeridFraNorskIdent = service.hentIdent(AKTORID, NorskIdent("2"))
+        assertEquals("1", aktoeridFraNorskIdent?.id)
+
+        // Hente ut NPID med NorskIdent
+        val npidFraNorskIdent = service.hentIdent(NPID, NorskIdent("2"))
+        assertEquals("3", npidFraNorskIdent?.id)
+
+        // Hente ut AktørID med Npid
+        val aktoeridFraNpid = service.hentIdent(AKTORID, Npid("2"))
+        assertEquals("1", aktoeridFraNpid?.id)
+
+        // Hente ut NorskIdent med Npid
+        val norskIdentFraNpid = service.hentIdent(FOLKEREGISTERIDENT, Npid("2"))
+        assertEquals("2", norskIdentFraNpid?.id)
+    }
+
+    @Test
+    fun `Gitt at vi forsøker å hente fnr eller npid for en tom aktoerId så returneres null`() {
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(emptyList())))
+
+        // Hente ut FOLKEREGISTERIDENT med tom AktørID returnerer null
+        val tomNorskIdentFraAktorId = service.hentIdent(FOLKEREGISTERIDENT, AktoerId(""))
+        assertEquals(null, tomNorskIdentFraAktorId?.id)
+
+        // Hente ut FOLKEREGISTERIDENT med tom AktørID returnerer null
+        val tomNpidIdentFraAktorId = service.hentIdent(FOLKEREGISTERIDENT, AktoerId(""))
+        assertEquals(null, tomNpidIdentFraAktorId?.id)
+
+        // Hente ut NPID med ugyldig AktørID returnerer også null
+        val tomNpidIdentForAktorId = service.hentIdent(FOLKEREGISTERIDENT, AktoerId("987654"))
+        assertEquals(null, tomNpidIdentForAktorId?.id)
     }
 
     @Test

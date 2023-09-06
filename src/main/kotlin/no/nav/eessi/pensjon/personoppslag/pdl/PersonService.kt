@@ -244,13 +244,13 @@ class PersonService(
         return hentIdentMetric.measure {
             val result = hentIdenter(ident)
                 .firstOrNull { it.gruppe == identTypeWanted }
-                ?.ident
+                ?.ident ?: return@measure null
 
             @Suppress("USELESS_CAST", "UNCHECKED_CAST")
             return@measure when (identTypeWanted) {
-                IdentGruppe.FOLKEREGISTERIDENT-> result?.let { NorskIdent(it) } as Ident
-                IdentGruppe.AKTORID-> result?.let { AktoerId(it) } as Ident
-                IdentGruppe.NPID -> result?.let { Npid(it) } as Ident
+                IdentGruppe.FOLKEREGISTERIDENT-> NorskIdent(result) as Ident
+                IdentGruppe.AKTORID-> AktoerId(result) as Ident
+                IdentGruppe.NPID -> Npid(result) as Ident
                 else -> null
             }
         }
