@@ -27,14 +27,6 @@ enum class IdentGruppe {
     NPID
 }
 
-//sealed class IdentType(val gruppe: IdentGruppe) {
-//    override fun toString() = gruppe.name
-//
-//    object AktoerId : IdentType(IdentGruppe.AKTORID)
-//    object Npid : IdentType(IdentGruppe.NPID)
-//    object NorskIdent : IdentType(IdentGruppe.FOLKEREGISTERIDENT)
-//}
-
 sealed class Ident {
     abstract val id: String
 }
