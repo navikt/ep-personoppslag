@@ -54,6 +54,12 @@ internal class FodselsnummerTest {
     }
 
     @Test
+    fun `npid fdata should be valid`() {
+        assertNotNull(Fodselsnummer.fra("01220049651"))
+        assert(Fodselsnummer.fra("01220049651")?.nPID == true)
+    }
+
+    @Test
     fun `syntetic date and birthdate`() {
         val synt = "54496214261" //KAFFI DØLL
         val fnr = Fodselsnummer.fra(synt)

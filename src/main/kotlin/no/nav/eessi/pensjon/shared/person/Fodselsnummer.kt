@@ -38,6 +38,15 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
             return if(kjoenn % 2 == 0) Kjoenn.KVINNE else Kjoenn.MANN
         }
 
+    //De seks første tallene i NPID er tilfeldige tall og har ingen datobetydning.
+    //De to første er ikke høyere enn 31. Tall på plass 3 og 4 (måned på FNR) er mellom 21 og 32.
+    //De to siste er kontrollsiffer.
+    val nPID: Boolean
+        get() {
+            val lessThen31 = value.substring(0, 2).toInt()
+            val between21and32 = value.substring(2, 4).toInt()
+            return lessThen31 in 0..31 && between21and32 in 21..32
+        }
     val dNummer: Boolean
         get() {
             val dag = value[0].toString().toInt()
