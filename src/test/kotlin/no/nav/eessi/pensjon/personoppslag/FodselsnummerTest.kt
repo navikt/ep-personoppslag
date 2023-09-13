@@ -2,11 +2,7 @@ package no.nav.eessi.pensjon.personoppslag
 
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 import no.nav.eessi.pensjon.shared.person.FodselsnummerGenerator.generateFnrForTest
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -56,7 +52,7 @@ internal class FodselsnummerTest {
     @Test
     fun `npid fdata should be valid`() {
         assertNotNull(Fodselsnummer.fra("01220049651"))
-        assert(Fodselsnummer.fra("01220049651")?.nPID == true)
+        assert(Fodselsnummer.fra("01220049651")?.erNpid == true)
     }
 
     @Test
