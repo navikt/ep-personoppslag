@@ -19,7 +19,7 @@ import java.time.temporal.ChronoUnit
 class Fodselsnummer private constructor(@JsonValue val value: String) {
     init {
         require("""\d{11}""".toRegex().matches(value)) { "Ikke et gyldig fødselsnummer: $value" }
-        require(!fhNummer) { "Impelemntasjonen støtter ikke H-nummer og FH-nummer" }
+        require(!erFnr) { "Impelemntasjonen støtter ikke H-nummer og FH-nummer" }
         require(gyldigeKontrollsiffer) { "Ugyldig kontrollnummer" }
     }
 
@@ -61,7 +61,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
     private val syntetiskFoedselsnummerFraSkatteetaten: Boolean
         get() = value[2].toString().toInt() >= 8
 
-    private val fhNummer: Boolean
+    private val erFnr: Boolean
         get() {
             return when(value[0]) {
                 '8', '9' -> true
