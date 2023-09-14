@@ -4,16 +4,6 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
-//internal data class PersonResponse<T>(
-//        val data: PersonResponseData<T>? = null,
-//        val errors: List<ResponseError>? = null
-//)
-//
-//internal data class PersonResponseData<T>(
-//        val hentPerson: T? = null
-//)
-
 internal data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
         val bostedsadresse: List<Bostedsadresse>,
