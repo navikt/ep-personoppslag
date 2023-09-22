@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class IdenterResponse(
@@ -29,7 +30,13 @@ enum class IdentGruppe {
 
 sealed class Ident {
     abstract val id: String
+
+    fun bestemIdent(fnrEllerNpid: String): Ident {
+        return if (Fodselsnummer.fra(fnrEllerNpid)?.erNpid == true) Npid(fnrEllerNpid)
+        else NorskIdent(fnrEllerNpid)
+    }
 }
+
 
 data class AktoerId(override val id: String) : Ident()
 data class NorskIdent(override val id: String) : Ident()
