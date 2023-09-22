@@ -161,6 +161,7 @@ class Fodselsnummer private constructor(@JsonValue val value: String) {
             val res = 11 - (sum % 11)
             return if (res == 11) 0 else res
         }
+    }
 
     enum class Kjoenn {
         MANN,
