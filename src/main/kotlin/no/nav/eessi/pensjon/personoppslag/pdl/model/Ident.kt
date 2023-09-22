@@ -30,14 +30,15 @@ enum class IdentGruppe {
 
 sealed class Ident {
     abstract val id: String
-
-    fun bestemIdent(fnrEllerNpid: String): Ident {
-        return if (Fodselsnummer.fra(fnrEllerNpid)?.erNpid == true) Npid(fnrEllerNpid)
-        else NorskIdent(fnrEllerNpid)
+    companion object {
+        fun bestemIdent(fnrEllerNpid: String): Ident {
+            return if (Fodselsnummer.fra(fnrEllerNpid)?.erNpid == true) Npid(fnrEllerNpid)
+            else NorskIdent(fnrEllerNpid)
+        }
     }
 }
-
 
 data class AktoerId(override val id: String) : Ident()
 data class NorskIdent(override val id: String) : Ident()
 data class Npid(override val id: String) : Ident()
+
