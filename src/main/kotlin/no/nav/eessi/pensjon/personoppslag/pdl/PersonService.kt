@@ -5,6 +5,7 @@ import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
 import no.nav.eessi.pensjon.personoppslag.pdl.model.*
+import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident.Companion.bestemIdent
 import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -108,9 +109,9 @@ class PersonService(
     }
 
 
-    fun hentPersonnavn(norskIdent: NorskIdent): Navn? {
+    fun <T: Ident> hentPersonnavn(ident: T): Navn? {
         return hentPersonnavnMetric.measure {
-            val response = client.hentPersonnavn(norskIdent.id)
+            val response = client.hentPersonnavn(bestemIdent(ident.id).id)
 
             if (!response.errors.isNullOrEmpty())
                 handleError(response.errors)
