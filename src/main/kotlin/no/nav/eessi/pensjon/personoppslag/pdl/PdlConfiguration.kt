@@ -53,7 +53,7 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
 
             // [Borger, Saksbehandler eller System]
             request.headers.setBearerAuth(token.accessToken)
-            logger.debug("PdlInterceptor httpRequest: $request")
+            logger.debug("PdlInterceptor httpRequest headers: ${request.headers.toString()}")
             return execution.execute(request, body)
         }
     }
