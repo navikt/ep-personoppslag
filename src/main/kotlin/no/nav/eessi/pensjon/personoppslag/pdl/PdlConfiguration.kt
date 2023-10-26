@@ -38,7 +38,7 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
             }
     }
 
-    internal class PdlInterceptor(private val pdlToken: PdlTokenCallBack): ClientHttpRequestInterceptor {
+    internal class PdlInterceptor(private val pdlToken: PdlTokenCallBack) : ClientHttpRequestInterceptor {
 
         private val logger = LoggerFactory.getLogger(PdlInterceptor::class.java)
 
@@ -55,7 +55,8 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
             request.headers.setBearerAuth(token.accessToken)
             return execution.execute(request, body)
         }
-   }
+    }
+}
 
 
 interface PdlTokenCallBack {
