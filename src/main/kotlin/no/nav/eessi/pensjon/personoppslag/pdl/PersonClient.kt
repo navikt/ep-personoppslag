@@ -1,17 +1,18 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
+import no.nav.eessi.pensjon.personoppslag.pdl.model.*
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GraphqlRequest
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonUidResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonnavnResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
+import no.nav.eessi.pensjon.personoppslag.pdl.model.ResponseError
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokCriteria
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonGraphqlRequest
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonResponse
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokPersonVariables
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Variables
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.retry.annotation.Backoff
@@ -27,6 +28,7 @@ class PersonClient(
     private val pdlRestTemplate: RestTemplate,
     @Value("\${PDL_URL}") private val url: String
 ) {
+    private val logger = LoggerFactory.getLogger(PersonClient::class.java)
 
     @Retryable(
         exclude = [HttpClientErrorException.NotFound::class],
@@ -36,7 +38,9 @@ class PersonClient(
         val query = getGraphqlResource("/graphql/hentPersonUtenlandsIdent.graphql")
         val request = GraphqlRequest(query, Variables(ident))
 
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonUidResponse::class)
+        return pdlRestTemplate.postForObject<HentPersonUidResponse>(url, HttpEntity(request), HentPersonUidResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
     }
 
     /**
@@ -53,7 +57,9 @@ class PersonClient(
     internal fun hentPerson(ident: String): HentPersonResponse {
         val query = getGraphqlResource("/graphql/hentPerson.graphql")
         val request = GraphqlRequest(query, Variables(ident))
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonResponse::class)
+        return pdlRestTemplate.postForObject<HentPersonResponse>(url, HttpEntity(request), HentPersonResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
   }
 
     @Retryable(
@@ -64,7 +70,9 @@ class PersonClient(
         val query = getGraphqlResource("/graphql/hentPersonnavn.graphql")
         val request = GraphqlRequest(query, Variables(ident))
 
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), HentPersonnavnResponse::class)
+        return pdlRestTemplate.postForObject<HentPersonnavnResponse>(url, HttpEntity(request), HentPersonnavnResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
     }
 
     /**
@@ -100,7 +108,9 @@ class PersonClient(
         val query = getGraphqlResource("/graphql/hentAktorId.graphql")
         val request = GraphqlRequest(query, Variables(ident))
 
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), IdenterResponse::class)
+        return pdlRestTemplate.postForObject<IdenterResponse>(url, HttpEntity(request), IdenterResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
     }
 
     /**
@@ -119,7 +129,9 @@ class PersonClient(
         val query = getGraphqlResource("/graphql/hentIdenter.graphql")
         val request = GraphqlRequest(query, Variables(ident))
 
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), IdenterResponse::class)
+        return pdlRestTemplate.postForObject<IdenterResponse>(url, HttpEntity(request), IdenterResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
     }
 
     /**
@@ -138,7 +150,9 @@ class PersonClient(
         val query = getGraphqlResource("/graphql/hentGeografiskTilknytning.graphql")
         val request = GraphqlRequest(query, Variables(ident))
 
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), GeografiskTilknytningResponse::class)
+        return pdlRestTemplate.postForObject<GeografiskTilknytningResponse>(url, HttpEntity(request), GeografiskTilknytningResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
     }
 
     @Retryable(
@@ -149,9 +163,19 @@ class PersonClient(
         val query = getGraphqlResource("/graphql/sokPerson.graphql")
         val request = SokPersonGraphqlRequest(query, SokPersonVariables(criteria = sokCriterias))
 
-        return pdlRestTemplate.postForObject(url, HttpEntity(request), SokPersonResponse::class)
+        return pdlRestTemplate.postForObject<SokPersonResponse>(url, HttpEntity(request), SokPersonResponse::class).also {
+            loggPdlFeil(it.errors)
+        }
     }
 
     private fun getGraphqlResource(file: String): String =
         javaClass.getResource(file).readText().replace(Regex("[\n\t]"), "")
+
+    private fun loggPdlFeil(errors: List<ResponseError>?) {
+        errors?.forEach { pdlError ->
+            if (pdlError.message != null) {
+                logger.warn(pdlError.message)
+            }
+        }
+    }
 }
