@@ -23,16 +23,10 @@ class PersonUtenlandskIdentTest {
     private val mockPersonService = PersonService(mockPersonClient)
     private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
-    @BeforeEach
-    fun setup() {
-        mockPersonService.initMetrics()
-    }
-
     @AfterEach
     fun after() {
         clearAllMocks()
     }
-
 
     @Test
     fun testforPersonMedUid() {

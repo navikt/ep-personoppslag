@@ -1,6 +1,5 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
-import jakarta.annotation.PostConstruct
 import no.nav.eessi.pensjon.metrics.MetricsHelper
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
@@ -32,8 +31,7 @@ class PersonService(
     private lateinit var sokPersonMetric: Metric
     private lateinit var hentPersonUidMetric: Metric
 
-    @PostConstruct
-    fun initMetrics() {
+    init {
         hentPersonMetric = metricsHelper.init("hentPerson", alert = OFF)
         hentPersonnavnMetric = metricsHelper.init("hentPersonnavn", alert = OFF)
         harAdressebeskyttelseMetric = metricsHelper.init("harAdressebeskyttelse", alert = OFF)
@@ -44,7 +42,6 @@ class PersonService(
         sokPersonMetric = metricsHelper.init("sokPersonMetric", alert = OFF)
         hentPersonUidMetric = metricsHelper.init("hentPersonUid", alert = OFF)
     }
-
 
     fun <T : Ident> hentPersonUtenlandskIdent(ident: T): PersonUtenlandskIdent? {
         return hentPersonMetric.measure {

@@ -23,11 +23,6 @@ internal class PersonServiceTest {
 
     private val service: PersonService = PersonService(client)
 
-    @BeforeAll
-    fun beforeAll() {
-        service.initMetrics()
-    }
-
     private fun mockMeta(registrert: LocalDateTime = LocalDateTime.of(2010, 4,1, 10, 2, 14)): Metadata {
         return Metadata(
             listOf(

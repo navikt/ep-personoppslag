@@ -32,11 +32,6 @@ internal class PersonServiceIntegrationTest {
             PersonClient(mockClient, "https://pdl-api.intern.dev.nav.no/graphql")
     )
 
-    @BeforeEach
-    fun startup() {
-        service.initMetrics()
-    }
-
     @Test
     fun hentPerson_virkerSomForventet() {
         val person = service.hentPerson(NorskIdent("25078521492"))
