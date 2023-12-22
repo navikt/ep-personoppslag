@@ -9,6 +9,8 @@ buildscript {
 
 plugins {
     id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.allopen" version "$kotlinVersion"
 }
 
 apply from: "buildSrc/ep-module.gradle"
