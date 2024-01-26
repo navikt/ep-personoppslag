@@ -190,17 +190,17 @@ class PersonService(
      *
      * @return [Boolean] "true" dersom en av personene har valgt gradering.
      */
-    fun harAdressebeskyttelse(fnr: List<String>, gradering: List<AdressebeskyttelseGradering>): Boolean {
-        if (fnr.isEmpty() || gradering.isEmpty()) return false
+    fun harAdressebeskyttelse(fnr: List<String>): Boolean {
+        val gradering = listOf(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND, AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+
+        if (fnr.isEmpty()) return false
 
         return harAdressebeskyttelseMetric.measure {
             val response = client.hentAdressebeskyttelse(fnr)
 
-            if (!response.errors.isNullOrEmpty())
-                handleError(response.errors)
+            if (!response.errors.isNullOrEmpty()) handleError(response.errors)
 
-            val personer = response.data?.hentPersonBolk
-                    ?: return@measure false
+            val personer = response.data?.hentPersonBolk ?: return@measure false
 
             return@measure personer
                     .filterNot { it.person == null }

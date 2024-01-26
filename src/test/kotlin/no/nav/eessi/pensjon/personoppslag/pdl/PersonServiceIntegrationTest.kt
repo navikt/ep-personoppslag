@@ -42,9 +42,9 @@ internal class PersonServiceIntegrationTest {
     @Test
     fun harAdressebeskyttelse_virkerSomForventet() {
         val fnr = listOf("11067122781", "09035225916", "22117320034")
-        val gradering = listOf(AdressebeskyttelseGradering.STRENGT_FORTROLIG, AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND)
+//        val gradering = listOf(AdressebeskyttelseGradering.STRENGT_FORTROLIG, AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND)
 
-        val harAdressebeskyttelse = service.harAdressebeskyttelse(fnr, gradering)
+        val harAdressebeskyttelse = service.harAdressebeskyttelse(fnr)
 
         assertFalse(harAdressebeskyttelse)
     }

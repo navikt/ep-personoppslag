@@ -211,26 +211,6 @@ internal class PersonServiceTest {
         assertEquals(now, resultat.doedsfall?.doedsdato)
     }
 
-
-    @Test
-    fun harAdressebeskyttelse_ingenTreff() {
-        val personer = listOf(
-                mockGradertPerson(AdressebeskyttelseGradering.UGRADERT),
-                mockGradertPerson(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND),
-                mockGradertPerson(AdressebeskyttelseGradering.FORTROLIG),
-                mockGradertPerson(AdressebeskyttelseGradering.UGRADERT)
-        )
-
-        every { client.hentAdressebeskyttelse(any()) } returns AdressebeskyttelseResponse(HentAdressebeskyttelse(personer))
-
-        val resultat = service.harAdressebeskyttelse(
-                listOf("12345", "5555", "8585"),
-                listOf(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
-        )
-
-        assertFalse(resultat)
-    }
-
     @Test
     fun harAdressebeskyttelse_harGradering() {
         val personer = listOf(
@@ -244,8 +224,7 @@ internal class PersonServiceTest {
         every { client.hentAdressebeskyttelse(any()) } returns AdressebeskyttelseResponse(HentAdressebeskyttelse(personer))
 
         val resultat = service.harAdressebeskyttelse(
-                listOf("12345", "5555", "8585"),
-                listOf(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+            listOf("12345", "5555", "8585")
         )
 
         assertTrue(resultat)
@@ -420,7 +399,7 @@ internal class PersonServiceTest {
         every { client.hentAdressebeskyttelse(any()) } returns AdressebeskyttelseResponse(null, errors)
 
         val exception = assertThrows<PersonoppslagException> {
-            service.harAdressebeskyttelse(listOf("1234"), listOf(AdressebeskyttelseGradering.FORTROLIG))
+            service.harAdressebeskyttelse(listOf("1234"))
         }
 
         assertEquals("$code: $msg", exception.message)
