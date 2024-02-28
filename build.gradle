@@ -27,7 +27,7 @@ dependencies {
 
     implementation("no.nav.eessi.pensjon:ep-metrics:2.0.56")
     implementation("no.nav.eessi.pensjon:ep-logging:2.1.54")
-    implementation("no.nav.eessi.pensjon:ep-eux:2.2.18")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.2.21")
     implementation("io.micrometer:micrometer-registry-prometheus:1.12.1")
 
     // Spring-boot BOM-fil spesifiserer versjoner for Spring Boot-avhengigheter
