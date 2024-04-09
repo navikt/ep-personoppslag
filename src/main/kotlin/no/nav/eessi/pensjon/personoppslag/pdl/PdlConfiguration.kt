@@ -49,7 +49,12 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
             val token = pdlToken.callBack()
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
-            request.headers["Behandlingsnummer"] = "${Behandlingsnummer.ALDERPENSJON.nummer},${Behandlingsnummer.UFORETRYGD.nummer},${Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer}"
+            request.headers["Behandlingsnummer"] = "" +
+                    "${Behandlingsnummer.ALDERPENSJON.nummer}," +
+                    "${Behandlingsnummer.UFORETRYGD.nummer}," +
+                    "${Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer}," +
+                    "${Behandlingsnummer.BARNEPENSJON.nummer}, ," +
+                    "${Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer}"
 
             // [Borger, Saksbehandler eller System]
             request.headers.setBearerAuth(token.accessToken)
