@@ -10,16 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpRequest
-import org.springframework.http.client.BufferingClientHttpRequestFactory
-import org.springframework.http.client.ClientHttpRequestExecution
-import org.springframework.http.client.ClientHttpRequestInterceptor
-import org.springframework.http.client.ClientHttpResponse
-import org.springframework.http.client.SimpleClientHttpRequestFactory
+import org.springframework.http.client.*
 import org.springframework.web.client.DefaultResponseErrorHandler
 import org.springframework.web.client.RestTemplate
-import org.springframework.http.MediaType
 
-@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 open class PdlConfiguration(@Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()) {
 
     fun pdlRestTemplate(
@@ -49,12 +43,12 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
             val token = pdlToken.callBack()
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
-            request.headers["Behandlingsnummer"] = "" +
-                    "${Behandlingsnummer.ALDERPENSJON.nummer}," +
-                    "${Behandlingsnummer.UFORETRYGD.nummer}," +
-                    "${Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer}," +
-                    "${Behandlingsnummer.BARNEPENSJON.nummer}, ," +
-                    "${Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer}"
+            request.headers["Behandlingsnummer"] =
+                Behandlingsnummer.ALDERPENSJON.nummer + "," +
+                Behandlingsnummer.UFORETRYGD.nummer + "," +
+                Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer + "," +
+                Behandlingsnummer.BARNEPENSJON.nummer + "," +
+                Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer
 
             // [Borger, Saksbehandler eller System]
             request.headers.setBearerAuth(token.accessToken)
