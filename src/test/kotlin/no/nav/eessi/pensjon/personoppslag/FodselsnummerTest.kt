@@ -1,6 +1,7 @@
 package no.nav.eessi.pensjon.personoppslag
 
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer
+import no.nav.eessi.pensjon.shared.person.FodselsnummerGenerator
 import no.nav.eessi.pensjon.shared.person.FodselsnummerGenerator.generateFnrForTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -16,6 +17,9 @@ internal class FodselsnummerTest {
         private val GOD_BOLLE = Fodselsnummer.fra("08115525221")!!             //1955
         private val VELDIG_GAMMEL_SYKKEL = Fodselsnummer.fra("08118974914")!!  //1889
         private val DNUMMER_GYLDIG = Fodselsnummer.fra("41060094231")!!        //2000
+
+        private val fnrOver62 = generateFnrForTest(61)
+        private val fnrUnder62 = generateFnrForTest(63)
     }
 
     @Test
@@ -170,5 +174,13 @@ internal class FodselsnummerTest {
         assertEquals(67, navfnr?.getAge())
     }
 
+    @Test
+    fun erOver62() {
+        assertEquals(true, Fodselsnummer.fra(fnrOver62)?.erOverAlder(62))
+    }
 
+    @Test
+    fun erUnder62() {
+        assertEquals(true, Fodselsnummer.fra(fnrUnder62)?.erUnderAlder(62))
+    }
 }
