@@ -1,7 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag
 
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer
-import no.nav.eessi.pensjon.shared.person.FodselsnummerGenerator
 import no.nav.eessi.pensjon.shared.person.FodselsnummerGenerator.generateFnrForTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -18,8 +17,8 @@ internal class FodselsnummerTest {
         private val VELDIG_GAMMEL_SYKKEL = Fodselsnummer.fra("08118974914")!!  //1889
         private val DNUMMER_GYLDIG = Fodselsnummer.fra("41060094231")!!        //2000
 
-        private val fnrOver62 = generateFnrForTest(61)
-        private val fnrUnder62 = generateFnrForTest(63)
+        private val fnrOver62 = generateFnrForTest(63)
+        private val fnrUnder62 = generateFnrForTest(61)
     }
 
     @Test
