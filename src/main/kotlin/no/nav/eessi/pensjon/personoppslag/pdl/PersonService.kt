@@ -324,8 +324,6 @@ class PersonService(
     }
 
     private fun handleError(errors: List<ResponseError>) {
-        errors.forEach{logger.error("PDL error: \n ${it.toJson()}")}
-
         val error = errors.first()
 
         val code = error.extensions?.code ?: "unknown_error"
