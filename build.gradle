@@ -32,7 +32,7 @@ dependencies {
 
     // Spring-boot BOM-fil spesifiserer versjoner for Spring Boot-avhengigheter
     implementation(platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}"))
-    implementation("org.springframework.retry:spring-retry:2.0.1")
+    implementation("org.springframework.retry:spring-retry:2.0.7")
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module : "tomcat-embed-core"
     }
