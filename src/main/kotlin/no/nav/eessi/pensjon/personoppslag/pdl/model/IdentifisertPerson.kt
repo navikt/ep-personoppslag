@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.pdl.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.buc.SakType
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer
@@ -24,11 +25,11 @@ data class SEDPersonRelasjon(
     val fdato: LocalDate? = null,
     val rinaDocumentId: String
 ) {
+    @JsonIgnore
     fun isFnrDnrSinFdatoLikSedFdato(): Boolean {
         if (fdato == null) return false
         return fnr?.getBirthDate() == fdato
     }
-
 }
 
 enum class Relasjon {
