@@ -4,6 +4,9 @@ buildscript {
         springBootVersion = '3.3.4'
         jacksonModuleKotlinVersion = '2.17.2'
         tokenSupportVersion = '4.1.4'
+
+        //test
+        jupiterVersion = '5.11.2'
     }
 }
 
@@ -49,7 +52,7 @@ dependencies {
     implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-jaxrs:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-test-support:2.0.5")
-
+ang
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter:$jupiterVersion")
     testImplementation("org.springframework:spring-test")
