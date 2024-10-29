@@ -1,5 +1,6 @@
 package no.nav.eessi.pensjon.personoppslag.pdl
 
+import io.mockk.every
 import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
@@ -9,10 +10,11 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.boot.web.client.RestTemplateBuilder
 import java.time.LocalDate
 
-@Disabled("Test laget for å kunne kjøre manuelt, kaller faktisk PDL")
-internal class PersonServiceIntegrationTest {
+@Disabled
+internal class PdlPersonServiceIntegrationTest {
 
     private val mockPDLConfiguration = PdlConfiguration()
     private val mockCallBack = mockk<PdlTokenCallBack>()
@@ -21,6 +23,11 @@ internal class PersonServiceIntegrationTest {
      * Paste valid token
      */
     val oauthtoken = ""
+
+    @BeforeEach
+    fun setup(){
+        every { mockCallBack.callBack() } returns PdlTokenImp( accessToken = oauthtoken)
+    }
     private val mockClient = mockPDLConfiguration.pdlRestTemplate(mockCallBack)
 
     /**

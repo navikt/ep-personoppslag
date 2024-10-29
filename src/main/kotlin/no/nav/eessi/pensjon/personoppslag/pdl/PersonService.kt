@@ -5,7 +5,6 @@ import no.nav.eessi.pensjon.metrics.MetricsHelper.Metric
 import no.nav.eessi.pensjon.metrics.MetricsHelper.Toggle.OFF
 import no.nav.eessi.pensjon.personoppslag.pdl.model.*
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Ident.Companion.bestemIdent
-import no.nav.eessi.pensjon.utils.toJson
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -85,9 +84,9 @@ class PersonService(
      *
      * @param ident: Identen til personen man vil hente ut identer for. Bruk [NorskIdent], [AktoerId], eller [Npid]
      *
-     * @return [Person]
+     * @return [PdlPerson]
      */
-    fun <T : Ident> hentPerson(ident: T): Person? {
+    fun <T : Ident> hentPerson(ident: T): PdlPerson? {
         return hentPersonMetric.measure {
 
             logger.debug("Henter person: ${ident.id} fra pdl")
@@ -126,7 +125,7 @@ class PersonService(
             identer: List<IdentInformasjon>,
             geografiskTilknytning: GeografiskTilknytning?,
             utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
-        ): Person {
+        ): PdlPerson {
 
             val navn = pdlPerson.navn
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
@@ -163,7 +162,7 @@ class PersonService(
             val forelderBarnRelasjon = pdlPerson.forelderBarnRelasjon
             val sivilstand = pdlPerson.sivilstand
 
-            return Person(
+            return PdlPerson(
                 identer,
                 navn,
                 graderingListe,

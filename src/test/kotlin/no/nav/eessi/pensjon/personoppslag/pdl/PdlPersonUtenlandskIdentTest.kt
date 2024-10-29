@@ -17,7 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 
-class PersonUtenlandskIdentTest {
+class PdlPersonUtenlandskIdentTest {
 
     private val mockPersonClient: PersonClient = mockk(relaxed = true)
     private val mockPersonService = PersonService(mockPersonClient)

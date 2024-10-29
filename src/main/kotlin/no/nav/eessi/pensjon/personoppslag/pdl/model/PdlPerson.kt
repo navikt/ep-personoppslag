@@ -43,7 +43,7 @@ data class UtenlandskIdentifikasjonsnummer(
         val metadata: Metadata
 )
 
-data class Person(
+data class PdlPerson(
         val identer: List<IdentInformasjon>,
         val navn: Navn? = null,
         val adressebeskyttelse: List<AdressebeskyttelseGradering>,
@@ -60,7 +60,7 @@ data class Person(
         val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
         val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
 ) {
-        private val logger = LoggerFactory.getLogger(Person::class.java)
+        private val logger = LoggerFactory.getLogger(PdlPerson::class.java)
 
         fun erDoed() = doedsfall?.doedsdato != null
 

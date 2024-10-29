@@ -17,7 +17,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @TestInstance(Lifecycle.PER_CLASS)
-internal class PersonServiceTest {
+internal class PdlPersonServiceTest {
 
     private val client = mockk<PersonClient>()
 

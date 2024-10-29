@@ -16,18 +16,17 @@ import no.nav.eessi.pensjon.personoppslag.pdl.model.KontaktadresseType
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Person
+import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
 import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-internal class PersonTest {
+internal class PdlPersonTest {
 
     private val mockPersonClient: PersonClient = mockk(relaxed = true)
     private val mockPersonService = PersonService(mockPersonClient)
@@ -53,7 +52,7 @@ internal class PersonTest {
         )
     }
 
-    private fun hentPersonFraFil(hentPersonfil: String): Person? {
+    private fun hentPersonFraFil(hentPersonfil: String): PdlPerson? {
         val response = mapper.readValue(hentPersonfil, HentPersonResponse::class.java)
         val emptyResponseJson = """
             {
