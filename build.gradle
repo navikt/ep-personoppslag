@@ -41,8 +41,7 @@ dependencies {
     implementation(platform("org.springframework:spring-framework-bom:6.1.14"))
     implementation("org.springframework:spring-web")
 
-    //Jackson json
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
 
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
