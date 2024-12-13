@@ -80,7 +80,7 @@ internal class FodselsnummerTest {
 
     @Test
     fun `Validate birthdate as LocalDate`() {
-        assertEquals(LocalDate.of(1973, 11, 22), LEALAUS_KAKE.getBirthDate())
+        assertEquals(LocalDate.of(1973, 11, 22), Fodselsnummer.fra("12257824088")!!.getBirthDate())
         assertEquals(LocalDate.of(2015, 1, 12), STERK_BUSK.getBirthDate())
         assertEquals(LocalDate.of(1971, 6, 11), KRAFTIG_VEGGPRYD.getBirthDate())
         assertEquals(LocalDate.of(1952, 3, 9), SLAPP_SKILPADDE.getBirthDate())

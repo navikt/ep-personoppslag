@@ -5,6 +5,7 @@ import no.nav.eessi.pensjon.eux.model.SedType
 import no.nav.eessi.pensjon.eux.model.buc.SakType
 import no.nav.eessi.pensjon.shared.person.Fodselsnummer
 import java.time.LocalDate
+import java.time.Period
 
 interface IdentifisertPerson {
     val aktoerId: String                               //fra PDL
@@ -29,6 +30,11 @@ data class SEDPersonRelasjon(
     fun isFnrDnrSinFdatoLikSedFdato(): Boolean {
         if (fdato == null) return false
         return fnr?.getBirthDate() == fdato
+    }
+    @JsonIgnore
+    fun alder(): Int? {
+        if (fdato == null) return null
+        return Period.between(fdato, LocalDate.now()).years
     }
 }
 
