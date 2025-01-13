@@ -2,7 +2,6 @@ buildscript {
     ext {
         kotlinVersion = '2.0.21'
         springBootVersion = '3.4.1'
-        jacksonModuleKotlinVersion = '2.18.1'
         tokenSupportVersion = '5.0.11'
     }
 }
@@ -41,7 +40,7 @@ dependencies {
     implementation(platform("org.springframework:spring-framework-bom:6.2.1"))
     implementation("org.springframework:spring-web")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.1")
 
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
