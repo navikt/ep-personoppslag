@@ -5,23 +5,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Endring
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Endringstype
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Familierelasjonsrolle
-import no.nav.eessi.pensjon.personoppslag.pdl.model.GeografiskTilknytningResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.HentPersonResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.IdenterResponse
-import no.nav.eessi.pensjon.personoppslag.pdl.model.KjoennType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.KontaktadresseType
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Metadata
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Navn
-import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
-import no.nav.eessi.pensjon.personoppslag.pdl.model.PdlPerson
-import no.nav.eessi.pensjon.personoppslag.pdl.model.Sivilstandstype
+import no.nav.eessi.pensjon.personoppslag.pdl.model.*
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -90,7 +76,7 @@ internal class PdlPersonTest {
         assertEquals("BLÅ", navn?.fornavn)
         assertEquals("STAUDE", navn?.etternavn)
 
-        val foedsel = person?.foedsel
+        val foedsel = person?.foedselsdato
         assertEquals(LocalDate.of(1985, 1, 1), foedsel?.foedselsdato)
         assertNotNull(foedsel?.folkeregistermetadata)
 
@@ -254,7 +240,7 @@ internal class PdlPersonTest {
         assertEquals("HEST", navn?.etternavn)
         assertEquals("ÅPENHJERTIG", navn?.fornavn)
 
-        val foedsel = person?.foedsel
+        val foedsel = person?.foedselsdato
 
         assertEquals(LocalDate.of(1974, 3 , 17), foedsel?.foedselsdato)
 
@@ -284,7 +270,7 @@ internal class PdlPersonTest {
         assertEquals("HEST", navn?.etternavn)
         assertEquals("ÅPENHJERTIG", navn?.fornavn)
 
-        val foedsel = person?.foedsel
+        val foedsel = person?.foedselsdato
 
         assertEquals(LocalDate.of(1974, 3 , 17), foedsel?.foedselsdato)
 

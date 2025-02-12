@@ -140,6 +140,12 @@ class PersonService(
             val foedsel = pdlPerson.foedsel
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
+            val foedselsdato = pdlPerson.foedselsdato
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
+
+            val foedested = pdlPerson.foedested
+                .maxByOrNull { it.metadata.sisteRegistrertDato() }
+
             val bostedsadresse = pdlPerson.bostedsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
@@ -169,7 +175,8 @@ class PersonService(
                 bostedsadresse,
                 oppholdsadresse,
                 statsborgerskap,
-                foedsel,
+                foedselsdato,
+                foedested,
                 geografiskTilknytning,
                 kjoenn,
                 doedsfall,

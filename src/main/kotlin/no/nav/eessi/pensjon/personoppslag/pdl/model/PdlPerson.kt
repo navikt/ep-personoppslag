@@ -11,6 +11,8 @@ internal data class HentPerson(
         val navn: List<Navn>,
         val statsborgerskap: List<Statsborgerskap>,
         val foedsel: List<Foedsel>,
+        val foedselsdato: List<Foedselsdato>,
+        val foedested: List<Foedested>,
         val kjoenn: List<Kjoenn>,
         val doedsfall: List<Doedsfall>,
         val forelderBarnRelasjon: List<ForelderBarnRelasjon>,
@@ -50,7 +52,8 @@ data class PdlPerson(
         val bostedsadresse: Bostedsadresse? = null,
         val oppholdsadresse: Oppholdsadresse? = null,
         val statsborgerskap: List<Statsborgerskap>,
-        val foedsel: Foedsel? = null,
+        val foedselsdato: Foedselsdato? = null,
+        val foedested: Foedested? = null,
         val geografiskTilknytning: GeografiskTilknytning? = null,
         val kjoenn: Kjoenn? = null,
         val doedsfall: Doedsfall? = null,
@@ -154,9 +157,28 @@ data class Foedsel(
         val metadata: Metadata
 )
 
+data class Foedselsdato(
+        val foedselsaar: Int? = null,
+        val foedselsdato: String? = null,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
+        val metadata: Metadata
+)
+
+data class Foedested(
+        val foedeland: String? = null,
+        val foedested: String? = null,
+        val foedekommune: String? = null,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
+        val metadata: Metadata
+)
+
 data class Folkeregistermetadata(
         val gyldighetstidspunkt: LocalDateTime? = null,
-        val ajourholdstidspunkt: LocalDateTime? = null
+        val ajourholdstidspunkt: LocalDateTime? = null,
+        val opphoerstidspunkt: LocalDateTime? = null,
+        val kilde : String? = null,
+        val aarsak : String? = null,
+        val sekvens : String? = null
 )
 
 data class Metadata(
@@ -175,7 +197,8 @@ data class Endring(
         val registrert: LocalDateTime,
         val registrertAv: String,
         val systemkilde: String,
-        val type: Endringstype
+        val type: Endringstype,
+        val hendelseId: String? = null
 )
 
 enum class Endringstype {

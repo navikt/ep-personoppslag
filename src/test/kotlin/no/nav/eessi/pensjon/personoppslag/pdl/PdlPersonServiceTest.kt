@@ -7,8 +7,8 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.eessi.pensjon.personoppslag.pdl.model.*
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe.*
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle
@@ -101,6 +101,8 @@ internal class PdlPersonServiceTest {
             oppholdsadresse = emptyList(),
             navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
+            foedselsdato = listOf(Foedselsdato(foedselsdato = "2000-10-03", metadata = mockMeta())),
+            foedested = listOf(Foedested("NOR", "OSLO", metadata = mockMeta())),
             foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
@@ -143,9 +145,9 @@ internal class PdlPersonServiceTest {
 
         assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
 
-        assertEquals(LocalDate.of(2000,10,3), resultat.foedsel?.foedselsdato)
-        assertEquals("NOR", resultat.foedsel?.foedeland)
-        assertEquals("OSLO", resultat.foedsel?.foedested)
+        assertEquals(LocalDate.of(2000,10,3), resultat.foedselsdato?.foedselsdato)
+        assertEquals("NOR", resultat.foedested?.foedeland)
+        assertEquals("OSLO", resultat.foedested?.foedested)
 
         assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
 
@@ -342,6 +344,8 @@ internal class PdlPersonServiceTest {
             oppholdsadresse = emptyList(),
             navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
+            foedselsdato = listOf(Foedselsdato(foedselsdato = "2000-10-03", metadata = mockMeta())),
+            foedested = listOf(Foedested("NOR", "OSLO", metadata = mockMeta())),
             foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
@@ -538,6 +542,8 @@ internal class PdlPersonServiceTest {
         oppholdsadresse: List<Oppholdsadresse> = emptyList(),
         navn: List<Navn> = emptyList(),
         statsborgerskap: List<Statsborgerskap> = emptyList(),
+        foedselsdato: List<Foedselsdato> = emptyList(),
+        foedested: List<Foedested> = emptyList(),
         foedsel: List<Foedsel> = emptyList(),
         kjoenn: List<Kjoenn> = emptyList(),
         doedsfall: List<Doedsfall> = emptyList(),
@@ -546,7 +552,7 @@ internal class PdlPersonServiceTest {
         kontaktadresse: List<Kontaktadresse> = emptyList(),
         kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo> = emptyList()
     ) = HentPerson(
-            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
+            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, foedselsdato, foedested, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
     )
 
     private fun createHentPersonnavn(navn: List<Navn>) = HentPersonnavn(navn)

@@ -78,6 +78,65 @@
           }
         }
       ],
+      "foedselsdato": [
+        {
+          "foedselsaar": 1973,
+          "foedselsdato": "1973-08-03",
+          "metadata": {
+            "opplysningsId": "87ecf8b4-b111-4c90-809e-8fb9dcdfa13a",
+            "master": "FREG",
+            "endringer": [
+              {
+                "type" : "OPPRETT",
+                "registrert" : "2023-11-21T10:49:49",
+                "registrertAv" : "Folkeregisteret",
+                "systemkilde" : "FREG",
+                "kilde" : "Dolly",
+                "hendelseId" : "87ecf8b4-b111-4c90-809e-8fb9dcdfa13a"
+              }
+            ],
+            "historisk": false
+          },
+          "folkeregistermetadata": {
+            "ajourholdstidspunkt": "1973-08-03T00:00:00",
+            "gyldighetstidspunkt": "1973-08-03T00:00:00",
+            "opphoerstidspunkt": null,
+            "kilde": "Dolly",
+            "aarsak": null,
+            "sekvens": null
+          }
+        }
+      ],
+      "foedested": [
+        {
+          "foedeland" : "NOR",
+          "foedested" : null,
+          "foedekommune" : null,
+          "metadata" : {
+            "opplysningsId": "87ecf8b4-b111-4c90-809e-8fb9dcdfa13a",
+            "master": "FREG",
+            "endringer": [
+              {
+                "type" : "OPPRETT",
+                "registrert" : "2023-11-21T10:49:49",
+                "registrertAv" : "Folkeregisteret",
+                "systemkilde" : "FREG",
+                "kilde" : "Dolly",
+                "hendelseId" : "87ecf8b4-b111-4c90-809e-8fb9dcdfa13a"
+              }
+            ],
+            "historisk": false
+          },
+          "folkeregistermetadata" : {
+            "ajourholdstidspunkt" : "1973-08-03T00:00:00",
+            "gyldighetstidspunkt" : "1973-08-03T00:00:00",
+            "opphoerstidspunkt" : null,
+            "kilde" : "Dolly",
+            "aarsak" : null,
+            "sekvens" : null
+          }
+        }
+      ],
       "foedsel": [
         {
           "foedselsdato": "1974-03-17",

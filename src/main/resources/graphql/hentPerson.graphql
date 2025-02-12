@@ -107,6 +107,27 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
+        foedselsdato {
+          foedselsaar
+          foedselsdato
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
+        foedested {
+          foedeland
+          foedested
+          foedekommune
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
         doedsfall {
             doedsdato
             metadata {
