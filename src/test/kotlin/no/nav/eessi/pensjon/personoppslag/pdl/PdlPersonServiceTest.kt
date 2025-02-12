@@ -145,7 +145,7 @@ internal class PdlPersonServiceTest {
 
         assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
 
-        assertEquals(LocalDate.of(2000,10,3), resultat.foedselsdato?.foedselsdato)
+        assertEquals("2000-10-03", resultat.foedselsdato?.foedselsdato)
         assertEquals("NOR", resultat.foedested?.foedeland)
         assertEquals("OSLO", resultat.foedested?.foedested)
 

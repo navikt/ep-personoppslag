@@ -77,7 +77,7 @@ internal class PdlPersonTest {
         assertEquals("STAUDE", navn?.etternavn)
 
         val foedsel = person?.foedselsdato
-        assertEquals(LocalDate.of(1985, 1, 1), foedsel?.foedselsdato)
+        assertEquals("1973-08-03", foedsel?.foedselsdato)
         assertNotNull(foedsel?.folkeregistermetadata)
 
         val kjoenn = person?.kjoenn
@@ -240,9 +240,9 @@ internal class PdlPersonTest {
         assertEquals("HEST", navn?.etternavn)
         assertEquals("ÅPENHJERTIG", navn?.fornavn)
 
-        val foedsel = person?.foedselsdato
+        val foedsel = person?.foedselsdato?.foedselsdato
 
-        assertEquals(LocalDate.of(1974, 3 , 17), foedsel?.foedselsdato)
+        assertEquals("1973-08-03", foedsel)
 
         val kjoenn = person?.kjoenn
 
@@ -272,7 +272,7 @@ internal class PdlPersonTest {
 
         val foedsel = person?.foedselsdato
 
-        assertEquals(LocalDate.of(1974, 3 , 17), foedsel?.foedselsdato)
+        assertEquals("1973-08-03", foedsel?.foedselsdato)
 
         val kjoenn = person?.kjoenn
 
