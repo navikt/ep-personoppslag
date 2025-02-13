@@ -137,9 +137,6 @@ class PersonService(
             val statsborgerskap = pdlPerson.statsborgerskap
                 .distinctBy { it.land }
 
-            val foedsel = pdlPerson.foedsel
-                .maxByOrNull { it.metadata.sisteRegistrertDato() }
-
             val foedselsdato = pdlPerson.foedselsdato
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 

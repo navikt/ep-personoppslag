@@ -103,7 +103,6 @@ internal class PdlPersonServiceTest {
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
             foedselsdato = listOf(Foedselsdato(foedselsdato = "2000-10-03", metadata = mockMeta())),
             foedested = listOf(Foedested("NOR", "OSLO", metadata = mockMeta())),
-            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
@@ -346,7 +345,6 @@ internal class PdlPersonServiceTest {
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
             foedselsdato = listOf(Foedselsdato(foedselsdato = "2000-10-03", metadata = mockMeta())),
             foedested = listOf(Foedested("NOR", "OSLO", metadata = mockMeta())),
-            foedsel = listOf(Foedsel(LocalDate.of(2000,10,3), "NOR", "OSLO", 2020, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
             forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
@@ -544,7 +542,6 @@ internal class PdlPersonServiceTest {
         statsborgerskap: List<Statsborgerskap> = emptyList(),
         foedselsdato: List<Foedselsdato> = emptyList(),
         foedested: List<Foedested> = emptyList(),
-        foedsel: List<Foedsel> = emptyList(),
         kjoenn: List<Kjoenn> = emptyList(),
         doedsfall: List<Doedsfall> = emptyList(),
         familierelasjoner: List<ForelderBarnRelasjon> = emptyList(),
@@ -552,7 +549,7 @@ internal class PdlPersonServiceTest {
         kontaktadresse: List<Kontaktadresse> = emptyList(),
         kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo> = emptyList()
     ) = HentPerson(
-            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedsel, foedselsdato, foedested, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
+            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedselsdato, foedested, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
     )
 
     private fun createHentPersonnavn(navn: List<Navn>) = HentPersonnavn(navn)

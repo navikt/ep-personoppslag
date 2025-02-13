@@ -166,54 +166,6 @@
           }
         }
       ],
-      "foedsel": [
-        {
-          "foedselsdato": "1985-01-01",
-          "foedeland": null,
-          "foedested": null,
-          "foedselsaar": null,
-          "folkeregistermetadata": {
-            "gyldighetstidspunkt": "2020-01-05T15:42:45"
-          },
-          "metadata": {
-            "endringer": [
-              {
-                "kilde": "Dolly",
-                "registrert": "2021-02-15T10:41:02",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
-                "type": "OPPRETT"
-              }
-            ],
-            "master": "FREG",
-            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
-            "historisk": false
-          }
-        },
-        {
-          "foedselsdato": "1985-06-11",
-          "foedeland": "SWE",
-          "foedested": null,
-          "foedselsaar": null,
-          "folkeregistermetadata": {
-            "gyldighetstidspunkt": "2021-01-14T15:42:45"
-          },
-          "metadata": {
-            "endringer": [
-              {
-                "kilde": "Dolly",
-                "registrert": "2021-02-15T10:41:02",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
-                "type": "OPPRETT"
-              }
-            ],
-            "master": "FREG",
-            "opplysningsId": "497e2bbb-7905-4c59-99c8-0d22316fead1",
-            "historisk": false
-          }
-        }
-      ],
       "doedsfall": [],
       "kjoenn": [
         {

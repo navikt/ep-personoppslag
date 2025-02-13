@@ -10,7 +10,6 @@ internal data class HentPerson(
         val oppholdsadresse: List<Oppholdsadresse>,
         val navn: List<Navn>,
         val statsborgerskap: List<Statsborgerskap>,
-        val foedsel: List<Foedsel>,
         val foedselsdato: List<Foedselsdato>,
         val foedested: List<Foedested>,
         val kjoenn: List<Kjoenn>,
@@ -145,15 +144,6 @@ data class Statsborgerskap(
         val land: String,
         val gyldigFraOgMed: LocalDate? = null,
         val gyldigTilOgMed: LocalDate? = null,
-        val metadata: Metadata
-)
-
-data class Foedsel(
-        val foedselsdato: LocalDate? = null,
-        val foedeland: String? = null,
-        val foedested: String? = null,
-        val foedselsaar: Int? = null,
-        val folkeregistermetadata: Folkeregistermetadata? = null,
         val metadata: Metadata
 )
 

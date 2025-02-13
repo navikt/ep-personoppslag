@@ -137,29 +137,6 @@
           }
         }
       ],
-      "foedsel": [
-        {
-          "foedselsdato": "1974-03-17",
-          "foedeland": null,
-          "foedested": null,
-          "foedselsaar": null,
-          "folkeregistermetadata": null,
-          "metadata": {
-            "endringer": [
-              {
-                "kilde": "Dolly",
-                "registrert": "2021-02-15T10:41:02",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
-                "type": "OPPRETT"
-              }
-            ],
-            "master": "FREG",
-            "opplysningsId": "7c82e2a8-f8f9-44b2-bb8e-2ca542e268fd",
-            "historisk": false
-          }
-        }
-      ],
       "doedsfall": [],
       "kjoenn": [
         {
