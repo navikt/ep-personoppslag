@@ -252,7 +252,6 @@ class PersonService(
                 IdentGruppe.FOLKEREGISTERIDENT-> NorskIdent(result) as Ident
                 IdentGruppe.AKTORID-> AktoerId(result) as Ident
                 IdentGruppe.NPID -> Npid(result) as Ident
-                else -> null
             }
         }
     }
