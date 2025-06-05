@@ -17,6 +17,7 @@ class PersonService(
     private val client: PersonClient,
     @Autowired(required = false) private val metricsHelper: MetricsHelper = MetricsHelper.ForTest()
 ) {
+    private val secureLog = LoggerFactory.getLogger("secureLog")
 
     private val logger = LoggerFactory.getLogger(PersonService::class.java)
 
