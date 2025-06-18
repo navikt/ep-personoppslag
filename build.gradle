@@ -24,7 +24,7 @@ dependencies {
         exclude module: "commons-logging"
     }
 
-    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.119")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.0.126")
     implementation("no.nav.eessi.pensjon:ep-logging:2.2.28")
     implementation("no.nav.eessi.pensjon:ep-eux:2.4.67")
     implementation("io.micrometer:micrometer-registry-prometheus:1.15.1")
