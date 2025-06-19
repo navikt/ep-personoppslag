@@ -46,7 +46,7 @@ class PersonService(
     fun <T : Ident> hentPersonUtenlandskIdent(ident: T): PersonUtenlandskIdent? {
         return hentPersonMetric.measure {
 
-            logger.debug("Henter hentPersonUtenlandskIdent for ident: ${ident.id} fra pdl")
+            secureLog.debug("Henter hentPersonUtenlandskIdent for ident: ${ident.id.take(6)} fra pdl")
             val response = client.hentPersonUtenlandsIdent(ident.id)
 
             if (!response.errors.isNullOrEmpty())
