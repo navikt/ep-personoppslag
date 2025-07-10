@@ -58,7 +58,8 @@ type Person {
     doedsfall: [Doedsfall!]!
     falskIdentitet: FalskIdentitet
     familierelasjoner : [Familierelasjon!]! @deprecated(reason: "Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon. Mer informasjon i dokumentasjonen. Familierelasjoner vil bli fjernet fra PDL 1. september 2021.")
-    foedsel: [Foedsel!]!
+    foedselsdato: [Foedselsdato!]!
+    foedested: [Foedested!]!
     folkeregisteridentifikator(historikk: Boolean = false): [Folkeregisteridentifikator!]!
     folkeregisterpersonstatus(historikk: Boolean = false): [Folkeregisterpersonstatus!]!
     forelderBarnRelasjon: [ForelderBarnRelasjon!]!
@@ -290,9 +291,14 @@ enum AdressebeskyttelseGradering {
     UGRADERT
 }
 
-type Foedsel {
-    foedselsaar: Int
+type Foedselsdato {
     foedselsdato: Date
+    foedselsaar: Int
+    folkeregistermetadata: Folkeregistermetadata
+    metadata: Metadata!
+}
+
+type Foedested {
     foedeland: String
     foedested: String
     foedekommune: String
