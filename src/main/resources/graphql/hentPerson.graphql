@@ -95,18 +95,6 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
-        foedsel {
-            foedselsdato
-            foedeland
-            foedested
-            foedselsaar
-            folkeregistermetadata {
-                ...folkeregistermetadataDetails
-            }
-            metadata {
-                ...metadataDetails
-            }
-        }
         foedselsdato {
           foedselsaar
           foedselsdato
