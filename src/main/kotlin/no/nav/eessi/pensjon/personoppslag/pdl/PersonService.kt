@@ -301,7 +301,7 @@ class PersonService(
         return listOf(
             SokCriteria("person.navn.fornavn",mapOf(INNEHOLDER to sokKriterier.fornavn)),
             SokCriteria("person.navn.etternavn", mapOf(INNEHOLDER to sokKriterier.etternavn)),
-            SokCriteria("person.foedsel.foedselsdato", mapOf(ER_LIK to "${sokKriterier.foedselsdato}"))
+            SokCriteria("person.foedselsdato.foedselsdato", mapOf(ER_LIK to "${sokKriterier.foedselsdato}"))
         )
 
     }
