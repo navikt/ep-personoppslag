@@ -40,7 +40,7 @@ dependencies {
     implementation(platform("org.springframework:spring-framework-bom:6.2.10"))
     implementation("org.springframework:spring-web")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.0")
 
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
