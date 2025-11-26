@@ -2,7 +2,6 @@ package no.nav.eessi.pensjon.personoppslag.pdl
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.eessi.pensjon.personoppslag.pdl.model.AdressebeskyttelseGradering
 import no.nav.eessi.pensjon.personoppslag.pdl.model.IdentGruppe
 import no.nav.eessi.pensjon.personoppslag.pdl.model.NorskIdent
 import no.nav.eessi.pensjon.personoppslag.pdl.model.SokKriterier
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.boot.web.client.RestTemplateBuilder
 import java.time.LocalDate
 
 @Disabled

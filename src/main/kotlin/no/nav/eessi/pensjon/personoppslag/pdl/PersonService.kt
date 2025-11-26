@@ -49,10 +49,10 @@ class PersonService(
             secureLog.debug("Henter hentPersonUtenlandskIdent for ident: ${ident.id.take(6)} fra pdl")
             val response = client.hentPersonUtenlandsIdent(ident.id)
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.hentPerson
+            return@measure response?.data?.hentPerson
                 ?.let {
                     val identer = hentIdenter(ident)
                     konverterTilPersonMedUid(it, identer)
@@ -93,10 +93,10 @@ class PersonService(
             logger.debug("Henter person: ${ident.id} fra pdl")
             val response = client.hentPerson(ident.id)
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.hentPerson?.let {
+            return@measure response?.data?.hentPerson?.let {
                     val identer = hentIdenter(ident)
                     val geografiskTilknytning = hentGeografiskTilknytning(ident)
                     val utenlandskIdentifikasjonsnummer = hentPersonUtenlandskIdent(ident)?.utenlandskIdentifikasjonsnummer ?: emptyList()
@@ -110,10 +110,10 @@ class PersonService(
         return hentPersonnavnMetric.measure {
             val response = client.hentPersonnavn(bestemIdent(ident.id).id)
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.hentPerson?.navn?.
+            return@measure response?.data?.hentPerson?.navn?.
                 maxByOrNull {
                     if (it.metadata.master == "FREG") it.folkeregistermetadata?.ajourholdstidspunkt?:LocalDateTime.of(1900,1,1,0,0,0)
                     else it.metadata.sisteRegistrertDato()
@@ -202,9 +202,9 @@ class PersonService(
         return harAdressebeskyttelseMetric.measure {
             val response = client.hentAdressebeskyttelse(fnr)
 
-            if (!response.errors.isNullOrEmpty()) handleError(response.errors)
+            if (!response?.errors.isNullOrEmpty()) handleError(response.errors)
 
-            val personer = response.data?.hentPersonBolk ?: return@measure false
+            val personer = response?.data?.hentPersonBolk ?: return@measure false
 
             return@measure personer
                     .filterNot { it.person == null }
@@ -224,10 +224,10 @@ class PersonService(
         return hentAktoerIdMetric.measure {
             val response = client.hentAktorId(fnr)
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.hentIdenter?.identer
+            return@measure response?.data?.hentIdenter?.identer
                 ?.firstOrNull { it.gruppe == IdentGruppe.AKTORID }
                 ?.let { AktoerId(it.ident) }
                 ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND)
@@ -270,10 +270,10 @@ class PersonService(
             logger.debug("Henter identer: ${ident.id} fra pdl")
             val response = client.hentIdenter(ident.id)
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.hentIdenter?.identer ?: emptyList()
+            return@measure response?.data?.hentIdenter?.identer ?: emptyList()
         }
     }
 
@@ -281,10 +281,10 @@ class PersonService(
         return sokPersonMetric.measure {
             val response = client.sokPerson(makeListCriteriaFromSok(sokKriterier))
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            val hits = response.data?.sokPerson?.hits
+            val hits = response?.data?.sokPerson?.hits
 
             return@measure if (hits?.size == 1) {
                 hits.first().identer.toSet()
@@ -319,10 +319,10 @@ class PersonService(
 
             val response = client.hentGeografiskTilknytning(ident.id)
 
-            if (!response.errors.isNullOrEmpty())
+            if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
 
-            return@measure response.data?.geografiskTilknytning
+            return@measure response?.data?.geografiskTilknytning
         }
     }
 

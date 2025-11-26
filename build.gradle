@@ -1,8 +1,9 @@
 buildscript {
     ext {
         kotlinVersion = '2.2.21'
-        springBootVersion = '3.5.7'
+        springBootVersion = '4.0.0'
         tokenSupportVersion = '5.0.39'
+        jacksonModuleKotlinVersion = '2.20.1'
     }
 }
 
@@ -24,24 +25,25 @@ dependencies {
         exclude module: "commons-logging"
     }
 
-    implementation("no.nav.eessi.pensjon:ep-metrics:2.1.16")
-    implementation("no.nav.eessi.pensjon:ep-logging:2.3.21")
-    implementation("no.nav.eessi.pensjon:ep-eux:2.5.30")
+    implementation("no.nav.eessi.pensjon:ep-metrics:2.1.19")
+    implementation("no.nav.eessi.pensjon:ep-logging:2.3.25")
+    implementation("no.nav.eessi.pensjon:ep-eux:2.6.4")
     implementation("io.micrometer:micrometer-registry-prometheus:1.15.5")
 
     // Spring-boot BOM-fil spesifiserer versjoner for Spring Boot-avhengigheter
     implementation(platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}"))
     implementation("org.springframework.retry:spring-retry:2.0.11")
+    implementation("org.springframework.boot:spring-boot-restclient")
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module : "tomcat-embed-core"
     }
 
     // Spring Framework BOM-fil overstyrer så vi får siste patch-versjon av Spring Framework
-    implementation(platform("org.springframework:spring-framework-bom:6.2.12"))
+    implementation(platform("org.springframework:spring-framework-bom:7.0.1"))
     implementation("org.springframework:spring-web")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1")
-
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonModuleKotlinVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonModuleKotlinVersion}")
     //Auth
     implementation("no.nav.security:token-client-spring:${tokenSupportVersion}")
     implementation("no.nav.security:token-validation-spring:${tokenSupportVersion}")
