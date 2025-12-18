@@ -21,15 +21,15 @@ class PersonService(
 
     private val logger = LoggerFactory.getLogger(PersonService::class.java)
 
-    private lateinit var hentPersonMetric: Metric
-    private lateinit var hentPersonnavnMetric: Metric
-    private lateinit var harAdressebeskyttelseMetric: Metric
-    private lateinit var hentAktoerIdMetric: Metric
-    private lateinit var hentIdentMetric: Metric
-    private lateinit var hentIdenterMetric: Metric
-    private lateinit var hentGeografiskTilknytningMetric: Metric
-    private lateinit var sokPersonMetric: Metric
-    private lateinit var hentPersonUidMetric: Metric
+    private var hentPersonMetric: Metric
+    private var hentPersonnavnMetric: Metric
+    private var harAdressebeskyttelseMetric: Metric
+    private var hentAktoerIdMetric: Metric
+    private var hentIdentMetric: Metric
+    private var hentIdenterMetric: Metric
+    private var hentGeografiskTilknytningMetric: Metric
+    private var sokPersonMetric: Metric
+    private var hentPersonUidMetric: Metric
 
     init {
         hentPersonMetric = metricsHelper.init("hentPerson", alert = OFF)

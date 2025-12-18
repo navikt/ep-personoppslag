@@ -193,7 +193,7 @@ internal class PdlPersonTest {
         assertEquals("3123", adresse.postnummer)
         assertEquals("POSTSTEDSETSNAVN", adresse.poststedsnavn)
 
-        val advokatSomKontakt = person.kontaktinformasjonForDoedsbo!!.advokatSomKontakt!!
+        val advokatSomKontakt = person.kontaktinformasjonForDoedsbo.advokatSomKontakt!!
         assertEquals("Arve", advokatSomKontakt.personnavn.fornavn)
         assertEquals("Bjørn", advokatSomKontakt.personnavn.mellomnavn)
         assertEquals("Stein", advokatSomKontakt.personnavn.etternavn)
@@ -214,7 +214,7 @@ internal class PdlPersonTest {
         val person = hentPersonFraFil(json)
         val organisasjonSomKontakt = person!!.kontaktinformasjonForDoedsbo!!.organisasjonSomKontakt!!
         assertEquals("Hvite", organisasjonSomKontakt.kontaktperson!!.fornavn)
-        assertEquals("Blomster", organisasjonSomKontakt.kontaktperson!!.etternavn)
+        assertEquals("Blomster", organisasjonSomKontakt.kontaktperson.etternavn)
         assertEquals("ABC Vi Fikser Arven", organisasjonSomKontakt.organisasjonsnavn)
     }
 
