@@ -25,6 +25,11 @@ dependencies {
     implementation('net.logstash.logback:logstash-logback-encoder:9.0') {
         exclude module: "commons-logging"
     }
+    constraints {
+        implementation("tools.jackson.core:jackson-databind:3.1.4") {
+            because("CVE-2026-54512 and CVE-2026-54513")
+        }
+    }
 
     implementation("no.nav.eessi.pensjon:ep-logging:3.0.46")
     implementation("no.nav.eessi.pensjon:ep-metrics:3.0.34")
