@@ -31,7 +31,7 @@ dependencies {
         }
     }
 
-    implementation("no.nav.eessi.pensjon:ep-logging:3.0.46")
+    implementation("no.nav.eessi.pensjon:ep-logging:3.0.58")
     implementation("no.nav.eessi.pensjon:ep-metrics:3.0.34")
     implementation("no.nav.eessi.pensjon:ep-eux:3.0.85")
     implementation("io.micrometer:micrometer-registry-prometheus:1.17.0")
