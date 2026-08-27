@@ -147,6 +147,8 @@ class PersonService(
             val bostedsadresse = pdlPerson.bostedsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
+            val bostedsadresseInklHistoriske = pdlPerson.bostedsadresse.maxByOrNull { it.metadata.sisteRegistrertDato() }
+
             val oppholdsadresse = pdlPerson.oppholdsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
@@ -174,6 +176,7 @@ class PersonService(
                 navn,
                 graderingListe,
                 bostedsadresse,
+                bostedsadresseInklHistoriske,
                 oppholdsadresse,
                 statsborgerskap,
                 foedselsdato,

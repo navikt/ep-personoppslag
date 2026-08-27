@@ -98,6 +98,7 @@ internal class PdlPersonServiceTest {
                     mockMeta()
                 )
             ),
+            bostedsadresseInklHistoriske = emptyList(),
             oppholdsadresse = emptyList(),
             navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
@@ -342,6 +343,7 @@ internal class PdlPersonServiceTest {
         val pdlPerson = HentPerson(
             adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
             bostedsadresse = emptyList(),
+            bostedsadresseInklHistoriske = emptyList(),
             oppholdsadresse = emptyList(),
             navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
@@ -541,6 +543,7 @@ internal class PdlPersonServiceTest {
     private fun createHentPerson(
         adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),
         bostedsadresse: List<Bostedsadresse> = emptyList(),
+        bostedsadresseInklHistorikk: List<Bostedsadresse> = emptyList(),
         oppholdsadresse: List<Oppholdsadresse> = emptyList(),
         navn: List<Navn> = emptyList(),
         statsborgerskap: List<Statsborgerskap> = emptyList(),
@@ -555,7 +558,23 @@ internal class PdlPersonServiceTest {
         innflyttingTilNorge: List<InnflyttingTilNorge> = emptyList(),
         utflyttingFraNorge: List<UtflyttingFraNorge> = emptyList()
     ) = HentPerson(
-            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedselsdato, foedested, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo, innflyttingTilNorge, utflyttingFraNorge
+        adressebeskyttelse,
+        bostedsadresse,
+
+        oppholdsadresse,
+        bostedsadresseInklHistorikk,
+        navn,
+        statsborgerskap,
+        foedselsdato,
+        foedested,
+        kjoenn,
+        doedsfall,
+        familierelasjoner,
+        sivilstand,
+        kontaktadresse,
+        kontaktinformasjonForDoedsbo,
+        innflyttingTilNorge,
+        utflyttingFraNorge
     )
 
     private fun createHentPersonnavn(navn: List<Navn>) = HentPersonnavn(navn)

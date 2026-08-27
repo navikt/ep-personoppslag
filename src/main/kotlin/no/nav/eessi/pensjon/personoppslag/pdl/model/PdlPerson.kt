@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 internal data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
         val bostedsadresse: List<Bostedsadresse>,
+        val bostedsadresseInklHistoriske: List<Bostedsadresse> ?= null,
         val oppholdsadresse: List<Oppholdsadresse>,
         val navn: List<Navn>,
         val statsborgerskap: List<Statsborgerskap>,
@@ -51,6 +52,7 @@ data class PdlPerson(
         val navn: Navn? = null,
         val adressebeskyttelse: List<AdressebeskyttelseGradering>,
         val bostedsadresse: Bostedsadresse? = null,
+        val bostedsadresseInklHistoriske: Bostedsadresse? = null,
         val oppholdsadresse: Oppholdsadresse? = null,
         val statsborgerskap: List<Statsborgerskap>,
         val foedselsdato: Foedselsdato? = null,
