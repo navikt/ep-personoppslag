@@ -65,8 +65,8 @@ data class PdlPerson(
         val kontaktadresse: Kontaktadresse? = null,
         val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
         val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>,
-        val innflyttingTilNorge: InnflyttingTilNorge? = null,
-        val utflyttingFraNorge: UtflyttingFraNorge? = null
+        val innflyttingTilNorge: List<InnflyttingTilNorge>? = null,
+        val utflyttingFraNorge: List<UtflyttingFraNorge>? = null
 ) {
         private val logger = LoggerFactory.getLogger(PdlPerson::class.java)
 
@@ -130,19 +130,18 @@ data class PdlPerson(
         }
 }
 data class InnflyttingTilNorge(
-        val fraflyttingsland: String,
-        val fraflyttingsstedIUtlandet: String,
-        val folkeregistermetadata: Folkeregistermetadata,
-        val metadata: Metadata
+        val fraflyttingsland: String? = null,
+        val fraflyttingsstedIUtlandet: String? = null,
+        val folkeregistermetadata: Folkeregistermetadata ? = null,
+        val metadata: Metadata? = null
 )
 data class UtflyttingFraNorge(
-        val tilflyttingsland: String,
-        val tilflyttingsstedIUtlandet: String,
-        val utflyttingsdato: LocalDate,
-        val folkeregistermetadata: Folkeregistermetadata,
-        val metadata: Metadata
+        val tilflyttingsland: String? = null,
+        val tilflyttingsstedIUtlandet: String? = null,
+        val utflyttingsdato: LocalDate? = null,
+        val folkeregistermetadata: Folkeregistermetadata? = null,
+        val metadata: Metadata? = null
 )
-
 
 data class Navn(
         val fornavn: String,

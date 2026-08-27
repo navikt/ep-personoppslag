@@ -165,8 +165,8 @@ class PersonService(
                 .filterNot { it.doedsdato == null }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val innflyttingTilNorge = pdlPerson.innflyttingTilNorge?.maxByOrNull { it.metadata.sisteRegistrertDato() }
-            val utflyttingFraNorge = pdlPerson.utflyttingFraNorge?.maxByOrNull { it.metadata.sisteRegistrertDato() }
+            val innflyttingTilNorge = pdlPerson.innflyttingTilNorge
+            val utflyttingFraNorge = pdlPerson.utflyttingFraNorge
 
             val forelderBarnRelasjon = pdlPerson.forelderBarnRelasjon
             val sivilstand = pdlPerson.sivilstand
