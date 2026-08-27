@@ -60,7 +60,9 @@ data class PdlPerson(
         val sivilstand: List<Sivilstand>,
         val kontaktadresse: Kontaktadresse? = null,
         val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
-        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
+        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>,
+        val innflyttingTilNorge: List<InnflyttingTilNorge>,
+        val utflyttingFraNorge: List<UtflyttingFraNorge>
 ) {
         private val logger = LoggerFactory.getLogger(PdlPerson::class.java)
 
@@ -123,6 +125,20 @@ data class PdlPerson(
                 }
         }
 }
+data class InnflyttingTilNorge(
+        val fraflyttingsland: String,
+        val fraflyttingsstedIUtlandet: String,
+        val folkeregistermetadata: Folkeregistermetadata,
+        val metadata: Metadata
+)
+data class UtflyttingFraNorge(
+        val tilflyttingsland: String,
+        val tilflyttingsstedIUtlandet: String,
+        val utflyttingsdato: LocalDate,
+        val folkeregistermetadata: Folkeregistermetadata,
+        val metadata: Metadata
+)
+
 
 data class Navn(
         val fornavn: String,
