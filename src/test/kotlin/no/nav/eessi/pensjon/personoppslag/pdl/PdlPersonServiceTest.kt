@@ -108,7 +108,9 @@ internal class PdlPersonServiceTest {
             forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
             sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
             kontaktadresse = emptyList(),
-            kontaktinformasjonForDoedsbo = emptyList()
+            kontaktinformasjonForDoedsbo = emptyList(),
+            innflyttingTilNorge = emptyList(),
+            utflyttingFraNorge = emptyList()
         )
 
         val pdlUidPerson = HentPersonUtenlandskIdent(
@@ -374,7 +376,9 @@ internal class PdlPersonServiceTest {
                 metadata = Metadata(emptyList(), false, "DOLLY", "Doll")
             )
             ),
-            kontaktinformasjonForDoedsbo = emptyList()
+            kontaktinformasjonForDoedsbo = emptyList(),
+            innflyttingTilNorge = emptyList(),
+            utflyttingFraNorge = emptyList()
         )
 
         every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
@@ -547,9 +551,11 @@ internal class PdlPersonServiceTest {
         familierelasjoner: List<ForelderBarnRelasjon> = emptyList(),
         sivilstand: List<Sivilstand> = emptyList(),
         kontaktadresse: List<Kontaktadresse> = emptyList(),
-        kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo> = emptyList()
+        kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo> = emptyList(),
+        innflyttingTilNorge: List<InnflyttingTilNorge> = emptyList(),
+        utflyttingFraNorge: List<UtflyttingFraNorge> = emptyList()
     ) = HentPerson(
-            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedselsdato, foedested, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo
+            adressebeskyttelse, bostedsadresse, oppholdsadresse, navn, statsborgerskap, foedselsdato, foedested, kjoenn, doedsfall, familierelasjoner, sivilstand, kontaktadresse, kontaktinformasjonForDoedsbo, innflyttingTilNorge, utflyttingFraNorge
     )
 
     private fun createHentPersonnavn(navn: List<Navn>) = HentPersonnavn(navn)

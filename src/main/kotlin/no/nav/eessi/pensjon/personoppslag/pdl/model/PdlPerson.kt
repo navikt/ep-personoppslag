@@ -18,6 +18,8 @@ internal data class HentPerson(
         val sivilstand: List<Sivilstand>,
         val kontaktadresse: List<Kontaktadresse>?,
         val kontaktinformasjonForDoedsbo: List<KontaktinformasjonForDoedsbo>,
+        val innflyttingTilNorge: List<InnflyttingTilNorge> ? = null,
+        val utflyttingFraNorge: List<UtflyttingFraNorge> ? = null
 )
 internal data class HentPersonnavn(
         val navn: List<Navn>
@@ -61,8 +63,8 @@ data class PdlPerson(
         val kontaktadresse: Kontaktadresse? = null,
         val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
         val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>,
-        val innflyttingTilNorge: List<InnflyttingTilNorge>,
-        val utflyttingFraNorge: List<UtflyttingFraNorge>
+        val innflyttingTilNorge: InnflyttingTilNorge? = null,
+        val utflyttingFraNorge: UtflyttingFraNorge? = null
 ) {
         private val logger = LoggerFactory.getLogger(PdlPerson::class.java)
 

@@ -163,6 +163,9 @@ class PersonService(
                 .filterNot { it.doedsdato == null }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
+            val innflyttingTilNorge = pdlPerson.innflyttingTilNorge?.filter { !it.metadata.historisk }?.maxByOrNull { it.metadata.sisteRegistrertDato() }
+            val utflyttingFraNorge = pdlPerson.utflyttingFraNorge?.filter { !it.metadata.historisk }?.maxByOrNull { it.metadata.sisteRegistrertDato() }
+
             val forelderBarnRelasjon = pdlPerson.forelderBarnRelasjon
             val sivilstand = pdlPerson.sivilstand
 
@@ -182,7 +185,9 @@ class PersonService(
                 sivilstand,
                 kontaktadresse,
                 kontaktinformasjonForDoedsbo,
-                utenlandskIdentifikasjonsnummer
+                utenlandskIdentifikasjonsnummer,
+                innflyttingTilNorge,
+                utflyttingFraNorge
             )
         }
 

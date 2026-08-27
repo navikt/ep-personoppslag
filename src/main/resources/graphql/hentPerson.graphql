@@ -147,6 +147,27 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
+        innflyttingTilNorge {
+            fraflyttingsland
+            fraflyttingsstedIUtlandet
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
+        utflyttingFraNorge {
+            tilflyttingsland
+            tilflyttingsstedIUtlandet
+            utflyttingsdato
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
 
     }
 }
