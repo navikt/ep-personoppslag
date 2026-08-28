@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 internal data class HentPerson(
         val adressebeskyttelse: List<Adressebeskyttelse>,
         val bostedsadresse: List<Bostedsadresse>,
-        val bostedsadresseInklHistoriske: List<Bostedsadresse> ?= null,
         val oppholdsadresse: List<Oppholdsadresse>,
         val navn: List<Navn>,
         val statsborgerskap: List<Statsborgerskap>,
@@ -47,28 +46,27 @@ data class UtenlandskIdentifikasjonsnummer(
         val metadata: Metadata
 )
 
-data class PdlPerson(
-        val identer: List<IdentInformasjon>,
-        val navn: Navn? = null,
-        val adressebeskyttelse: List<AdressebeskyttelseGradering>,
-        val bostedsadresse: Bostedsadresse? = null,
-        val bostedsadresseInklHistoriske: Bostedsadresse? = null,
-        val oppholdsadresse: Oppholdsadresse? = null,
-        val statsborgerskap: List<Statsborgerskap>,
-        val foedselsdato: Foedselsdato? = null,
-        val foedested: Foedested? = null,
-        val geografiskTilknytning: GeografiskTilknytning? = null,
-        val kjoenn: Kjoenn? = null,
-        val doedsfall: Doedsfall? = null,
-        val forelderBarnRelasjon: List<ForelderBarnRelasjon>,  //Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon
-        val sivilstand: List<Sivilstand>,
-        val kontaktadresse: Kontaktadresse? = null,
-        val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
-        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>,
-        val innflyttingTilNorge: List<InnflyttingTilNorge>? = null,
-        val utflyttingFraNorge: List<UtflyttingFraNorge>? = null
-) {
-        private val logger = LoggerFactory.getLogger(PdlPerson::class.java)
+/**
+ * Felles kontrakt for personopplysninger hentet fra PDL. Trekkes ut som grensesnitt slik at
+ * [PdlPersonUtvidet] kan gjenbruke [PdlPerson] via delegering (`by`) i stedet for å duplisere feltene.
+ */
+interface IPdlPerson {
+        val identer: List<IdentInformasjon>
+        val navn: Navn?
+        val adressebeskyttelse: List<AdressebeskyttelseGradering>
+        val bostedsadresse: Bostedsadresse?
+        val oppholdsadresse: Oppholdsadresse?
+        val statsborgerskap: List<Statsborgerskap>
+        val foedselsdato: Foedselsdato?
+        val foedested: Foedested?
+        val geografiskTilknytning: GeografiskTilknytning?
+        val kjoenn: Kjoenn?
+        val doedsfall: Doedsfall?
+        val forelderBarnRelasjon: List<ForelderBarnRelasjon>
+        val sivilstand: List<Sivilstand>
+        val kontaktadresse: Kontaktadresse?
+        val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo?
+        val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
 
         fun erDoed() = doedsfall?.doedsdato != null
 
@@ -85,6 +83,8 @@ data class PdlPerson(
          * 8. eller returnerer tom streng om ingen av adressene er definert
          */
         fun landkode(): String {
+                val logger = LoggerFactory.getLogger(IPdlPerson::class.java)
+
                 val landkodeOppholdKontakt = kontaktadresse?.utenlandskAdresseIFrittFormat?.landkode
                 val landkodeUtlandsAdresse = kontaktadresse?.utenlandskAdresse?.landkode
                 val landkodeOppholdsadresse = oppholdsadresse?.utenlandskAdresse?.landkode
@@ -129,6 +129,42 @@ data class PdlPerson(
                 }
         }
 }
+
+data class PdlPerson(
+        override val identer: List<IdentInformasjon>,
+        override val navn: Navn? = null,
+        override val adressebeskyttelse: List<AdressebeskyttelseGradering>,
+        override val bostedsadresse: Bostedsadresse? = null,
+        override val oppholdsadresse: Oppholdsadresse? = null,
+        override val statsborgerskap: List<Statsborgerskap>,
+        override val foedselsdato: Foedselsdato? = null,
+        override val foedested: Foedested? = null,
+        override val geografiskTilknytning: GeografiskTilknytning? = null,
+        override val kjoenn: Kjoenn? = null,
+        override val doedsfall: Doedsfall? = null,
+        override val forelderBarnRelasjon: List<ForelderBarnRelasjon>,  //Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon
+        override val sivilstand: List<Sivilstand>,
+        override val kontaktadresse: Kontaktadresse? = null,
+        override val kontaktinformasjonForDoedsbo: KontaktinformasjonForDoedsbo? = null,
+        override val utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
+) : IPdlPerson
+
+/**
+ * Utvidet variant av [PdlPerson] som i tillegg til gjeldende kontaktadresse og oppholdsadresse
+ * også inneholder siste registrerte kontaktadresse/oppholdsadresse inkludert historiske (utgåtte) verdier.
+ *
+ * Gjenbruker [PdlPerson] via grensesnittdelegering, slik at alle øvrige felt og hjelpefunksjoner
+ * ([erDoed], [landkode]) er identiske med [PdlPerson] uten å måtte duplisere dem.
+ */
+data class PdlPersonUtvidet(
+        val pdlPerson: PdlPerson,
+        val bostedsadresseInklHistoriske: Bostedsadresse? = null,
+        val kontaktadresseInklHistoriske: Kontaktadresse? = null,
+        val oppholdsadresseInklHistoriske: Oppholdsadresse? = null,
+        val innflyttingTilNorge: List<InnflyttingTilNorge>? = null,
+        val utflyttingFraNorge: List<UtflyttingFraNorge>? = null
+) : IPdlPerson by pdlPerson
+
 data class InnflyttingTilNorge(
         val fraflyttingsland: String? = null,
         val fraflyttingsstedIUtlandet: String? = null,

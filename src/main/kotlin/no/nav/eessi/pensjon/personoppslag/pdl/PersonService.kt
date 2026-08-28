@@ -22,6 +22,7 @@ class PersonService(
     private val logger = LoggerFactory.getLogger(PersonService::class.java)
 
     private var hentPersonMetric: Metric
+    private var hentPersonUtvidetMetric: Metric
     private var hentPersonnavnMetric: Metric
     private var harAdressebeskyttelseMetric: Metric
     private var hentAktoerIdMetric: Metric
@@ -33,6 +34,7 @@ class PersonService(
 
     init {
         hentPersonMetric = metricsHelper.init("hentPerson", alert = OFF)
+        hentPersonUtvidetMetric = metricsHelper.init("hentPersonUtvidet", alert = OFF)
         hentPersonnavnMetric = metricsHelper.init("hentPersonnavn", alert = OFF)
         harAdressebeskyttelseMetric = metricsHelper.init("harAdressebeskyttelse", alert = OFF)
         hentAktoerIdMetric = metricsHelper.init("hentAktoerId", alert = OFF)
@@ -147,8 +149,6 @@ class PersonService(
             val bostedsadresse = pdlPerson.bostedsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val bostedsadresseInklHistoriske = pdlPerson.bostedsadresse.maxByOrNull { it.metadata.sisteRegistrertDato() }
-
             val oppholdsadresse = pdlPerson.oppholdsadresse.filter { !it.metadata.historisk }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
@@ -165,9 +165,6 @@ class PersonService(
                 .filterNot { it.doedsdato == null }
                 .maxByOrNull { it.metadata.sisteRegistrertDato() }
 
-            val innflyttingTilNorge = pdlPerson.innflyttingTilNorge
-            val utflyttingFraNorge = pdlPerson.utflyttingFraNorge
-
             val forelderBarnRelasjon = pdlPerson.forelderBarnRelasjon
             val sivilstand = pdlPerson.sivilstand
 
@@ -176,7 +173,6 @@ class PersonService(
                 navn,
                 graderingListe,
                 bostedsadresse,
-                bostedsadresseInklHistoriske,
                 oppholdsadresse,
                 statsborgerskap,
                 foedselsdato,
@@ -188,9 +184,61 @@ class PersonService(
                 sivilstand,
                 kontaktadresse,
                 kontaktinformasjonForDoedsbo,
-                utenlandskIdentifikasjonsnummer,
-                innflyttingTilNorge,
-                utflyttingFraNorge
+                utenlandskIdentifikasjonsnummer
+            )
+        }
+
+    /**
+     * Funksjon for å hente ut person basert på fnr, med utvidet adresseinformasjon.
+     *
+     * I tillegg til gjeldende kontaktadresse og oppholdsadresse (som i [hentPerson]) inneholder
+     * resultatet også [PdlPersonUtvidet.kontaktadresseInklHistoriske] og [PdlPersonUtvidet.oppholdsadresseInklHistoriske],
+     * som velges uten å filtrere bort historiske (utgåtte) verdier.
+     *
+     * @param ident: Identen til personen man vil hente ut identer for. Bruk [NorskIdent], [AktoerId], eller [Npid]
+     *
+     * @return [PdlPersonUtvidet]
+     */
+    fun <T : Ident> hentPersonUtvidet(ident: T): PdlPersonUtvidet? {
+        return hentPersonUtvidetMetric.measure {
+
+            logger.debug("Henter person (utvidet): ${ident.id} fra pdl")
+            val response = client.hentPerson(ident.id)
+
+            if (!response?.errors.isNullOrEmpty())
+                handleError(response.errors)
+
+            return@measure response?.data?.hentPerson?.let {
+                    val identer = hentIdenter(ident)
+                    val geografiskTilknytning = hentGeografiskTilknytning(ident)
+                    val utenlandskIdentifikasjonsnummer = hentPersonUtenlandskIdent(ident)?.utenlandskIdentifikasjonsnummer ?: emptyList()
+                    konverterTilPersonUtvidet(it, identer, geografiskTilknytning, utenlandskIdentifikasjonsnummer)
+                }
+        }
+    }
+
+    internal fun konverterTilPersonUtvidet(
+            pdlPerson: HentPerson,
+            identer: List<IdentInformasjon>,
+            geografiskTilknytning: GeografiskTilknytning?,
+            utenlandskIdentifikasjonsnummer: List<UtenlandskIdentifikasjonsnummer>
+        ): PdlPersonUtvidet {
+
+            val person = konverterTilPerson(pdlPerson, identer, geografiskTilknytning, utenlandskIdentifikasjonsnummer)
+
+            val bostedsadresseInklHistoriske = pdlPerson.bostedsadresse.maxByOrNull { it.metadata.sisteRegistrertDato() }
+
+            val oppholdsadresseInklHistoriske = pdlPerson.oppholdsadresse.maxByOrNull { it.metadata.sisteRegistrertDato() }
+
+            val kontaktadresseInklHistoriske = pdlPerson.kontaktadresse?.maxByOrNull { it.metadata.sisteRegistrertDato() }
+
+            return PdlPersonUtvidet(
+                person,
+                bostedsadresseInklHistoriske,
+                kontaktadresseInklHistoriske,
+                oppholdsadresseInklHistoriske,
+                pdlPerson.innflyttingTilNorge,
+                pdlPerson.utflyttingFraNorge
             )
         }
 

@@ -87,57 +87,24 @@ internal class PdlPersonServiceTest {
 
     @Test
     fun hentAltPerson() {
-        val pdlPerson = HentPerson(
-            adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
-            bostedsadresse = listOf(
-                Bostedsadresse(
-                    LocalDateTime.of(2020, 10, 5, 10,5,2),
-                    LocalDateTime.of(2030, 10, 5, 10, 5, 2),
-                    Vegadresse("TESTVEIEN","1020","A","0234", "231", null),
-                    null,
-                    mockMeta()
-                )
-            ),
-            bostedsadresseInklHistoriske = emptyList(),
-            oppholdsadresse = emptyList(),
-            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
-            statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
-            foedselsdato = listOf(Foedselsdato(foedselsdato = "2000-10-03", metadata = mockMeta())),
-            foedested = listOf(Foedested("NOR", "OSLO", metadata = mockMeta())),
-            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
-            doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
-            forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
-            sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
-            kontaktadresse = emptyList(),
-            kontaktinformasjonForDoedsbo = emptyList(),
-            innflyttingTilNorge = emptyList(),
-            utflyttingFraNorge = emptyList()
+        val bostedsadresse = listOf(
+            Bostedsadresse(
+                LocalDateTime.of(2020, 10, 5, 10,5,2),
+                LocalDateTime.of(2030, 10, 5, 10, 5, 2),
+                Vegadresse("TESTVEIEN","1020","A","0234", "231", null),
+                null,
+                mockMeta()
+            )
         )
 
-        val pdlUidPerson = HentPersonUtenlandskIdent(
-            navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
-            kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
-            utenlandskIdentifikasjonsnummer = listOf(UtenlandskIdentifikasjonsnummer("231234-12331", "SE",false, null, mockMeta()))
-        )
+        val pdlPerson = mockAltHentPerson(bostedsadresse = bostedsadresse)
+        val pdlUidPerson = mockAltUtenlandskIdent()
+        val identer = mockAltIdenter()
+        val gt = mockAltGeografiskTilknytning()
 
-        val identer = listOf(
-            IdentInformasjon("25078521492", FOLKEREGISTERIDENT),
-            IdentInformasjon("100000000000053", AKTORID)
-        )
+        stubHentAltPerson(pdlPerson, pdlUidPerson, identer, gt)
 
-        val gt = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
-
-        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
-        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
-        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
-        every { client.hentPersonUtenlandsIdent(any()) } returns HentPersonUidResponse(HentPersonUidResponseData(pdlUidPerson))
-
-        val resultat = service.hentPerson(NorskIdent("12345"))
-
-        val navn = resultat!!.navn!!
-        assertEquals("Fornavn", navn.fornavn)
-        assertEquals("Mellomnavn", navn.mellomnavn)
-        assertEquals("Etternavn", navn.etternavn)
+        val resultat = service.hentPerson(NorskIdent("12345"))!!
 
         val vegadresse = resultat.bostedsadresse!!.vegadresse
         assertEquals("TESTVEIEN", vegadresse?.adressenavn)
@@ -145,32 +112,109 @@ internal class PdlPersonServiceTest {
         assertEquals("A", vegadresse?.husbokstav)
         assertEquals("0234", vegadresse?.postnummer)
 
-        assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
+        assertFellesPersonFelter(resultat, gt)
+    }
 
-        assertEquals("2000-10-03", resultat.foedselsdato?.foedselsdato)
-        assertEquals("NOR", resultat.foedested?.foedeland)
-        assertEquals("OSLO", resultat.foedested?.foedested)
+    @Test
+    fun hentAltPersonUtvidet() {
+        val bostedsadresse = listOf(
+            Bostedsadresse(
+                LocalDateTime.of(2015, 1, 1, 10, 5, 2),
+                LocalDateTime.of(2020, 10, 5, 10, 5, 2),
+                Vegadresse("GAMLEVEIEN", "1", null, "0111", "231", null),
+                null,
+                mockMeta(LocalDateTime.of(2015, 1, 1, 10, 5, 2)).copy(historisk = true)
+            ),
+            Bostedsadresse(
+                LocalDateTime.of(2020, 10, 5, 10,5,2),
+                LocalDateTime.of(2030, 10, 5, 10, 5, 2),
+                Vegadresse("TESTVEIEN","1020","A","0234", "231", null),
+                null,
+                mockMeta(LocalDateTime.of(2020, 10, 5, 10, 5, 2))
+            )
+        )
 
-        assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
+        val oppholdsadresse = listOf(
+            Oppholdsadresse(
+                LocalDateTime.of(2012, 1, 1, 10, 5, 2),
+                LocalDateTime.of(2018, 1, 1, 10, 5, 2),
+                Vegadresse("GAMLE OPPHOLDSVEIEN", "2", null, "0112", "231", null),
+                null,
+                mockMeta(LocalDateTime.of(2012, 1, 1, 10, 5, 2)).copy(historisk = true)
+            ),
+            Oppholdsadresse(
+                LocalDateTime.of(2018, 1, 1, 10, 5, 2),
+                null,
+                Vegadresse("OPPHOLDSVEIEN", "3", null, "0113", "231", null),
+                null,
+                mockMeta(LocalDateTime.of(2018, 1, 1, 10, 5, 2))
+            )
+        )
 
-        assertEquals(LocalDate.of(2020, 10,10), resultat.doedsfall?.doedsdato)
-        assertEquals(true, resultat.erDoed())
+        val kontaktadresse = listOf(
+            Kontaktadresse(
+                coAdressenavn = null,
+                type = KontaktadresseType.Utland,
+                postadresseIFrittFormat = null,
+                utenlandskAdresse = UtenlandskAdresse(
+                    adressenavnNummer = "adressenavnummer",
+                    bySted = "bysted",
+                    landkode = "SC",
+                    postkode = "gammel adresse"
+                ),
+                metadata = mockMeta(LocalDateTime.of(2005, 1, 1, 10, 2, 14)).copy(historisk = true)
+            ),
+            Kontaktadresse(
+                coAdressenavn = null,
+                type = KontaktadresseType.Utland,
+                postadresseIFrittFormat = null,
+                utenlandskAdresse = UtenlandskAdresse(
+                    adressenavnNummer = "Elle",
+                    bySted = "melle",
+                    landkode = "DK",
+                    postkode = "deg fortelle"
+                ),
+                metadata = mockMeta(LocalDateTime.of(2010, 4, 1, 10, 2, 14))
+            )
+        )
 
-        assertEquals("101010", resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsIdent)
-        assertEquals(Familierelasjonsrolle.BARN, resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsRolle)
-        assertEquals(Familierelasjonsrolle.MOR, resultat.forelderBarnRelasjon.lastOrNull()?.minRolleForPerson)
+        val pdlPerson = mockAltHentPerson(
+            bostedsadresse = bostedsadresse,
+            oppholdsadresse = oppholdsadresse,
+            kontaktadresse = kontaktadresse,
+            innflyttingTilNorge = listOf(InnflyttingTilNorge("SWE", "Stockholm", metadata = mockMeta())),
+            utflyttingFraNorge = listOf(UtflyttingFraNorge("SWE", "Stockholm", LocalDate.of(2005, 1, 1), metadata = mockMeta()))
+        )
+        val pdlUidPerson = mockAltUtenlandskIdent()
+        val identer = mockAltIdenter()
+        val gt = mockAltGeografiskTilknytning()
 
-        assertEquals(Sivilstandstype.GIFT, resultat.sivilstand.lastOrNull()?.type)
-        assertEquals("1020203010", resultat.sivilstand.lastOrNull()?.relatertVedSivilstand)
-        assertEquals(LocalDate.of(2010, 10,10), resultat.sivilstand.lastOrNull()?.gyldigFraOgMed)
+        stubHentAltPerson(pdlPerson, pdlUidPerson, identer, gt)
 
-        assertEquals(gt, resultat.geografiskTilknytning)
+        val resultat = service.hentPersonUtvidet(NorskIdent("12345"))!!
 
-        assertEquals(1, resultat.adressebeskyttelse.size)
-        assertEquals(2, resultat.identer.size)
+        // gjeldende (ikke-historiske) adresser er identiske med hentPerson
+        val vegadresse = resultat.bostedsadresse!!.vegadresse
+        assertEquals("TESTVEIEN", vegadresse?.adressenavn)
+        assertEquals("1020", vegadresse?.husnummer)
+        assertEquals("A", vegadresse?.husbokstav)
+        assertEquals("0234", vegadresse?.postnummer)
 
-        assertEquals(1, resultat.utenlandskIdentifikasjonsnummer.size)
-        assertEquals("231234-12331", resultat.utenlandskIdentifikasjonsnummer.first().identifikasjonsnummer)
+        assertEquals("OPPHOLDSVEIEN", resultat.oppholdsadresse?.vegadresse?.adressenavn)
+        assertEquals("deg fortelle", resultat.kontaktadresse?.utenlandskAdresse?.postkode)
+
+        // *InklHistoriske skal velge siste registrerte verdi, historisk eller ei
+        assertEquals("TESTVEIEN", resultat.bostedsadresseInklHistoriske?.vegadresse?.adressenavn)
+        assertEquals("OPPHOLDSVEIEN", resultat.oppholdsadresseInklHistoriske?.vegadresse?.adressenavn)
+        assertEquals("deg fortelle", resultat.kontaktadresseInklHistoriske?.utenlandskAdresse?.postkode)
+
+        assertEquals(1, resultat.innflyttingTilNorge?.size)
+        assertEquals("SWE", resultat.innflyttingTilNorge?.first()?.fraflyttingsland)
+
+        assertEquals(1, resultat.utflyttingFraNorge?.size)
+        assertEquals("SWE", resultat.utflyttingFraNorge?.first()?.tilflyttingsland)
+
+        assertFellesPersonFelter(resultat, gt)
     }
 
     @Test
@@ -343,7 +387,6 @@ internal class PdlPersonServiceTest {
         val pdlPerson = HentPerson(
             adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
             bostedsadresse = emptyList(),
-            bostedsadresseInklHistoriske = emptyList(),
             oppholdsadresse = emptyList(),
             navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
             statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
@@ -543,7 +586,6 @@ internal class PdlPersonServiceTest {
     private fun createHentPerson(
         adressebeskyttelse: List<Adressebeskyttelse> = emptyList(),
         bostedsadresse: List<Bostedsadresse> = emptyList(),
-        bostedsadresseInklHistorikk: List<Bostedsadresse> = emptyList(),
         oppholdsadresse: List<Oppholdsadresse> = emptyList(),
         navn: List<Navn> = emptyList(),
         statsborgerskap: List<Statsborgerskap> = emptyList(),
@@ -560,9 +602,7 @@ internal class PdlPersonServiceTest {
     ) = HentPerson(
         adressebeskyttelse,
         bostedsadresse,
-
         oppholdsadresse,
-        bostedsadresseInklHistorikk,
         navn,
         statsborgerskap,
         foedselsdato,
@@ -585,4 +625,97 @@ internal class PdlPersonServiceTest {
                             adressebeskyttelse = listOf(Adressebeskyttelse(gradering))
                     )
             )
+
+    /**
+     * Bygger en [HentPerson] med et felles sett testdata for navn, statsborgerskap, fødsel, kjønn,
+     * dødsfall, familierelasjon og sivilstand. Adressene og inn-/utflytting varierer mellom
+     * [hentAltPerson] og [hentAltPersonUtvidet], og sendes derfor inn som parametere.
+     */
+    private fun mockAltHentPerson(
+        bostedsadresse: List<Bostedsadresse> = emptyList(),
+        oppholdsadresse: List<Oppholdsadresse> = emptyList(),
+        kontaktadresse: List<Kontaktadresse> = emptyList(),
+        innflyttingTilNorge: List<InnflyttingTilNorge> = emptyList(),
+        utflyttingFraNorge: List<UtflyttingFraNorge> = emptyList()
+    ) = HentPerson(
+        adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.UGRADERT)),
+        bostedsadresse = bostedsadresse,
+        oppholdsadresse = oppholdsadresse,
+        navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
+        statsborgerskap = listOf(Statsborgerskap("NOR", LocalDate.of(2010, 7,7), LocalDate.of(2020, 10, 10), mockMeta())),
+        foedselsdato = listOf(Foedselsdato(foedselsdato = "2000-10-03", metadata = mockMeta())),
+        foedested = listOf(Foedested("NOR", "OSLO", metadata = mockMeta())),
+        kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+        doedsfall = listOf(Doedsfall(LocalDate.of(2020, 10,10), Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+        forelderBarnRelasjon = listOf(ForelderBarnRelasjon("101010", Familierelasjonsrolle.BARN, Familierelasjonsrolle.MOR, mockMeta())),
+        sivilstand = listOf(Sivilstand(Sivilstandstype.GIFT, LocalDate.of(2010, 10,10), "1020203010", mockMeta())),
+        kontaktadresse = kontaktadresse,
+        kontaktinformasjonForDoedsbo = emptyList(),
+        innflyttingTilNorge = innflyttingTilNorge,
+        utflyttingFraNorge = utflyttingFraNorge
+    )
+
+    private fun mockAltUtenlandskIdent() = HentPersonUtenlandskIdent(
+        navn = listOf(Navn("Fornavn", "Mellomnavn", "Etternavn", null, null, null, mockMeta())),
+        kjoenn = listOf(Kjoenn(KjoennType.KVINNE, Folkeregistermetadata(LocalDateTime.of(2020, 10, 5, 10,5,2)), mockMeta())),
+        utenlandskIdentifikasjonsnummer = listOf(UtenlandskIdentifikasjonsnummer("231234-12331", "SE", false, null, mockMeta()))
+    )
+
+    private fun mockAltIdenter() = listOf(
+        IdentInformasjon("25078521492", FOLKEREGISTERIDENT),
+        IdentInformasjon("100000000000053", AKTORID)
+    )
+
+    private fun mockAltGeografiskTilknytning() = GeografiskTilknytning(GtType.KOMMUNE, "0301", null, null)
+
+    private fun stubHentAltPerson(
+        pdlPerson: HentPerson,
+        pdlUidPerson: HentPersonUtenlandskIdent,
+        identer: List<IdentInformasjon>,
+        gt: GeografiskTilknytning
+    ) {
+        every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
+        every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
+        every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
+        every { client.hentPersonUtenlandsIdent(any()) } returns HentPersonUidResponse(HentPersonUidResponseData(pdlUidPerson))
+    }
+
+    /**
+     * Fellesassertions for felter som er identiske uansett om personen er hentet via [PersonService.hentPerson]
+     * eller [PersonService.hentPersonUtvidet]. Tar imot [IPdlPerson] slik at både [PdlPerson] og
+     * [PdlPersonUtvidet] kan brukes, gitt testdataene fra [mockAltHentPerson]/[mockAltUtenlandskIdent]/[mockAltIdenter].
+     */
+    private fun assertFellesPersonFelter(resultat: IPdlPerson, gt: GeografiskTilknytning) {
+        val navn = resultat.navn!!
+        assertEquals("Fornavn", navn.fornavn)
+        assertEquals("Mellomnavn", navn.mellomnavn)
+        assertEquals("Etternavn", navn.etternavn)
+
+        assertEquals("NOR", resultat.statsborgerskap.lastOrNull()?.land)
+
+        assertEquals("2000-10-03", resultat.foedselsdato?.foedselsdato)
+        assertEquals("NOR", resultat.foedested?.foedeland)
+        assertEquals("OSLO", resultat.foedested?.foedested)
+
+        assertEquals(KjoennType.KVINNE, resultat.kjoenn?.kjoenn)
+
+        assertEquals(LocalDate.of(2020, 10,10), resultat.doedsfall?.doedsdato)
+        assertEquals(true, resultat.erDoed())
+
+        assertEquals("101010", resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsIdent)
+        assertEquals(Familierelasjonsrolle.BARN, resultat.forelderBarnRelasjon.lastOrNull()?.relatertPersonsRolle)
+        assertEquals(Familierelasjonsrolle.MOR, resultat.forelderBarnRelasjon.lastOrNull()?.minRolleForPerson)
+
+        assertEquals(Sivilstandstype.GIFT, resultat.sivilstand.lastOrNull()?.type)
+        assertEquals("1020203010", resultat.sivilstand.lastOrNull()?.relatertVedSivilstand)
+        assertEquals(LocalDate.of(2010, 10,10), resultat.sivilstand.lastOrNull()?.gyldigFraOgMed)
+
+        assertEquals(gt, resultat.geografiskTilknytning)
+
+        assertEquals(1, resultat.adressebeskyttelse.size)
+        assertEquals(2, resultat.identer.size)
+
+        assertEquals(1, resultat.utenlandskIdentifikasjonsnummer.size)
+        assertEquals("231234-12331", resultat.utenlandskIdentifikasjonsnummer.first().identifikasjonsnummer)
+    }
 }
