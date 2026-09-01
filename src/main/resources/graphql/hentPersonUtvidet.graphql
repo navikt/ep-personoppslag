@@ -3,7 +3,7 @@ query($ident: ID!) {
         adressebeskyttelse {
             gradering
         }
-        bostedsadresse {
+        bostedsadresse(historikk: true) {
             vegadresse {
                 ...vegadresseDetails
             }
@@ -16,7 +16,7 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
-        oppholdsadresse {
+        oppholdsadresse(historikk: true) {
             vegadresse {
                 ...vegadresseDetails
             }
@@ -28,7 +28,7 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
-        kontaktadresse {
+        kontaktadresse(historikk: true) {
             coAdressenavn
             type
             gyldigFraOgMed

@@ -62,6 +62,23 @@ class PersonClient(
         }
   }
 
+    /**
+     * Som [hentPerson], men henter bostedsadresse, oppholdsadresse og kontaktadresse med
+     * historikk (historikk: true), slik at [PersonService.hentPersonUtvidet] kan tilby
+     * de historiske variantene av disse feltene i tillegg til gjeldende verdi.
+     */
+    @Retryable(
+        exclude = [HttpClientErrorException.NotFound::class],
+        backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)
+    )
+    internal fun hentPersonUtvidet(ident: String): HentPersonResponse? {
+        val query = getGraphqlResource("/graphql/hentPersonUtvidet.graphql")
+        val request = GraphqlRequest(query, Variables(ident))
+        return pdlRestTemplate.postForObject<HentPersonResponse>(url, HttpEntity(request), HentPersonResponse::class).also {
+            loggPdlFeil(it?.errors)
+        }
+    }
+
     @Retryable(
         exclude = [HttpClientErrorException.NotFound::class],
         backoff = Backoff(delay = 10000L, maxDelay = 100000L, multiplier = 3.0)

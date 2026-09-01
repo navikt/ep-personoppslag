@@ -203,7 +203,7 @@ class PersonService(
         return hentPersonUtvidetMetric.measure {
 
             logger.debug("Henter person (utvidet): ${ident.id} fra pdl")
-            val response = client.hentPerson(ident.id)
+            val response = client.hentPersonUtvidet(ident.id)
 
             if (!response?.errors.isNullOrEmpty())
                 handleError(response.errors)
