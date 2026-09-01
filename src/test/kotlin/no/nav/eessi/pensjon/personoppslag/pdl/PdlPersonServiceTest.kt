@@ -675,6 +675,7 @@ internal class PdlPersonServiceTest {
         gt: GeografiskTilknytning
     ) {
         every { client.hentPerson(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
+        every { client.hentPersonUtvidet(any()) } returns HentPersonResponse(HentPersonResponseData(pdlPerson))
         every { client.hentIdenter(any()) } returns IdenterResponse(IdenterDataResponse(HentIdenter(identer)))
         every { client.hentGeografiskTilknytning(any()) } returns GeografiskTilknytningResponse(GeografiskTilknytningResponseData(gt))
         every { client.hentPersonUtenlandsIdent(any()) } returns HentPersonUidResponse(HentPersonUidResponseData(pdlUidPerson))
