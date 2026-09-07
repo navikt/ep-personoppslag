@@ -147,7 +147,7 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
-        innflyttingTilNorge(historikk: true)  {
+        innflyttingTilNorge  {
             fraflyttingsland
             fraflyttingsstedIUtlandet
             folkeregistermetadata {
@@ -157,7 +157,7 @@ query($ident: ID!) {
                 ...metadataDetails
             }
         }
-        utflyttingFraNorge(historikk: true)  {
+        utflyttingFraNorge {
             tilflyttingsland
             tilflyttingsstedIUtlandet
             utflyttingsdato
