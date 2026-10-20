@@ -43,6 +43,7 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
             val token = pdlToken.callBack()
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
+            request.headers["Permissive-Mode"] = "true"
             request.headers["Behandlingsnummer"] =
                 Behandlingsnummer.ALDERPENSJON.nummer + "," +
                 Behandlingsnummer.UFORETRYGD.nummer + "," +
