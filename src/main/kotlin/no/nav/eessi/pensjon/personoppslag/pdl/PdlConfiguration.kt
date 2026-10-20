@@ -43,13 +43,12 @@ open class PdlConfiguration(@Autowired(required = false) private val metricsHelp
             val token = pdlToken.callBack()
             request.headers[HttpHeaders.CONTENT_TYPE] = "application/json"
             request.headers["Tema"] = "PEN"
-            request.headers["Permissive-Mode"] = "true"
             request.headers["Behandlingsnummer"] =
                 Behandlingsnummer.ALDERPENSJON.nummer + "," +
                 Behandlingsnummer.UFORETRYGD.nummer + "," +
                 Behandlingsnummer.GJENLEV_OG_OVERGANG.nummer + "," +
                 Behandlingsnummer.BARNEPENSJON.nummer
-
+            request.headers["Permissive-Mode"] = "true"
             // [Borger, Saksbehandler eller System]
             request.headers.setBearerAuth(token.accessToken)
             logger.debug("PdlInterceptor httpRequest headers: ${request.headers}")
